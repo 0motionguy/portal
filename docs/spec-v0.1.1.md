@@ -218,6 +218,27 @@ Echoing `Origin` rather than `*` is REQUIRED whenever the visitor is expected to
 
 Visitors that do not originate from a browser (server-side SDKs, CLI clients, native apps) MUST NOT rely on CORS headers for access control. CORS is a defence-in-depth mechanism for browser-resident clients only; it is not an authentication layer.
 
+## Appendix D — Rate limits (informative + SHOULD-level defaults)
+
+Portals SHOULD apply rate limits independently on `GET /portal` and `POST /portal/call`. The appropriate limits are provider-specific; the following are recommended defaults for a stateless LLM-visitor workload:
+
+| `auth`     | Unauthenticated (per IP) | Authenticated (per key / identity) |
+|------------|--------------------------|------------------------------------|
+| `none`     | 10 req/min               | N/A                                |
+| `api_key`  | 10 req/min               | 1000 req/min per key               |
+| `erc8004`  | 30 req/min               | Per-identity policy (provider-defined) |
+| `x402`     | Per-call payment settles the rate question | Per-call payment settles the rate question |
+
+When a request exceeds the applicable limit, the Portal SHOULD respond with HTTP status **`429 Too Many Requests`** carrying the standard error envelope:
+
+```json
+{ "ok": false, "error": "rate limited", "code": "RATE_LIMITED" }
+```
+
+and SHOULD include a `Retry-After` header — either a non-negative integer (seconds) or an HTTP-date — per RFC 9110 §10.2.3. Visitors MUST treat `RATE_LIMITED` as a recoverable error: the same call MAY succeed after the indicated delay.
+
+The `RATE_LIMITED` code is already in the v0.1.0 error enum (see §6); this appendix formalises when to emit it and what headers to include.
+
 ## Changelog
 
 ### v0.1.1 (2026-04-19) — additive clarifications
