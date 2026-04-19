@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
-  "outputDirectory": "public",
+  "framework": "nextjs",
   "headers": [
     {
       "source": "/install",
@@ -33,7 +32,6 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "cache-control", "value": "public, max-age=300, must-revalidate" },
         { "key": "x-content-type-options", "value": "nosniff" }
       ]
     }
