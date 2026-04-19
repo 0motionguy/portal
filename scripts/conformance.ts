@@ -6,7 +6,7 @@
 // Offline mode is what CI runs. Live mode is what Mirko / judges run to verify
 // a deployed Portal. Exit code = number of failures (0 = pass).
 
-import { runConformance, runVectorSuite } from "@visitportal/spec/runner";
+import { runSmokeConformance, runVectorSuite } from "@visitportal/spec/runner";
 
 const target = process.argv[2];
 
@@ -24,9 +24,11 @@ if (!target) {
   process.exit(report.totals.fail);
 }
 
-// Live: fetch GET /portal, validate, then probe POST /portal/call for NOT_FOUND.
-console.log(`portal-conformance · live · ${target}`);
-const report = await runConformance(target);
+// Live smoke: fetch GET /portal, validate, then probe POST /portal/call for
+// NOT_FOUND. For the full 30-vector offline suite, use validateAgainstVectors
+// from @visitportal/spec (or drop the URL arg to get runVectorSuite).
+console.log(`portal-conformance · live smoke · ${target}`);
+const report = await runSmokeConformance(target);
 
 let failures = 0;
 

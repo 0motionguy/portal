@@ -1,12 +1,18 @@
 // Portal v0.1.1 conformance runner.
 //
-// Two modes of use:
+// Three modes of use:
 //   1. `validateManifest(obj)` — pure function. Given a parsed manifest, returns
 //      `{ ok: true }` or `{ ok: false, errors }`. Used by visitor SDKs after
 //      fetching GET /portal.
-//   2. `runConformance(baseUrl)` — integration runner. Fetches GET /portal at
-//      `baseUrl`, validates it, then exercises a small set of call-pair
-//      assertions (tool-not-found round-trip) against POST /portal/call.
+//   2. `validateAgainstVectors(manifest)` — offline full-suite check. Validates
+//      a candidate manifest AND runs the 30-vector canonical suite, returning
+//      both reports. Adopter-facing: proves the manifest passes and the
+//      validator itself is behaving as expected, without any network calls.
+//   3. `runSmokeConformance(baseUrl)` — integration smoke test. Fetches
+//      GET /portal at `baseUrl`, validates it, then exercises a tool-not-found
+//      round-trip against POST /portal/call. Does NOT iterate the full vector
+//      suite; for that use `validateAgainstVectors()` locally or the
+//      `conformance` CLI subcommand with `--full`.
 //
 // No dependencies on any visitor SDK — this package is the authority and must
 // not pull in @visitportal/visit. `fetch` is the only IO primitive.
@@ -163,7 +169,23 @@ function checkCallPair(v: VectorsFile["call_pair"][number]): string | null {
   return null;
 }
 
-// Integration runner — fetches a live Portal and tests its manifest + a
+// Offline full-suite report — validates a candidate manifest AND runs the
+// 30-vector canonical suite. Adopter-facing: proves the candidate manifest
+// passes and that the validator is behaving correctly. No network IO.
+
+export interface OfflineReport {
+  manifest: ValidationResult;
+  vectorSuite: VectorReport;
+}
+
+export function validateAgainstVectors(manifest: unknown): OfflineReport {
+  return {
+    manifest: validateManifest(manifest),
+    vectorSuite: runVectorSuite(),
+  };
+}
+
+// Integration smoke — fetches a live Portal and tests its manifest + a
 // NOT_FOUND round-trip. Keep narrow: this is the smoke test, not the full
 // vector suite. Full vectors are static fixtures; live conformance just checks
 // that the provider's manifest validates and that a bogus tool call produces a
@@ -177,7 +199,7 @@ export interface LiveReport {
   notFoundDetail: string;
 }
 
-export async function runConformance(
+export async function runSmokeConformance(
   baseUrl: string,
   opts: { timeoutMs?: number } = {},
 ): Promise<LiveReport> {
