@@ -15,6 +15,8 @@ pnpm install
 bash scripts/demo.sh          # ~6 s end-to-end: starts a Portal, visits it, leaves
 ```
 
+> **Windows users:** `scripts/demo.sh` uses bash idioms (`set -euo pipefail`, ANSI escapes, `/tmp/` paths) and requires a Unix-like shell — WSL2, Git Bash, or macOS/Linux. A PowerShell equivalent is deferred to v0.1.2.
+
 Or break it apart:
 
 ```sh
