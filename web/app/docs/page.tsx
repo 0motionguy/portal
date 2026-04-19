@@ -16,11 +16,34 @@ export default function DocsPage() {
           Ship a Portal in <em>an hour.</em> Visit one in <em>three lines.</em>
         </h1>
         <p className="lede">
-          Two endpoints, one manifest, fire-and-forget. Everything below is a
-          copy-paste-and-run instruction against the repo as it stands.
+          The shortest path from zero to a working Portal. Two endpoints, one
+          manifest, fire-and-forget. Ship as a visitor in ten lines of
+          TypeScript, or stand up a provider in an afternoon — the spec fits on
+          one page.
         </p>
 
-        <h2>Quickstart — <em>visitor</em></h2>
+        <div className="docs-cards">
+          <a className="docs-card" href="#quickstart-visitor">
+            <span className="tag">VISITOR</span>
+            <h3>visit a Portal <em>in 10 lines</em></h3>
+            <p>Import <code>visit()</code>, point it at a URL, call a tool. Errors are typed, no install ritual.</p>
+            <span className="jump">→ visitor quickstart</span>
+          </a>
+          <a className="docs-card" href="#quickstart-provider">
+            <span className="tag">PROVIDER</span>
+            <h3>ship a Portal <em>in an afternoon</em></h3>
+            <p>Two HTTP endpoints, any framework. Verify conformance against 30 vectors before you ship.</p>
+            <span className="jump">→ provider quickstart</span>
+          </a>
+          <a className="docs-card" href="#spec-glance">
+            <span className="tag">SPEC</span>
+            <h3>the v0.1 <em>napkin</em></h3>
+            <p>One page of core, three appendices. Endpoints, manifest, errors, non-goals — all in a table.</p>
+            <span className="jump">→ spec at a glance</span>
+          </a>
+        </div>
+
+        <h2 id="quickstart-visitor">Quickstart — <em>visitor</em></h2>
         <p>From a fresh clone:</p>
         <pre>
           <code>{`pnpm install
@@ -48,7 +71,7 @@ try {
           <code>UNAUTHORIZED</code>, <code>RATE_LIMITED</code>, <code>INTERNAL</code>.
         </p>
 
-        <h2>Quickstart — <em>provider</em></h2>
+        <h2 id="quickstart-provider">Quickstart — <em>provider</em></h2>
         <p>
           A v0.1-conformant Portal needs two HTTP endpoints. No framework is
           required — the reference uses Hono for ergonomics; any HTTP server
@@ -87,7 +110,7 @@ app.post("/portal/call", async (c) => {
           <code>pnpm conformance https://your.service/portal</code>
         </pre>
 
-        <h2>Spec — <em>at a glance</em></h2>
+        <h2 id="spec-glance">Spec — <em>at a glance</em></h2>
         <p>
           Full text: <a href="https://github.com/mbasildolger/portal/blob/main/docs/spec-v0.1.0.md">
             docs/spec-v0.1.0.md

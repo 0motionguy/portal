@@ -7,6 +7,7 @@ build/
 .fly/
 coverage/
 .nyc_output/
+*.tsbuildinfo
 
 # Python
 __pycache__/

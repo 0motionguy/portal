@@ -238,3 +238,188 @@ pre code {
 .foot a { color: var(--dim); text-decoration: none; }
 .foot a:hover { color: var(--ink); }
 .foot .left, .foot .right { display: flex; gap: 20px; flex-wrap: wrap; }
+
+/* ---- Inline nav links inside the one-pager status bar ---- */
+.status-bar a.nav-inline {
+  color: var(--dim);
+  text-decoration: none;
+  font-weight: 400;
+  letter-spacing: inherit;
+}
+.status-bar a.nav-inline:hover {
+  color: var(--coral);
+}
+
+/* ---- Hero action bar (client component on / route) ---- */
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 24px 0 0;
+}
+.hero-actions__row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hero-actions__install {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--term-bg);
+  color: var(--term-fg);
+  padding: 16px 20px;
+  border-radius: 6px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 10px 24px -6px rgba(24, 24, 24, 0.2);
+  overflow-x: auto;
+}
+.hero-actions__install .sig {
+  color: var(--term-coral);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.hero-actions__install .cmd {
+  color: var(--term-fg);
+  white-space: nowrap;
+  flex: 1 1 auto;
+}
+.hero-actions__install .cmd .arg { color: var(--term-amber); }
+.hero-actions__install .cmd .url { color: var(--term-green); }
+.hero-actions__copy {
+  background: transparent;
+  border: 1px solid rgba(238, 231, 213, 0.22);
+  color: var(--term-coral);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.hero-actions__copy:hover {
+  border-color: var(--term-coral);
+  color: var(--term-fg);
+}
+.hero-actions__copy:focus-visible {
+  outline: 1px solid var(--term-coral);
+  outline-offset: 2px;
+}
+.hero-actions__copy[data-copied="true"] {
+  color: var(--term-green);
+  border-color: var(--term-green);
+}
+.hero-actions__github {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper-soft);
+  color: var(--ink);
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.hero-actions__github:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.hero-actions__github svg { display: block; flex-shrink: 0; }
+.hero-actions__secondary {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-left: 4px;
+}
+.hero-actions__secondary a {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  color: var(--coral);
+  text-decoration: none;
+}
+.hero-actions__secondary a:hover {
+  color: var(--coral-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 500px) {
+  .hero-actions__row { flex-direction: column; }
+  .hero-actions__github { justify-content: center; }
+}
+
+/* ---- /docs landing cards ---- */
+.docs-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 28px 0 48px;
+}
+@media (max-width: 900px) { .docs-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .docs-cards { grid-template-columns: 1fr; } }
+.docs-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 22px 18px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 120ms ease, transform 120ms ease, background 120ms ease;
+}
+.docs-card:hover {
+  border-color: var(--coral);
+  background: var(--paper-dark);
+  transform: translateY(-1px);
+}
+.docs-card .tag {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--coral);
+  text-transform: uppercase;
+}
+.docs-card h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 2px 0 4px;
+}
+.docs-card h3 em { color: var(--coral); font-style: italic; }
+.docs-card p {
+  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: none;
+}
+.docs-card .jump {
+  margin-top: auto;
+  padding-top: 10px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--coral);
+}
+.docs-card:hover .jump { color: var(--coral-deep); }
