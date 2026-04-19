@@ -1,0 +1,169 @@
+[
+  {
+    "name": "slack_list_channels",
+    "description": "List public channels in the Slack workspace with pagination. Each entry includes channel ID, name, topic, and member count.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "limit": { "type": "number", "description": "Maximum number of channels to return (default 100, max 200)" },
+        "cursor": { "type": "string", "description": "Pagination cursor returned by a previous call" }
+      }
+    }
+  },
+  {
+    "name": "slack_post_message",
+    "description": "Post a message to a Slack channel on behalf of the connected bot. Supports plain text and Block Kit payloads.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "channel_id": { "type": "string", "description": "The ID of the channel to post to" },
+        "text": { "type": "string", "description": "The message text to post; falls back when blocks are unavailable" },
+        "blocks": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Optional Block Kit blocks to render a rich message"
+        }
+      },
+      "required": ["channel_id", "text"]
+    }
+  },
+  {
+    "name": "slack_reply_to_thread",
+    "description": "Reply to an existing Slack message thread. Requires the parent message timestamp as returned by channel history.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "channel_id": { "type": "string", "description": "The ID of the channel containing the thread" },
+        "thread_ts": { "type": "string", "description": "The parent message timestamp (e.g. '1713000000.123456')" },
+        "text": { "type": "string", "description": "The reply text" }
+      },
+      "required": ["channel_id", "thread_ts", "text"]
+    }
+  },
+  {
+    "name": "slack_add_reaction",
+    "description": "Add an emoji reaction to a Slack message. The emoji name must be provided without surrounding colons.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "channel_id": { "type": "string", "description": "The ID of the channel containing the message" },
+        "timestamp": { "type": "string", "description": "The timestamp of the message to react to" },
+        "emoji": { "type": "string", "description": "The name of the emoji reaction (without colons)" }
+      },
+      "required": ["channel_id", "timestamp", "emoji"]
+    }
+  },
+  {
+    "name": "slack_get_channel_history",
+    "description": "Return recent messages from a Slack channel in reverse chronological order. Includes user IDs and message timestamps.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "channel_id": { "type": "string", "description": "The ID of the channel to read" },
+        "limit": { "type": "number", "description": "Number of messages to retrieve (default 10)" }
+      },
+      "required": ["channel_id"]
+    }
+  },
+  {
+    "name": "slack_get_thread_replies",
+    "description": "Return every reply in a Slack message thread in chronological order, including the parent message itself.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "channel_id": { "type": "string", "description": "The ID of the channel containing the thread" },
+        "thread_ts": { "type": "string", "description": "The parent message timestamp" }
+      },
+      "required": ["channel_id", "thread_ts"]
+    }
+  },
+  {
+    "name": "slack_get_user_profile",
+    "description": "Get detailed profile information for a Slack user including display name, title, email, and avatar URL.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "description": "The Slack user ID to fetch" }
+      },
+      "required": ["user_id"]
+    }
+  },
+  {
+    "name": "send_email",
+    "description": "Send an email through the connected transport. Supports plain text and HTML bodies and arbitrary recipients in to/cc/bcc.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Recipient email addresses in the To field"
+        },
+        "subject": { "type": "string", "description": "Subject line of the email" },
+        "text": { "type": "string", "description": "Plain text body of the email" },
+        "html": { "type": "string", "description": "Optional HTML body; if omitted, text is used" },
+        "cc": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Addresses to include in the Cc field"
+        }
+      },
+      "required": ["to", "subject", "text"]
+    }
+  },
+  {
+    "name": "list_emails",
+    "description": "List emails from a mailbox using an optional search query. Returns subject, sender, snippet, and message ID per item.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Gmail-style query, e.g. 'from:alice@example.com is:unread'" },
+        "max_results": { "type": "number", "description": "Maximum number of emails to return (1-200)" },
+        "page_token": { "type": "string", "description": "Pagination token returned by a previous call" }
+      }
+    }
+  },
+  {
+    "name": "get_email",
+    "description": "Fetch a single email by its message ID and return the full MIME body, headers, and attachment metadata.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "message_id": { "type": "string", "description": "Unique identifier of the email to fetch" },
+        "include_attachments": { "type": "boolean", "description": "If true, include attachment metadata and content IDs" }
+      },
+      "required": ["message_id"]
+    }
+  },
+  {
+    "name": "create_calendar_event",
+    "description": "Create a new calendar event with a title, description, start and end times, and a list of invitee email addresses.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "calendar_id": { "type": "string", "description": "Identifier of the target calendar (default: primary)" },
+        "title": { "type": "string", "description": "Event title" },
+        "start": { "type": "string", "description": "ISO 8601 start timestamp with timezone" },
+        "end": { "type": "string", "description": "ISO 8601 end timestamp with timezone" },
+        "attendees": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Email addresses of invitees"
+        }
+      },
+      "required": ["title", "start", "end"]
+    }
+  },
+  {
+    "name": "send_sms",
+    "description": "Send an SMS message via the connected provider. Supports E.164 phone numbers. Returns the provider message ID and delivery status.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "to": { "type": "string", "description": "Destination phone number in E.164 format (e.g. +14155550123)" },
+        "body": { "type": "string", "description": "Text body of the SMS (up to 1600 characters)" }
+      },
+      "required": ["to", "body"]
+    }
+  }
+]

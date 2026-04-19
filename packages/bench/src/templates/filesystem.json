@@ -1,0 +1,197 @@
+[
+  {
+    "name": "read_text_file",
+    "description": "Read the complete contents of a text file from the file system. Handles common encodings and returns the full body. Use head or tail to slice. Works only within allowed directories.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path to the file to read" },
+        "head": { "type": "number", "description": "If provided, returns only the first N lines of the file" },
+        "tail": { "type": "number", "description": "If provided, returns only the last N lines of the file" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "read_media_file",
+    "description": "Read an image or audio file and return its base64-encoded bytes plus a MIME type. Only reads within allowed directories.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path to an image or audio file" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "read_multiple_files",
+    "description": "Read the contents of multiple files in a single call. Each file's content is returned tagged with its path. Failures for individual files do not abort the batch.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of absolute file paths to read; each must point to an allowed file"
+        }
+      },
+      "required": ["paths"]
+    }
+  },
+  {
+    "name": "write_file",
+    "description": "Create a new file or completely overwrite an existing file. No warning is emitted for overwrites. Text content is written using UTF-8. Only writes within allowed directories.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path of the file to create or overwrite" },
+        "content": { "type": "string", "description": "Full text content to write to the file" }
+      },
+      "required": ["path", "content"]
+    }
+  },
+  {
+    "name": "edit_file",
+    "description": "Apply line-based edits to a text file. Each edit replaces an exact oldText segment with newText. Returns a git-style diff of the changes.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path to the file being edited" },
+        "edits": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Array of { oldText, newText } edits applied in order"
+        },
+        "dryRun": { "type": "boolean", "description": "If true, preview changes as a diff without touching the file" }
+      },
+      "required": ["path", "edits"]
+    }
+  },
+  {
+    "name": "create_directory",
+    "description": "Create a directory (or ensure one already exists). Creates nested parent directories in a single call. Silent success if the directory is already present.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path of the directory to create" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "list_directory",
+    "description": "Return a flat listing of a directory's immediate children. File and directory entries are distinguished with [FILE] and [DIR] prefixes. Read-only.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path of the directory to list" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "list_directory_with_sizes",
+    "description": "Same as list_directory but adds per-entry file sizes and a total summary. Useful for spotting large files before a download.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path of the directory to list" },
+        "sortBy": {
+          "type": "string",
+          "enum": ["name", "size"],
+          "description": "Sort entries alphabetically by name or descending by size"
+        }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "directory_tree",
+    "description": "Return a recursive JSON tree of files and directories under the given root. Each entry has name, type, and children. Respects an optional list of exclude globs.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path of the root directory to walk" },
+        "excludePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Glob patterns of entries to skip (e.g. **/node_modules)"
+        }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "move_file",
+    "description": "Move or rename a file or directory. Fails if the destination already exists. Works across directories; both endpoints must be within allowed roots.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "description": "Absolute path of the source file or directory" },
+        "destination": { "type": "string", "description": "Absolute path of the new location; must not exist" }
+      },
+      "required": ["source", "destination"]
+    }
+  },
+  {
+    "name": "search_files",
+    "description": "Recursively find files and directories whose paths match a glob. Returns full paths of every match. Great when you know the name shape but not the location.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute directory to begin the search from" },
+        "pattern": { "type": "string", "description": "Glob pattern such as *.ts or **/*.test.ts" },
+        "excludePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Glob patterns to exclude from results"
+        }
+      },
+      "required": ["path", "pattern"]
+    }
+  },
+  {
+    "name": "get_file_info",
+    "description": "Return metadata about a file or directory including size, creation time, last modified time, and permissions. Does not read the file body.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path whose metadata should be returned" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "list_allowed_directories",
+    "description": "Return the list of directory roots this server is permitted to access. Subdirectories within those roots are also reachable.",
+    "input_schema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "watch_path",
+    "description": "Register a watcher on a path and stream events when files are created, modified, or deleted. Useful for long-running build and test loops.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path of the file or directory to watch" },
+        "recursive": { "type": "boolean", "description": "If true, watch nested subdirectories as well" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "copy_file",
+    "description": "Copy a file from one location to another. Overwrites the destination only when explicitly allowed. Both paths must be inside allowed directories.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "description": "Absolute path of the file to copy" },
+        "destination": { "type": "string", "description": "Absolute path of the copy target" },
+        "overwrite": { "type": "boolean", "description": "When true, replaces an existing destination file" }
+      },
+      "required": ["source", "destination"]
+    }
+  }
+]

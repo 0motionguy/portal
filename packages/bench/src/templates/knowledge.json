@@ -1,0 +1,143 @@
+[
+  {
+    "name": "create_entities",
+    "description": "Create multiple new entities in the knowledge graph. Each entity has a name, a type, and an initial list of observations.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Array of { name, entityType, observations } entries to create"
+        }
+      },
+      "required": ["entities"]
+    }
+  },
+  {
+    "name": "create_relations",
+    "description": "Create relations between pairs of entities. Relations should be written in active voice such as 'works_at' or 'authored'.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "relations": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Array of { from, to, relationType } edges to create"
+        }
+      },
+      "required": ["relations"]
+    }
+  },
+  {
+    "name": "add_observations",
+    "description": "Attach new observation strings to an existing entity. Observations are appended; duplicates are deduplicated.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "entity_name": { "type": "string", "description": "The name of the entity to add observations to" },
+        "contents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of observation strings to append"
+        }
+      },
+      "required": ["entity_name", "contents"]
+    }
+  },
+  {
+    "name": "delete_entities",
+    "description": "Delete entities and all their incident relations from the knowledge graph. The operation is irreversible.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "entity_names": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of entity names to delete"
+        }
+      },
+      "required": ["entity_names"]
+    }
+  },
+  {
+    "name": "delete_observations",
+    "description": "Remove specific observations from an entity while leaving the entity itself and its relations intact.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "entity_name": { "type": "string", "description": "The name of the entity to modify" },
+        "observations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Observation strings to remove from the entity"
+        }
+      },
+      "required": ["entity_name", "observations"]
+    }
+  },
+  {
+    "name": "read_graph",
+    "description": "Return the full knowledge graph including every entity and relation. Useful for small graphs and debug tooling.",
+    "input_schema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "search_nodes",
+    "description": "Search the knowledge graph for entities whose name, type, or observations match a query string. Returns ranked matches.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Query string to match against names, types, and observation text" },
+        "limit": { "type": "number", "description": "Maximum number of entities to return (default 20)" }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "open_nodes",
+    "description": "Open one or more entities by name and return their full records including relations and observations.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "names": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Entity names to open"
+        }
+      },
+      "required": ["names"]
+    }
+  },
+  {
+    "name": "neighbors",
+    "description": "Return the immediate neighbors of an entity by traversing relations one hop in the specified direction.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "entity_name": { "type": "string", "description": "Name of the entity whose neighbors to return" },
+        "direction": {
+          "type": "string",
+          "enum": ["out", "in", "both"],
+          "description": "Direction of edges to follow"
+        },
+        "limit": { "type": "number", "description": "Maximum number of neighbors to return" }
+      },
+      "required": ["entity_name"]
+    }
+  },
+  {
+    "name": "merge_entities",
+    "description": "Merge two entities into a single entity. Observations are unioned; relations are rewritten to point at the survivor.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "survivor": { "type": "string", "description": "Name of the entity to keep after the merge" },
+        "loser": { "type": "string", "description": "Name of the entity to fold into the survivor" }
+      },
+      "required": ["survivor", "loser"]
+    }
+  }
+]

@@ -1,0 +1,749 @@
+{
+  "startedAt": "2026-04-19T08:05:10.635Z",
+  "finishedAt": "2026-04-19T08:05:29.466Z",
+  "mode": "count_tokens_only",
+  "seed": 42,
+  "protocols": [
+    "mcp",
+    "portal"
+  ],
+  "toolCounts": [
+    10,
+    50,
+    100,
+    400
+  ],
+  "taskIds": [
+    "find_trending_ai",
+    "summarize_repo",
+    "search_agent_protocol"
+  ],
+  "modelIds": [
+    "claude-sonnet-4-5",
+    "claude-opus-4-5"
+  ],
+  "runsPerCell": 1,
+  "portalPreamble": "You have visited a Portal. Before each turn, the visitor SDK gave you a compact manifest describing the service's tools. The manifest itself is not re-sent on every turn — only the tool you want to call and its params. When you call a tool, respond with: portal_call { \"tool\": \"<name>\", \"params\": { ... } }. Keep params minimal. One tool call per turn. The service will reply with { ok, result } or { ok:false, error, code }.",
+  "results": [
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 10,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 1960,
+      "outputTokens": 0,
+      "latencyMs": 484,
+      "costUsd": 0.00588,
+      "timestamp": "2026-04-19T08:05:10.638Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 10,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 1960,
+      "outputTokens": 0,
+      "latencyMs": 642,
+      "costUsd": 0.0294,
+      "timestamp": "2026-04-19T08:05:11.122Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 10,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 1956,
+      "outputTokens": 0,
+      "latencyMs": 411,
+      "costUsd": 0.005868,
+      "timestamp": "2026-04-19T08:05:11.764Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 10,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 1956,
+      "outputTokens": 0,
+      "latencyMs": 316,
+      "costUsd": 0.02934,
+      "timestamp": "2026-04-19T08:05:12.175Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 10,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 1948,
+      "outputTokens": 0,
+      "latencyMs": 387,
+      "costUsd": 0.005844,
+      "timestamp": "2026-04-19T08:05:12.491Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 10,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 1948,
+      "outputTokens": 0,
+      "latencyMs": 370,
+      "costUsd": 0.02922,
+      "timestamp": "2026-04-19T08:05:12.878Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 50,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 7347,
+      "outputTokens": 0,
+      "latencyMs": 559,
+      "costUsd": 0.022041,
+      "timestamp": "2026-04-19T08:05:13.248Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 50,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 7347,
+      "outputTokens": 0,
+      "latencyMs": 348,
+      "costUsd": 0.110205,
+      "timestamp": "2026-04-19T08:05:13.807Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 50,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 7343,
+      "outputTokens": 0,
+      "latencyMs": 312,
+      "costUsd": 0.022029,
+      "timestamp": "2026-04-19T08:05:14.155Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 50,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 7343,
+      "outputTokens": 0,
+      "latencyMs": 381,
+      "costUsd": 0.110145,
+      "timestamp": "2026-04-19T08:05:14.468Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 50,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 7335,
+      "outputTokens": 0,
+      "latencyMs": 454,
+      "costUsd": 0.022005,
+      "timestamp": "2026-04-19T08:05:14.849Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 50,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 7335,
+      "outputTokens": 0,
+      "latencyMs": 355,
+      "costUsd": 0.110025,
+      "timestamp": "2026-04-19T08:05:15.303Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 100,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 13933,
+      "outputTokens": 0,
+      "latencyMs": 401,
+      "costUsd": 0.041799,
+      "timestamp": "2026-04-19T08:05:15.658Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 100,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 13933,
+      "outputTokens": 0,
+      "latencyMs": 340,
+      "costUsd": 0.208995,
+      "timestamp": "2026-04-19T08:05:16.059Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 100,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 13929,
+      "outputTokens": 0,
+      "latencyMs": 400,
+      "costUsd": 0.041787,
+      "timestamp": "2026-04-19T08:05:16.399Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 100,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 13929,
+      "outputTokens": 0,
+      "latencyMs": 327,
+      "costUsd": 0.208935,
+      "timestamp": "2026-04-19T08:05:16.799Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 100,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 13921,
+      "outputTokens": 0,
+      "latencyMs": 343,
+      "costUsd": 0.041763,
+      "timestamp": "2026-04-19T08:05:17.126Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 100,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 13921,
+      "outputTokens": 0,
+      "latencyMs": 342,
+      "costUsd": 0.208815,
+      "timestamp": "2026-04-19T08:05:17.469Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 400,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 54681,
+      "outputTokens": 0,
+      "latencyMs": 952,
+      "costUsd": 0.164043,
+      "timestamp": "2026-04-19T08:05:17.811Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 400,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 54681,
+      "outputTokens": 0,
+      "latencyMs": 452,
+      "costUsd": 0.820215,
+      "timestamp": "2026-04-19T08:05:18.763Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 400,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 54677,
+      "outputTokens": 0,
+      "latencyMs": 432,
+      "costUsd": 0.164031,
+      "timestamp": "2026-04-19T08:05:19.215Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 400,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 54677,
+      "outputTokens": 0,
+      "latencyMs": 384,
+      "costUsd": 0.820155,
+      "timestamp": "2026-04-19T08:05:19.647Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 400,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 54669,
+      "outputTokens": 0,
+      "latencyMs": 432,
+      "costUsd": 0.164007,
+      "timestamp": "2026-04-19T08:05:20.031Z"
+    },
+    {
+      "cell": {
+        "protocol": "mcp",
+        "toolCount": 400,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 54669,
+      "outputTokens": 0,
+      "latencyMs": 552,
+      "costUsd": 0.820035,
+      "timestamp": "2026-04-19T08:05:20.463Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 10,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 319,
+      "costUsd": 0.000528,
+      "timestamp": "2026-04-19T08:05:21.015Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 10,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 314,
+      "costUsd": 0.00264,
+      "timestamp": "2026-04-19T08:05:21.334Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 10,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 353,
+      "costUsd": 0.000516,
+      "timestamp": "2026-04-19T08:05:21.648Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 10,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 373,
+      "costUsd": 0.00258,
+      "timestamp": "2026-04-19T08:05:22.001Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 10,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 336,
+      "costUsd": 0.000492,
+      "timestamp": "2026-04-19T08:05:22.374Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 10,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 331,
+      "costUsd": 0.00246,
+      "timestamp": "2026-04-19T08:05:22.710Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 50,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 340,
+      "costUsd": 0.000528,
+      "timestamp": "2026-04-19T08:05:23.041Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 50,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 347,
+      "costUsd": 0.00264,
+      "timestamp": "2026-04-19T08:05:23.381Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 50,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 338,
+      "costUsd": 0.000516,
+      "timestamp": "2026-04-19T08:05:23.728Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 50,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 677,
+      "costUsd": 0.00258,
+      "timestamp": "2026-04-19T08:05:24.066Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 50,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 326,
+      "costUsd": 0.000492,
+      "timestamp": "2026-04-19T08:05:24.743Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 50,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 321,
+      "costUsd": 0.00246,
+      "timestamp": "2026-04-19T08:05:25.069Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 100,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 341,
+      "costUsd": 0.000528,
+      "timestamp": "2026-04-19T08:05:25.390Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 100,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 357,
+      "costUsd": 0.00264,
+      "timestamp": "2026-04-19T08:05:25.731Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 100,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 331,
+      "costUsd": 0.000516,
+      "timestamp": "2026-04-19T08:05:26.088Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 100,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 366,
+      "costUsd": 0.00258,
+      "timestamp": "2026-04-19T08:05:26.419Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 100,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 324,
+      "costUsd": 0.000492,
+      "timestamp": "2026-04-19T08:05:26.785Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 100,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 332,
+      "costUsd": 0.00246,
+      "timestamp": "2026-04-19T08:05:27.109Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 400,
+        "taskId": "find_trending_ai",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 336,
+      "costUsd": 0.000528,
+      "timestamp": "2026-04-19T08:05:27.441Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 400,
+        "taskId": "find_trending_ai",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 176,
+      "outputTokens": 0,
+      "latencyMs": 314,
+      "costUsd": 0.00264,
+      "timestamp": "2026-04-19T08:05:27.777Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 400,
+        "taskId": "summarize_repo",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 295,
+      "costUsd": 0.000516,
+      "timestamp": "2026-04-19T08:05:28.091Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 400,
+        "taskId": "summarize_repo",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 172,
+      "outputTokens": 0,
+      "latencyMs": 379,
+      "costUsd": 0.00258,
+      "timestamp": "2026-04-19T08:05:28.386Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 400,
+        "taskId": "search_agent_protocol",
+        "model": "claude-sonnet-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 369,
+      "costUsd": 0.000492,
+      "timestamp": "2026-04-19T08:05:28.765Z"
+    },
+    {
+      "cell": {
+        "protocol": "portal",
+        "toolCount": 400,
+        "taskId": "search_agent_protocol",
+        "model": "claude-opus-4-5",
+        "runIndex": 0
+      },
+      "ok": true,
+      "inputTokens": 164,
+      "outputTokens": 0,
+      "latencyMs": 331,
+      "costUsd": 0.00246,
+      "timestamp": "2026-04-19T08:05:29.134Z"
+    }
+  ]
+}

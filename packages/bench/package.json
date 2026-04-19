@@ -5,6 +5,14 @@
   "description": "Reproducible MCP-vs-Portal benchmark. Source of truth for every number on visitportal.dev.",
   "type": "module",
   "scripts": {
-    "test": "echo \"(bench) no tests yet\" && exit 0"
+    "build": "tsc --noEmit",
+    "test": "vitest run",
+    "bench": "tsx scripts/run.ts",
+    "bench:smoke": "tsx scripts/smoke.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.20.6",
+    "vitest": "^2.1.8"
   }
 }

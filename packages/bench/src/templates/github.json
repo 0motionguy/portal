@@ -1,0 +1,254 @@
+[
+  {
+    "name": "get_issue",
+    "description": "Fetch a single issue by number from a GitHub repository. Returns the full issue body, state, labels, assignees, and comment count.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login (user or organization)" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "issue_number": { "type": "number", "description": "Numeric issue identifier within the repository" }
+      },
+      "required": ["owner", "repo", "issue_number"]
+    }
+  },
+  {
+    "name": "create_issue",
+    "description": "Open a new issue in a GitHub repository. Supports title, body, labels, assignees, and an optional milestone.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login (user or organization)" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "title": { "type": "string", "description": "Short issue title shown in lists and notifications" },
+        "body": { "type": "string", "description": "Full Markdown body of the issue" },
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Labels to attach to the new issue"
+        },
+        "assignees": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Logins of users to assign to the issue"
+        }
+      },
+      "required": ["owner", "repo", "title"]
+    }
+  },
+  {
+    "name": "update_issue",
+    "description": "Modify an existing issue's title, body, labels, assignees, or state. Only provided fields are changed; omit fields you do not want to touch.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "issue_number": { "type": "number", "description": "Numeric issue identifier within the repository" },
+        "title": { "type": "string", "description": "New issue title, if you want to rename it" },
+        "body": { "type": "string", "description": "Replacement Markdown body" },
+        "state": {
+          "type": "string",
+          "enum": ["open", "closed"],
+          "description": "Target state to move the issue to"
+        }
+      },
+      "required": ["owner", "repo", "issue_number"]
+    }
+  },
+  {
+    "name": "add_issue_comment",
+    "description": "Post a comment on an existing GitHub issue or pull request. Body is parsed as GitHub-flavored Markdown.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "issue_number": { "type": "number", "description": "Issue or pull request number to comment on" },
+        "body": { "type": "string", "description": "Markdown body of the comment" }
+      },
+      "required": ["owner", "repo", "issue_number", "body"]
+    }
+  },
+  {
+    "name": "list_issues",
+    "description": "List open or closed issues in a repository with filtering by label, assignee, milestone, and date. Paginates 30 issues at a time by default.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "state": {
+          "type": "string",
+          "enum": ["open", "closed", "all"],
+          "description": "Filter by issue state"
+        },
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Return only issues carrying every label in this list"
+        },
+        "sort": {
+          "type": "string",
+          "enum": ["created", "updated", "comments"],
+          "description": "Field to sort issues by"
+        },
+        "per_page": { "type": "number", "description": "Number of issues per page (1-100)" }
+      },
+      "required": ["owner", "repo"]
+    }
+  },
+  {
+    "name": "get_pull_request",
+    "description": "Fetch a pull request's full metadata including branches, merge status, review decision, and commit head SHA.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "pull_number": { "type": "number", "description": "Pull request number within the repository" }
+      },
+      "required": ["owner", "repo", "pull_number"]
+    }
+  },
+  {
+    "name": "create_pull_request",
+    "description": "Open a new pull request from a head branch to a base branch. Optionally marks it as a draft and enables maintainer edits.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "title": { "type": "string", "description": "Pull request title; keep it short and descriptive" },
+        "head": { "type": "string", "description": "Branch (or fork:branch) containing the changes" },
+        "base": { "type": "string", "description": "Branch the changes should be merged into" },
+        "body": { "type": "string", "description": "Markdown body describing the change" },
+        "draft": { "type": "boolean", "description": "If true, open the PR as a draft" }
+      },
+      "required": ["owner", "repo", "title", "head", "base"]
+    }
+  },
+  {
+    "name": "merge_pull_request",
+    "description": "Merge a pull request using the specified merge method. Fails if the PR is not mergeable or has unresolved required reviews.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "pull_number": { "type": "number", "description": "Pull request number to merge" },
+        "merge_method": {
+          "type": "string",
+          "enum": ["merge", "squash", "rebase"],
+          "description": "Merge strategy to apply to the pull request"
+        },
+        "commit_title": { "type": "string", "description": "Override for the merge commit title" }
+      },
+      "required": ["owner", "repo", "pull_number"]
+    }
+  },
+  {
+    "name": "get_pull_request_files",
+    "description": "List files changed in a pull request with additions, deletions, and patch fragments. Paginates large diffs.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "pull_number": { "type": "number", "description": "Pull request number within the repository" },
+        "per_page": { "type": "number", "description": "Number of file entries per page (1-100)" }
+      },
+      "required": ["owner", "repo", "pull_number"]
+    }
+  },
+  {
+    "name": "list_commits",
+    "description": "List commits on a branch in a repository, most recent first. Supports filtering by author, path, and date window.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "sha": { "type": "string", "description": "Branch name or commit SHA to start listing from" },
+        "path": { "type": "string", "description": "Restrict the list to commits touching this path" },
+        "since": { "type": "string", "description": "Only commits after this ISO 8601 timestamp" }
+      },
+      "required": ["owner", "repo"]
+    }
+  },
+  {
+    "name": "create_branch",
+    "description": "Create a new branch in a repository starting from a base branch or commit. Fails if the target name already exists.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "branch": { "type": "string", "description": "Name of the new branch to create" },
+        "from_branch": { "type": "string", "description": "Existing branch or SHA to branch off from" }
+      },
+      "required": ["owner", "repo", "branch"]
+    }
+  },
+  {
+    "name": "get_file_contents",
+    "description": "Read the contents of a file or list the entries of a directory at a specific ref in a GitHub repository.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "path": { "type": "string", "description": "Path to the file or directory within the repository" },
+        "ref": { "type": "string", "description": "Branch name, tag, or commit SHA (defaults to the default branch)" }
+      },
+      "required": ["owner", "repo", "path"]
+    }
+  },
+  {
+    "name": "create_or_update_file",
+    "description": "Create a new file or update an existing file in a repository via a single commit. Requires the current blob SHA when updating.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string", "description": "Repository owner login" },
+        "repo": { "type": "string", "description": "Repository name without the owner prefix" },
+        "path": { "type": "string", "description": "Path within the repository to write" },
+        "content": { "type": "string", "description": "File contents encoded as a UTF-8 string" },
+        "message": { "type": "string", "description": "Commit message for the change" },
+        "branch": { "type": "string", "description": "Branch to commit onto (defaults to the default branch)" },
+        "sha": { "type": "string", "description": "Current blob SHA of the file; required when updating" }
+      },
+      "required": ["owner", "repo", "path", "content", "message"]
+    }
+  },
+  {
+    "name": "search_code",
+    "description": "Search code across public and accessible GitHub repositories using the full GitHub code search syntax.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Code search query using GitHub qualifiers (repo:, path:, language:)" },
+        "per_page": { "type": "number", "description": "Number of results per page (1-100)" },
+        "page": { "type": "number", "description": "Page number of results to return" }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "search_repositories",
+    "description": "Search for repositories on GitHub using stars, languages, topics, and other qualifiers. Returns name, description, and stats.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Repository search query, e.g. topic:llm language:rust stars:>100" },
+        "sort": {
+          "type": "string",
+          "enum": ["stars", "forks", "updated"],
+          "description": "Sort axis for the result list"
+        },
+        "per_page": { "type": "number", "description": "Number of results per page (1-100)" }
+      },
+      "required": ["query"]
+    }
+  }
+]

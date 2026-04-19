@@ -1,0 +1,185 @@
+[
+  {
+    "name": "web_search",
+    "description": "Run a general web search and return titles, URLs, and extracted snippets. Good for news, documentation, and open-web fact checks.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Search query (max 400 characters, 50 words)" },
+        "count": { "type": "number", "description": "Number of results to return (1-20, default 10)" },
+        "offset": { "type": "number", "description": "Pagination offset into the result set (max 9)" }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "local_search",
+    "description": "Search for nearby businesses and points of interest using a location-aware query such as 'coffee near SoHo'.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Location-aware search query such as 'pizza near Central Park'" },
+        "count": { "type": "number", "description": "Number of local results to return (1-20, default 5)" }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "news_search",
+    "description": "Search recent news articles and return headline, publisher, URL, and a short summary. Freshness is biased toward the last 30 days.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "News search query; combine entities and topics for best precision" },
+        "count": { "type": "number", "description": "Number of articles to return (1-20)" },
+        "freshness": {
+          "type": "string",
+          "enum": ["day", "week", "month"],
+          "description": "Window of recency to restrict results to"
+        }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "vector_search",
+    "description": "Run a semantic similarity search against a vector index. Returns the top matching documents with similarity scores and metadata.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "string", "description": "Name of the vector index to query" },
+        "query": { "type": "string", "description": "Natural language query to embed and compare" },
+        "top_k": { "type": "number", "description": "Number of top matches to return (1-100)" },
+        "filter": {
+          "type": "object",
+          "description": "Optional metadata filter such as { source: 'docs' }"
+        }
+      },
+      "required": ["index", "query"]
+    }
+  },
+  {
+    "name": "search_docs",
+    "description": "Search the product's official documentation for a query and return matched passages with anchors to the source pages.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Documentation search query; accepts natural language" },
+        "product": { "type": "string", "description": "Product slug to restrict the search to (e.g. 'sdk-python')" },
+        "limit": { "type": "number", "description": "Maximum number of passages to return (default 5)" }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "find_similar",
+    "description": "Find content similar to a given URL or document ID using link analysis and semantic embeddings. Returns ranked matches.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "Reference URL to compare other documents against" },
+        "count": { "type": "number", "description": "Number of similar items to return (1-50)" },
+        "exclude_domains": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Domains to exclude from the result set"
+        }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "image_search",
+    "description": "Run an image search and return image URLs, source pages, and thumbnails. Supports safe search and license filters.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Image search query" },
+        "safe_search": {
+          "type": "string",
+          "enum": ["strict", "moderate", "off"],
+          "description": "Level of adult-content filtering"
+        },
+        "license": {
+          "type": "string",
+          "enum": ["any", "public", "commercial"],
+          "description": "License class to restrict results to"
+        }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "video_search",
+    "description": "Search video content across the open web. Returns title, duration, thumbnail, and canonical URL for each video.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Video search query" },
+        "count": { "type": "number", "description": "Number of videos to return (1-20)" },
+        "duration": {
+          "type": "string",
+          "enum": ["short", "medium", "long"],
+          "description": "Filter by approximate video length"
+        }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "autocomplete",
+    "description": "Return search query suggestions for a partial query prefix. Useful for building typeahead UI and disambiguating intent.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "prefix": { "type": "string", "description": "Partial query text to expand into suggestions" },
+        "count": { "type": "number", "description": "Number of suggestions to return (1-10)" }
+      },
+      "required": ["prefix"]
+    }
+  },
+  {
+    "name": "academic_search",
+    "description": "Search academic papers by title, abstract, and author. Returns DOI, year, citation count, and matched fragments.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Academic query; boolean operators and phrase matching are supported" },
+        "year_min": { "type": "number", "description": "Only return papers published in this year or later" },
+        "year_max": { "type": "number", "description": "Only return papers published in this year or earlier" }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "trending_topics",
+    "description": "Return a list of topics currently trending on the web or a given platform, with a short description and example sources.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "region": { "type": "string", "description": "Two-letter country code to scope the trends (e.g. US, DE)" },
+        "category": {
+          "type": "string",
+          "enum": ["news", "tech", "sports", "entertainment"],
+          "description": "Topic category to restrict the trends to"
+        }
+      }
+    }
+  },
+  {
+    "name": "fact_check",
+    "description": "Verify a factual claim against multiple web sources and return supporting and contradicting citations with confidence scores.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "claim": { "type": "string", "description": "Single factual claim to verify, phrased as a short sentence" },
+        "languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "ISO 639-1 language codes to search in (default: en)"
+        }
+      },
+      "required": ["claim"]
+    }
+  }
+]

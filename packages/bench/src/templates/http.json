@@ -1,0 +1,147 @@
+[
+  {
+    "name": "fetch_url",
+    "description": "Fetch a URL from the internet and return its contents, optionally converted from HTML to Markdown for easier reading.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "The fully qualified URL to fetch" },
+        "max_length": { "type": "number", "description": "Maximum number of characters to return in the body" },
+        "start_index": { "type": "number", "description": "Start reading the body from this character index (useful for continuation)" },
+        "raw": { "type": "boolean", "description": "If true, return the raw HTML instead of Markdown" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "post_json",
+    "description": "Send a JSON payload via HTTP POST to a URL and return the response status, headers, and parsed JSON body.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "Target URL that accepts JSON via POST" },
+        "body": {
+          "type": "object",
+          "description": "JSON payload to send as the request body"
+        },
+        "headers": {
+          "type": "object",
+          "description": "Additional headers to include with the request"
+        },
+        "timeout_ms": { "type": "number", "description": "Request timeout in milliseconds (default 30000)" }
+      },
+      "required": ["url", "body"]
+    }
+  },
+  {
+    "name": "download_file",
+    "description": "Download a remote file to a local path. Streams the body to disk and returns the resulting file size and content type.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL of the file to download" },
+        "destination": { "type": "string", "description": "Absolute local path to write the file to" },
+        "overwrite": { "type": "boolean", "description": "If true, replace an existing file at the destination" }
+      },
+      "required": ["url", "destination"]
+    }
+  },
+  {
+    "name": "head_request",
+    "description": "Issue an HTTP HEAD request and return status, headers, and the final URL after redirects. Does not download the body.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL to probe with a HEAD request" },
+        "follow_redirects": { "type": "boolean", "description": "If true, follow redirects up to the default limit" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "request",
+    "description": "Low-level HTTP request with configurable method, headers, body, and timeout. Use for APIs that do not fit the convenience tools.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+          "description": "HTTP method to use for the request"
+        },
+        "url": { "type": "string", "description": "Fully qualified URL for the request" },
+        "body": { "type": "string", "description": "Raw request body as a string" },
+        "headers": {
+          "type": "object",
+          "description": "Request headers as a flat key-value map"
+        }
+      },
+      "required": ["method", "url"]
+    }
+  },
+  {
+    "name": "graphql_query",
+    "description": "Execute a GraphQL query or mutation against an endpoint and return the JSON response, surfacing any errors array.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "endpoint": { "type": "string", "description": "GraphQL HTTP endpoint URL" },
+        "query": { "type": "string", "description": "GraphQL query or mutation text" },
+        "variables": {
+          "type": "object",
+          "description": "Variables object passed alongside the query"
+        }
+      },
+      "required": ["endpoint", "query"]
+    }
+  },
+  {
+    "name": "extract_metadata",
+    "description": "Fetch a URL and extract Open Graph, Twitter, and basic HTML metadata (title, description, image). Useful for link previews.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL of the page whose metadata to extract" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "extract_text",
+    "description": "Fetch a URL and return a readability-extracted plain text version suitable for summarization or embedding.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL of the page whose main content to extract" },
+        "max_length": { "type": "number", "description": "Maximum number of characters to return" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "upload_file",
+    "description": "Upload a local file to a remote URL using multipart/form-data. Supports renaming the field and setting the content type.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "Target URL that accepts a multipart file upload" },
+        "path": { "type": "string", "description": "Absolute local path of the file to upload" },
+        "field": { "type": "string", "description": "Name of the form field to use (default: 'file')" },
+        "content_type": { "type": "string", "description": "Explicit content type to set on the part" }
+      },
+      "required": ["url", "path"]
+    }
+  },
+  {
+    "name": "check_status",
+    "description": "Issue a lightweight GET request to a health URL and report whether the endpoint is reachable and its round-trip latency.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL to probe for reachability" },
+        "timeout_ms": { "type": "number", "description": "Timeout in milliseconds before considering the endpoint down" }
+      },
+      "required": ["url"]
+    }
+  }
+]

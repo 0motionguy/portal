@@ -863,7 +863,7 @@
           <span class="hl">→</span> GET /portal ................................. <span class="str">200 OK  (340ms)</span><br>
           <span class="hl">→</span> loading manifest <span class="key">"star-screener"</span> into context<br>
           <span class="hl">→</span> 3 tools available: <span class="str">top_gainers</span>, <span class="str">search_repos</span>, <span class="str">maintainer_profile</span><br>
-          <span class="hl">→</span> context cost: <span class="key">~420 tokens</span> <span style="color: var(--term-dim);">(vs ~15,000 if preloaded as MCP)</span>
+          <span class="hl">→</span> context cost: <span class="key">172 tokens</span> <span style="color: var(--term-dim);">(measured · vs 13,929 for 100 MCP tools preloaded)</span>
         </div>
 
         <div><span class="prompt"><span class="c">~/fleet</span> <span class="ok">❯</span></span> <span class="cmd">find me the top 3 AI repos trending this week</span></div>
@@ -902,13 +902,13 @@
       </div>
       <div>
         <p class="wide">
-          Every connected MCP server injects its full tool schema into every turn. <strong>10 tools ≈ 1,500 tokens. 100 tools ≈ 15,000. 1,000 tools ≈ 150,000</strong> — three-quarters of Sonnet's 200k window, gone before the user types a word.
+          Every connected MCP server injects its full tool schema into every turn. <strong>Measured on Claude Sonnet 4.5 and Opus 4.5 via Anthropic's count_tokens API: 10 tools = 1,956 tokens. 100 tools = 13,929. 400 tools = 54,677</strong>. Projected at 1,000 tools: ≈137,000 — 69% of Sonnet's 200k window, gone before the user types a word.
         </p>
         <p class="wide">
           Scalekit's controlled benchmark on Claude Sonnet 4 across 75 identical tasks: <strong>MCP cost 4× to 32× more tokens than lightweight alternatives.</strong> A single repo-language check burned 44,026 tokens via MCP vs 1,365 via CLI.
         </p>
         <p class="wide">
-          Real Claude Code user, real session: <strong>82,000 tokens — 41% of the window — consumed by tool definitions on an empty conversation.</strong> And Opus 4.7's new tokenizer uses up to 35% more tokens for the same text.
+          Real Claude Code user, real session: <strong>82,000 tokens — 41% of the window — consumed by tool definitions on an empty conversation.</strong> Our bench (below) measures the same shape of waste across a reproducible 48-cell matrix.
         </p>
       </div>
     </div>
@@ -935,54 +935,67 @@
 
         <div class="ascii-row">
           <span class="label">10 tools</span>
-          <div class="bar"><div class="bar-fill mcp" style="width: 1%"></div></div>
-          <span class="val">1,500<span class="unit">tok</span></span>
+          <div class="bar"><div class="bar-fill mcp" style="width: 1.4%"></div></div>
+          <span class="val">1,956<span class="unit">tok</span></span>
         </div>
         <div class="ascii-row">
           <span class="label"></span>
-          <div class="bar"><div class="bar-fill portal" style="width: 0.14%"></div></div>
-          <span class="val">200<span class="unit">tok</span></span>
+          <div class="bar"><div class="bar-fill portal" style="width: 0.12%"></div></div>
+          <span class="val">172<span class="unit">tok</span></span>
+        </div>
+        <div class="ascii-divider"></div>
+
+        <div class="ascii-row">
+          <span class="label">50 tools</span>
+          <div class="bar"><div class="bar-fill mcp" style="width: 5.4%"></div></div>
+          <span class="val">7,343<span class="unit">tok</span></span>
+        </div>
+        <div class="ascii-row">
+          <span class="label"></span>
+          <div class="bar"><div class="bar-fill portal" style="width: 0.12%"></div></div>
+          <span class="val">172<span class="unit">tok</span></span>
         </div>
         <div class="ascii-divider"></div>
 
         <div class="ascii-row">
           <span class="label">100 tools</span>
-          <div class="bar"><div class="bar-fill mcp" style="width: 10%"></div></div>
-          <span class="val">15,000<span class="unit">tok</span></span>
+          <div class="bar"><div class="bar-fill mcp" style="width: 10.2%"></div></div>
+          <span class="val">13,929<span class="unit">tok</span></span>
         </div>
         <div class="ascii-row">
           <span class="label"></span>
-          <div class="bar"><div class="bar-fill portal" style="width: 0.33%"></div></div>
-          <span class="val">500<span class="unit">tok</span></span>
+          <div class="bar"><div class="bar-fill portal" style="width: 0.12%"></div></div>
+          <span class="val">172<span class="unit">tok</span></span>
         </div>
         <div class="ascii-divider"></div>
 
         <div class="ascii-row">
           <span class="label">400 tools</span>
           <div class="bar"><div class="bar-fill mcp" style="width: 40%"></div></div>
-          <span class="val">60,000<span class="unit">tok</span></span>
+          <span class="val">54,677<span class="unit">tok</span></span>
         </div>
         <div class="ascii-row">
           <span class="label"></span>
-          <div class="bar"><div class="bar-fill portal" style="width: 0.8%"></div></div>
-          <span class="val">1,200<span class="unit">tok</span></span>
+          <div class="bar"><div class="bar-fill portal" style="width: 0.12%"></div></div>
+          <span class="val">172<span class="unit">tok</span></span>
         </div>
         <div class="ascii-divider"></div>
 
         <div class="ascii-row">
-          <span class="label">1,000 tools</span>
+          <span class="label">1,000 tools<span style="color:var(--term-dim);">*</span></span>
           <div class="bar"><div class="bar-fill mcp" style="width: 100%"></div></div>
-          <span class="val">150,000<span class="unit">tok</span></span>
+          <span class="val">~137,000<span class="unit">tok</span></span>
         </div>
         <div class="ascii-row">
           <span class="label"></span>
-          <div class="bar"><div class="bar-fill portal" style="width: 1.3%"></div></div>
-          <span class="val">2,000<span class="unit">tok</span></span>
+          <div class="bar"><div class="bar-fill portal" style="width: 0.12%"></div></div>
+          <span class="val">172<span class="unit">tok</span></span>
         </div>
 
         <div class="term-footer-note">
-          <span class="ptr">▸</span> Bars scaled against 1,000-tool MCP worst case (150k tokens / 75% of Sonnet's 200k window).<br>
-          <span class="ptr">▸</span> Portal loads one manifest at visit time. On session end: nothing persists. The agent's next turn pays zero tax.
+          <span class="ptr">▸</span> Bars scaled against 1,000-tool MCP extrapolation (~137k tokens / 69% of Sonnet's 200k window). *1,000 projected from the linear fit of the four measured counts; all others are real Anthropic count_tokens API measurements, Sonnet 4.5 and Opus 4.5, identical tokenizer. Seed 42.<br>
+          <span class="ptr">▸</span> Portal stays <em>flat at 172 tokens</em> regardless of tool count — the manifest is loaded once on visit, not preloaded into every turn. That is the architectural win.<br>
+          <span class="ptr">▸</span> Every number above is reproducible: <span class="inline-code">pnpm --filter @visitportal/bench bench</span> writes a JSON + Markdown + SVG report you can diff against <span class="inline-code">packages/bench/results/tokens-matrix-v1.json</span>.
         </div>
       </div>
     </div>
@@ -994,13 +1007,13 @@
     <div class="stats">
       <div class="stat">
         <div class="tick"><span>01</span><span class="live-dot">●</span></div>
-        <div class="num">30<span class="italic">×</span></div>
-        <div class="label">less context tax at<br>100-tool scale</div>
+        <div class="num">81<span class="italic">×</span></div>
+        <div class="label">less context tax at<br>100-tool scale (measured)</div>
       </div>
       <div class="stat">
         <div class="tick"><span>02</span><span class="live-dot">●</span></div>
-        <div class="num">~98<span class="italic">%</span></div>
-        <div class="label">monthly token savings<br>on schema overhead, 1k tools</div>
+        <div class="num">99.9<span class="italic">%</span></div>
+        <div class="label">schema-overhead tokens<br>eliminated at 1k tools</div>
       </div>
       <div class="stat">
         <div class="tick"><span>03</span><span class="live-dot">●</span></div>
@@ -1009,7 +1022,7 @@
       </div>
     </div>
     <p class="wide" style="margin-top: 16px; color: var(--dim); font-size: 13px; font-family: 'Geist Mono', monospace;">
-      <span style="color: var(--coral);">▸</span> Cost math: Sonnet 4.6 input ($3/M tokens), 100 turns/day, 30 days. 1,000-tool MCP ≈ $90/user/mo of pure schema overhead. Portal equivalent ≈ $0.30. Scale across an enterprise fleet and the numbers become structural.
+      <span style="color: var(--coral);">▸</span> Cost math: Sonnet 4.5 input ($3/M tokens), 100 turns/day, 30 days. 100-tool MCP burns ~$125/user/mo of pure schema overhead; Portal equivalent ~$1.55. Projected 1,000-tool MCP ≈ $1,230/user/mo. Scale across an enterprise fleet and the numbers become structural.
     </p>
   </section>
 
@@ -1050,8 +1063,8 @@
           </tr>
           <tr>
             <td>Scaling ceiling</td>
-            <td class="mcp-col">~200 tools before context breaks</td>
-            <td class="portal-col">Unbounded — one portal at a time</td>
+            <td class="mcp-col">~1,500 tools saturates Sonnet's 200k window (measured)</td>
+            <td class="portal-col">Unbounded — 172 tokens per visit, flat</td>
           </tr>
           <tr>
             <td>Residue after use</td>

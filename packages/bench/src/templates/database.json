@@ -1,0 +1,176 @@
+[
+  {
+    "name": "query",
+    "description": "Run a read-only SQL query against the connected database and return rows as JSON. Query runs inside a READ ONLY transaction.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "sql": { "type": "string", "description": "SQL statement to execute; must be read-only (SELECT, WITH, EXPLAIN)" },
+        "params": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Positional bind parameters for the query"
+        }
+      },
+      "required": ["sql"]
+    }
+  },
+  {
+    "name": "execute",
+    "description": "Execute a write SQL statement (INSERT, UPDATE, DELETE, DDL) inside a transaction and return the affected row count.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "sql": { "type": "string", "description": "SQL statement to execute; wrapped in a transaction" },
+        "params": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Positional bind parameters for the statement"
+        }
+      },
+      "required": ["sql"]
+    }
+  },
+  {
+    "name": "list_tables",
+    "description": "List the tables in a database schema. Returns name, estimated row count, and table kind (table, view, materialized view).",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "schema": { "type": "string", "description": "Schema name to list (defaults to the search path)" }
+      }
+    }
+  },
+  {
+    "name": "describe_table",
+    "description": "Return column names, data types, nullability, defaults, and primary-key membership for a single table.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name (schema.table)" }
+      },
+      "required": ["table"]
+    }
+  },
+  {
+    "name": "list_indexes",
+    "description": "List all indexes on a table including uniqueness, column order, and index method (btree, hash, gin).",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name to inspect" }
+      },
+      "required": ["table"]
+    }
+  },
+  {
+    "name": "list_schemas",
+    "description": "Return every schema visible to the current role along with its owner and a short comment when present.",
+    "input_schema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "insert_row",
+    "description": "Insert a single row into a table using a JSON object of column names to values. Returns the inserted row including generated columns.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name to insert into" },
+        "row": {
+          "type": "object",
+          "description": "Column name to value map for the new row"
+        },
+        "returning": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Columns to return from the inserted row"
+        }
+      },
+      "required": ["table", "row"]
+    }
+  },
+  {
+    "name": "update_rows",
+    "description": "Update rows in a table matching a WHERE clause. The patch is applied to every matching row; returns the number of affected rows.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name to update" },
+        "where": { "type": "string", "description": "SQL WHERE clause (without the WHERE keyword)" },
+        "patch": {
+          "type": "object",
+          "description": "Column name to new value map to apply"
+        }
+      },
+      "required": ["table", "where", "patch"]
+    }
+  },
+  {
+    "name": "delete_rows",
+    "description": "Delete rows from a table matching a WHERE clause. Returns the number of deleted rows. Wrapped in a transaction.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name to delete from" },
+        "where": { "type": "string", "description": "SQL WHERE clause (without the WHERE keyword)" }
+      },
+      "required": ["table", "where"]
+    }
+  },
+  {
+    "name": "explain_query",
+    "description": "Return the query planner's execution plan for a SQL statement, optionally with ANALYZE to include actual timings.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "sql": { "type": "string", "description": "SQL statement to explain" },
+        "analyze": { "type": "boolean", "description": "If true, run EXPLAIN ANALYZE for real timings" }
+      },
+      "required": ["sql"]
+    }
+  },
+  {
+    "name": "count_rows",
+    "description": "Return an approximate row count for a table using the planner's statistics; falls back to COUNT(*) only when asked.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name" },
+        "exact": { "type": "boolean", "description": "If true, run COUNT(*) for an exact row count" }
+      },
+      "required": ["table"]
+    }
+  },
+  {
+    "name": "create_index",
+    "description": "Create an index on a table and one or more columns. Supports optional uniqueness and concurrent builds to avoid locking writes.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name to index" },
+        "columns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ordered list of column names for the index"
+        },
+        "unique": { "type": "boolean", "description": "If true, create a UNIQUE index" },
+        "concurrent": { "type": "boolean", "description": "If true, build the index without blocking writes" }
+      },
+      "required": ["table", "columns"]
+    }
+  },
+  {
+    "name": "sample_rows",
+    "description": "Return a small random sample of rows from a table for quick exploration. Uses TABLESAMPLE where supported.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "table": { "type": "string", "description": "Fully qualified table name to sample" },
+        "limit": { "type": "number", "description": "Maximum number of rows to return (1-1000)" }
+      },
+      "required": ["table"]
+    }
+  }
+]
