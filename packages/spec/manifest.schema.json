@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://visitportal.dev/schema/manifest-v0.1.0.json",
+  "title": "Portal manifest (v0.1.0)",
+  "description": "The JSON document returned from GET /portal. Describes the service, its tools, and optional auth/pricing metadata.",
+  "type": "object",
+  "required": ["portal_version", "name", "brief", "tools", "call_endpoint"],
+  "additionalProperties": false,
+  "properties": {
+    "portal_version": {
+      "type": "string",
+      "description": "Semver-like version string. v0.1 accepts exactly '0.1'.",
+      "pattern": "^0\\.1(\\.[0-9]+)?$"
+    },
+    "name": {
+      "type": "string",
+      "description": "Short human-readable name.",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "brief": {
+      "type": "string",
+      "description": "Natural-language description for the visiting LLM. Should answer 'what can I do here?' in a sentence or two.",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "tools": {
+      "type": "array",
+      "description": "List of tools callable at call_endpoint. Must contain at least one tool.",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/tool" }
+    },
+    "call_endpoint": {
+      "type": "string",
+      "description": "Absolute HTTPS URL that accepts POST /portal/call-style requests.",
+      "format": "uri",
+      "pattern": "^https?://"
+    },
+    "auth": {
+      "type": "string",
+      "enum": ["none", "api_key", "erc8004"],
+      "default": "none",
+      "description": "Auth model. 'erc8004' is a documented extension (PE-001); providers may advertise it but the base visitor SDK is not required to implement it."
+    },
+    "pricing": {
+      "type": "object",
+      "required": ["model"],
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "type": "string",
+          "enum": ["free", "x402"],
+          "description": "'x402' is a documented extension (PE-002) for per-call micropayments."
+        },
+        "rate": {
+          "type": "string",
+          "description": "Free-form rate description, e.g. '$0.001/call'. Required iff model != 'free'."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "model": { "const": "x402" } } },
+          "then": { "required": ["rate"] }
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "tool": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique within this manifest. Lowercase, underscores allowed.",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "params": {
+          "type": "object",
+          "description": "Sugar form. Each entry is { type, required?, description? }. Compiles internally to JSON Schema.",
+          "additionalProperties": { "$ref": "#/definitions/paramEntry" }
+        },
+        "paramsSchema": {
+          "type": "object",
+          "description": "Escape hatch: a JSON Schema draft-07 object. Use when 'params' sugar isn't expressive enough. Mutually exclusive with 'params'."
+        }
+      },
+      "not": {
+        "required": ["params", "paramsSchema"]
+      }
+    },
+    "paramEntry": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "object", "array"]
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 300
+        }
+      }
+    }
+  }
+}

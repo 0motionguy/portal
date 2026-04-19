@@ -1,12 +1,21 @@
 {
   "name": "@visitportal/spec",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Portal spec artifacts — JSON Schema + conformance test vectors.",
+  "description": "Portal spec artifacts — JSON Schema + conformance test vectors + runner.",
   "type": "module",
-  "main": "./index.js",
+  "exports": {
+    "./schema": "./manifest.schema.json",
+    "./vectors": "./conformance/vectors.json",
+    "./runner": "./conformance/runner.ts"
+  },
   "files": ["manifest.schema.json", "conformance/"],
   "scripts": {
-    "test": "echo \"(spec) no tests yet\" && exit 0"
+    "test": "tsx conformance/self-test.ts",
+    "mock": "tsx conformance/mock-server.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   }
 }

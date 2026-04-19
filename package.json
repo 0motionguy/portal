@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Portal — the drop-in visit layer for LLM clients. Monorepo root.",
+  "type": "module",
   "packageManager": "pnpm@10.23.0",
   "engines": {
     "node": ">=22.0.0",
@@ -16,6 +17,7 @@
     "conformance": "tsx scripts/conformance.ts"
   },
   "devDependencies": {
+    "@visitportal/spec": "workspace:*",
     "tsx": "^4.20.6",
     "typescript": "^5.7.3"
   }

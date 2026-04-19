@@ -1,0 +1,337 @@
+{
+  "$comment": "Portal v0.1.0 conformance vectors. Every provider MUST pass every vector; every visitor SDK MUST handle every response shape. Categories: manifest_valid, manifest_invalid, call_pair. See docs/spec-v0.1.0.md §9.",
+  "spec_version": "0.1.0",
+  "generated": "2026-04-19",
+  "manifest_valid": [
+    {
+      "id": "MV-01-minimal",
+      "note": "Smallest legal manifest: one tool with no params.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Hello",
+        "brief": "Say hello.",
+        "tools": [{ "name": "hello" }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MV-02-sugar-params",
+      "note": "Tool with sugar-form params, required + optional mix.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Star Screener",
+        "brief": "Trending GitHub repo screener.",
+        "tools": [
+          {
+            "name": "top_gainers",
+            "description": "Top N by weekly star delta.",
+            "params": {
+              "limit": { "type": "number", "required": true, "description": "1-50" },
+              "language": { "type": "string" }
+            }
+          }
+        ],
+        "call_endpoint": "https://starscreener.xyz/portal/call"
+      }
+    },
+    {
+      "id": "MV-03-multi-tool",
+      "note": "Multiple tools in one manifest.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Star Screener",
+        "brief": "Three tools.",
+        "tools": [
+          { "name": "top_gainers", "params": { "limit": { "type": "number" } } },
+          { "name": "search_repos", "params": { "query": { "type": "string", "required": true } } },
+          { "name": "maintainer_profile", "params": { "handle": { "type": "string", "required": true } } }
+        ],
+        "call_endpoint": "https://starscreener.xyz/portal/call"
+      }
+    },
+    {
+      "id": "MV-04-paramsSchema",
+      "note": "Tool using JSON Schema escape hatch.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Search",
+        "brief": "Escape-hatch params.",
+        "tools": [
+          {
+            "name": "search",
+            "paramsSchema": {
+              "type": "object",
+              "required": ["query"],
+              "properties": {
+                "query": { "type": "string", "minLength": 1 },
+                "sort": { "enum": ["stars", "updated"] }
+              }
+            }
+          }
+        ],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MV-05-api-key-auth",
+      "note": "auth: api_key.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Private API",
+        "brief": "Requires API key.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "https://api.example.com/portal/call",
+        "auth": "api_key"
+      }
+    },
+    {
+      "id": "MV-06-erc8004-auth",
+      "note": "auth: erc8004 (PE-001 extension, still valid at base spec).",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Verified Service",
+        "brief": "Requires verified agent identity.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "https://verified.example.com/portal/call",
+        "auth": "erc8004"
+      }
+    },
+    {
+      "id": "MV-07-free-pricing",
+      "note": "Explicit free pricing.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Free Service",
+        "brief": "No pricing.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "https://example.com/portal/call",
+        "pricing": { "model": "free" }
+      }
+    },
+    {
+      "id": "MV-08-x402-pricing",
+      "note": "Paid tier with rate (PE-002 extension).",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Paid Service",
+        "brief": "Pay per call.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "https://example.com/portal/call",
+        "pricing": { "model": "x402", "rate": "$0.001/call" }
+      }
+    },
+    {
+      "id": "MV-09-patch-version",
+      "note": "portal_version accepts 0.1.x patch form.",
+      "manifest": {
+        "portal_version": "0.1.3",
+        "name": "Patched",
+        "brief": "Minor patch version.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MV-10-empty-params",
+      "note": "Tool with empty params object is valid (accepts any object).",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Echo",
+        "brief": "Takes any object.",
+        "tools": [{ "name": "echo", "params": {} }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    }
+  ],
+  "manifest_invalid": [
+    {
+      "id": "MI-01-missing-name",
+      "violates": "required field 'name'",
+      "manifest": {
+        "portal_version": "0.1",
+        "brief": "Missing name.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-02-wrong-version",
+      "violates": "portal_version must match ^0\\.1(\\.[0-9]+)?$",
+      "manifest": {
+        "portal_version": "0.2",
+        "name": "Future",
+        "brief": "Wrong version.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-03-empty-tools",
+      "violates": "tools must contain at least one item",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Empty",
+        "brief": "No tools.",
+        "tools": [],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-04-bad-tool-name",
+      "violates": "tool name must match ^[a-z][a-z0-9_]*$",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Bad",
+        "brief": "Tool name has hyphen.",
+        "tools": [{ "name": "top-gainers" }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-05-unknown-top-level",
+      "violates": "unknown top-level field 'extra'",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Bloated",
+        "brief": "Has an unknown field.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "https://example.com/portal/call",
+        "extra": "not allowed"
+      }
+    },
+    {
+      "id": "MI-06-params-and-schema",
+      "violates": "tool cannot declare both 'params' and 'paramsSchema'",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Conflict",
+        "brief": "Both params forms.",
+        "tools": [
+          {
+            "name": "x",
+            "params": { "a": { "type": "string" } },
+            "paramsSchema": { "type": "object" }
+          }
+        ],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-07-bad-param-type",
+      "violates": "param type must be in {string,number,boolean,object,array}",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "BadParam",
+        "brief": "Unknown type.",
+        "tools": [{ "name": "x", "params": { "a": { "type": "integer" } } }],
+        "call_endpoint": "https://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-08-bad-auth",
+      "violates": "auth must be in {none, api_key, erc8004}",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "BadAuth",
+        "brief": "Bogus auth.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "https://example.com/portal/call",
+        "auth": "oauth2"
+      }
+    },
+    {
+      "id": "MI-09-x402-missing-rate",
+      "violates": "pricing.rate required when pricing.model != free",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Paid",
+        "brief": "Missing rate.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "https://example.com/portal/call",
+        "pricing": { "model": "x402" }
+      }
+    },
+    {
+      "id": "MI-10-non-https-endpoint",
+      "violates": "call_endpoint must be an http(s) URL",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "WrongScheme",
+        "brief": "ftp is not allowed.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "ftp://example.com/portal/call"
+      }
+    }
+  ],
+  "call_pair": [
+    {
+      "id": "CP-01-success-simple",
+      "kind": "success",
+      "request": { "tool": "hello", "params": {} },
+      "response": { "ok": true, "result": "hi" }
+    },
+    {
+      "id": "CP-02-success-object-result",
+      "kind": "success",
+      "request": { "tool": "top_gainers", "params": { "limit": 2 } },
+      "response": {
+        "ok": true,
+        "result": {
+          "items": [
+            { "repo": "agnt-network/portal", "delta": 1240 },
+            { "repo": "anthropics/claude-code", "delta": 890 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "CP-03-success-null-result",
+      "kind": "success",
+      "note": "result may be any JSON value including null.",
+      "request": { "tool": "noop", "params": {} },
+      "response": { "ok": true, "result": null }
+    },
+    {
+      "id": "CP-04-success-array-result",
+      "kind": "success",
+      "request": { "tool": "list", "params": {} },
+      "response": { "ok": true, "result": [1, 2, 3] }
+    },
+    {
+      "id": "CP-05-success-boolean-result",
+      "kind": "success",
+      "request": { "tool": "ping", "params": {} },
+      "response": { "ok": true, "result": true }
+    },
+    {
+      "id": "CP-06-error-not-found",
+      "kind": "error",
+      "request": { "tool": "nope", "params": {} },
+      "response": { "ok": false, "error": "tool 'nope' not in manifest", "code": "NOT_FOUND" }
+    },
+    {
+      "id": "CP-07-error-invalid-params",
+      "kind": "error",
+      "request": { "tool": "top_gainers", "params": { "limit": "ten" } },
+      "response": { "ok": false, "error": "param 'limit' must be a number", "code": "INVALID_PARAMS" }
+    },
+    {
+      "id": "CP-08-error-unauthorized",
+      "kind": "error",
+      "request": { "tool": "ping", "params": {} },
+      "response": { "ok": false, "error": "missing api key", "code": "UNAUTHORIZED" }
+    },
+    {
+      "id": "CP-09-error-rate-limited",
+      "kind": "error",
+      "request": { "tool": "ping", "params": {} },
+      "response": { "ok": false, "error": "too many requests; retry after 30s", "code": "RATE_LIMITED" }
+    },
+    {
+      "id": "CP-10-error-internal",
+      "kind": "error",
+      "request": { "tool": "ping", "params": {} },
+      "response": { "ok": false, "error": "database connection lost", "code": "INTERNAL" }
+    }
+  ]
+}
