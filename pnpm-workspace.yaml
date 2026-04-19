@@ -4,5 +4,6 @@ packages:
   - "packages/provider/ts"
   - "packages/mcp-adapter"
   - "packages/bench"
+  - "packages/cli"
   - "reference/star-screener"
   - "web"

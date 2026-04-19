@@ -30,6 +30,19 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.17)
 
+  packages/cli:
+    dependencies:
+      '@visitportal/visit':
+        specifier: workspace:*
+        version: link:../visit/ts
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.17)
+
   packages/mcp-adapter: {}
 
   packages/provider/ts: {}

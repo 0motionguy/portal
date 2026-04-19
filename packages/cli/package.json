@@ -1,0 +1,23 @@
+{
+  "name": "@visitportal/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "visit-portal CLI — drive-by tool invocation from any shell.",
+  "type": "module",
+  "bin": {
+    "visit-portal": "./src/cli.ts"
+  },
+  "main": "./src/cli.ts",
+  "files": ["src", "README.md"],
+  "scripts": {
+    "build": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@visitportal/visit": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "vitest": "^2.1.8"
+  }
+}

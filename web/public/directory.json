@@ -1,0 +1,17 @@
+{
+  "portal_directory_version": "0.1",
+  "generated": "2026-04-19",
+  "note": "Stub directory — v0.1. Grows as more Portals publish. Open a PR against web/public/directory.json to add yours.",
+  "portals": [
+    {
+      "name": "Star Screener",
+      "brief": "I screen trending GitHub repos. Ask for top gainers by weekly star delta, keyword/language matches, or a maintainer profile.",
+      "url": "http://localhost:3075/portal",
+      "url_note": "Local dev only — replace with public URL once deployed (planned: https://starscreener.xyz/portal).",
+      "tools": ["top_gainers", "search_repos", "maintainer_profile"],
+      "added": "2026-04-19",
+      "source": "https://github.com/visitportal/portal/tree/main/reference/star-screener",
+      "source_note": "TODO: repository not yet pushed to GitHub — update this URL after the public push."
+    }
+  ]
+}

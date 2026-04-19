@@ -1,0 +1,9 @@
+{
+  "name": "Portal",
+  "short_name": "Portal",
+  "description": "The drop-in visit layer for LLM clients.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#EEE7D5",
+  "theme_color": "#DA7756"
+}

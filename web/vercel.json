@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/install",
+      "headers": [
+        { "key": "content-type", "value": "text/plain; charset=utf-8" },
+        { "key": "cache-control", "value": "public, max-age=60, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/install.ps1",
+      "headers": [
+        { "key": "content-type", "value": "text/plain; charset=utf-8" },
+        { "key": "cache-control", "value": "public, max-age=60, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/directory.json",
+      "headers": [
+        { "key": "content-type", "value": "application/json; charset=utf-8" },
+        { "key": "cache-control", "value": "public, max-age=300, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "content-type", "value": "application/manifest+json" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "cache-control", "value": "public, max-age=300, must-revalidate" },
+        { "key": "x-content-type-options", "value": "nosniff" }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,8 @@
   "description": "visitportal.dev — one-pager + install script + Portal directory.",
   "type": "module",
   "scripts": {
-    "build": "echo \"(web) static build lands Phase 6\" && exit 0",
+    "build": "echo \"(web) static site — no build step; public/ is the output\" && exit 0",
+    "preview": "cd public && npx --yes serve -l 5173",
     "test": "echo \"(web) no tests yet\" && exit 0"
   }
 }

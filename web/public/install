@@ -1,0 +1,133 @@
+#!/usr/bin/env sh
+# visit-portal installer — POSIX sh. macOS · Linux · Git Bash on Windows.
+# No sudo. No silent shell-rc edits. No silent network calls. Confirms before acting.
+# Non-TTY stdin (e.g. curl|sh) requires VISITPORTAL_ASSUME_YES=1.
+# TODO(hackathon): set REPO_URL to the real GitHub URL after the repo is pushed.
+# TODO(hackathon): pin REPO_REF to v0.1.0 tag + verify a release tarball SHA256.
+
+set -eu
+
+VERSION="0.1.0"
+REPO_URL="https://github.com/visitportal/portal"    # TODO: real URL post-push
+REPO_REF="main"                                      # TODO: pin to tag v0.1.0
+INSTALL_DIR="${VISITPORTAL_HOME:-$HOME/.visitportal}"
+BIN_DIR="$INSTALL_DIR/bin"
+SHIM="$BIN_DIR/visit-portal"
+
+say()  { printf '%s\n' "$*"; }
+die()  { printf 'error: %s\n' "$*" >&2; exit 1; }
+have() { command -v "$1" >/dev/null 2>&1; }
+run()  { say "  \$ $*"; "$@"; }
+
+MODE="install"; FROM_LOCAL=""; DRY_RUN=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --uninstall)  MODE="uninstall"; shift ;;
+    --from-local) FROM_LOCAL="${2:-}"; [ -n "$FROM_LOCAL" ] || die "--from-local needs a path"; shift 2 ;;
+    --dry-run)    DRY_RUN=1; shift ;;
+    -h|--help)    MODE="help"; shift ;;
+    *)            die "unknown argument: $1" ;;
+  esac
+done
+
+# Refuse root / sudo — installer only ever writes to $HOME.
+if [ "${EUID:-$(id -u 2>/dev/null || echo 0)}" = "0" ]; then
+  die "do not run this as root / with sudo. Installer writes only to \$HOME."
+fi
+
+if [ "$MODE" = "help" ]; then
+  cat <<EOF
+visit-portal installer v$VERSION
+USAGE:
+  curl -fsSL visitportal.dev/install | sh   (requires VISITPORTAL_ASSUME_YES=1)
+  sh install [--from-local <path>] [--uninstall] [--dry-run]
+ENV:
+  VISITPORTAL_HOME        override install dir (default ~/.visitportal)
+  VISITPORTAL_ASSUME_YES  set to 1 to skip y/N prompt (required for non-TTY stdin)
+EOF
+  exit 0
+fi
+
+# Plan — print before doing anything.
+say ""
+say "visit-portal installer v$VERSION"
+say "  install dir:  $INSTALL_DIR"
+say "  shim target:  $SHIM"
+if   [ "$MODE" = "uninstall" ];   then say "  mode:         UNINSTALL (will remove $INSTALL_DIR)"
+elif [ -n "$FROM_LOCAL" ];        then say "  mode:         install from local path: $FROM_LOCAL"
+else                                   say "  mode:         clone from $REPO_URL @ $REPO_REF"
+fi
+[ "$DRY_RUN" -eq 1 ] && say "  dry-run:      yes (no changes will be written)"
+say ""
+
+# Confirm. Non-TTY requires env opt-in.
+if [ "${VISITPORTAL_ASSUME_YES:-0}" = "1" ]; then
+  say "VISITPORTAL_ASSUME_YES=1 set; proceeding without prompt."
+elif [ ! -t 0 ]; then
+  die "stdin is not a TTY (piped install). Set VISITPORTAL_ASSUME_YES=1 to proceed."
+else
+  printf "continue? [y/N] "; read -r ans
+  case "$ans" in [yY]|[yY][eE][sS]) : ;; *) die "aborted by user." ;; esac
+fi
+
+# Uninstall path.
+if [ "$MODE" = "uninstall" ]; then
+  [ -d "$INSTALL_DIR" ] || { say "nothing to remove at $INSTALL_DIR"; exit 0; }
+  [ "$DRY_RUN" -eq 1 ] && { say "would run: rm -rf $INSTALL_DIR"; exit 0; }
+  run rm -rf "$INSTALL_DIR"
+  say "removed $INSTALL_DIR"
+  say "reminder: if you added $BIN_DIR to your PATH manually, remove that line too."
+  exit 0
+fi
+
+# Preflight deps.
+have git  || die "git is required but not installed."
+have pnpm || die "pnpm is required (npm install -g pnpm@10)."
+have node || die "node >=22 is required."
+
+[ "$DRY_RUN" -eq 1 ] && { say "dry-run: would create $INSTALL_DIR and write shim to $SHIM"; exit 0; }
+
+run mkdir -p "$BIN_DIR"
+
+if [ -n "$FROM_LOCAL" ]; then
+  [ -d "$FROM_LOCAL/packages/cli" ] || die "no packages/cli at $FROM_LOCAL — not a Portal checkout."
+  say "copying $FROM_LOCAL -> $INSTALL_DIR/repo (excluding node_modules)"
+  run mkdir -p "$INSTALL_DIR/repo"
+  ( cd "$FROM_LOCAL" && tar --exclude='node_modules' --exclude='.git' -cf - . ) \
+    | ( cd "$INSTALL_DIR/repo" && tar -xf - )
+else
+  say "will fetch: $REPO_URL (ref: $REPO_REF)"
+  if [ -d "$INSTALL_DIR/repo/.git" ]; then
+    say "existing checkout found; updating."
+    run git -C "$INSTALL_DIR/repo" fetch --depth 1 origin "$REPO_REF"
+    run git -C "$INSTALL_DIR/repo" checkout -q "$REPO_REF"
+    run git -C "$INSTALL_DIR/repo" reset --hard "origin/$REPO_REF"
+  else
+    run git clone --depth 1 --branch "$REPO_REF" "$REPO_URL" "$INSTALL_DIR/repo"
+  fi
+fi
+
+say "installing dependencies (pnpm install --frozen-lockfile || pnpm install)"
+( cd "$INSTALL_DIR/repo" && pnpm install --frozen-lockfile >/dev/null 2>&1 \
+    || pnpm install >/dev/null )
+
+cat > "$SHIM" <<'SHIM_EOF'
+#!/usr/bin/env sh
+# visit-portal shim — points at the CLI inside $VISITPORTAL_HOME/repo.
+set -eu
+REPO="${VISITPORTAL_HOME:-$HOME/.visitportal}/repo"
+[ -d "$REPO" ] || { echo "visit-portal: repo missing at $REPO; reinstall." >&2; exit 1; }
+exec pnpm --silent --dir "$REPO" --filter @visitportal/cli exec tsx src/cli.ts "$@"
+SHIM_EOF
+chmod +x "$SHIM"
+
+say ""
+say "installed."
+say "  cli:     $SHIM"
+say "  source:  $INSTALL_DIR/repo"
+say ""
+say "add this to your shell rc to put visit-portal on PATH:"
+say "    export PATH=\"\$PATH:$BIN_DIR\""
+say ""
+say "try it:     $SHIM --help"
+say "uninstall:  sh install --uninstall"
