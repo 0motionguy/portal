@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../src/styles.css";
+import { ExtensionNoiseSilencer } from "@/components/ExtensionNoiseSilencer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://visitportal.dev"),
@@ -33,7 +34,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <ExtensionNoiseSilencer />
+        {children}
+      </body>
     </html>
   );
 }
