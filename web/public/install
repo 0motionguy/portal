@@ -8,7 +8,7 @@
 set -eu
 
 VERSION="0.1.0"
-REPO_URL="https://github.com/visitportal/portal"    # TODO: real URL post-push
+REPO_URL="https://github.com/0motionguy/portal"    # TODO: real URL post-push
 REPO_REF="main"                                      # TODO: pin to tag v0.1.0
 INSTALL_DIR="${VISITPORTAL_HOME:-$HOME/.visitportal}"
 BIN_DIR="$INSTALL_DIR/bin"

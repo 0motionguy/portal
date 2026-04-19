@@ -112,7 +112,7 @@ app.post("/portal/call", async (c) => {
 
         <h2 id="spec-glance">Spec — <em>at a glance</em></h2>
         <p>
-          Full text: <a href="https://github.com/mbasildolger/portal/blob/main/docs/spec-v0.1.0.md">
+          Full text: <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.0.md">
             docs/spec-v0.1.0.md
           </a> (public domain). One page of core + three appendices.
         </p>

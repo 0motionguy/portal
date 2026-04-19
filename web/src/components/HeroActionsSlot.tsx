@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // under .hero-actions__* (BEM).
 
 const INSTALL_CMD = "curl -fsSL visitportal.dev/install | sh";
-const GITHUB_URL = "https://github.com/visitportal/portal";
+const GITHUB_URL = "https://github.com/0motionguy/portal";
 
 export default function HeroActionsSlot() {
   const [copied, setCopied] = useState(false);

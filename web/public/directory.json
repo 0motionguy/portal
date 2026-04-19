@@ -10,7 +10,7 @@
       "url_note": "Local dev only — replace with public URL once deployed (planned: https://starscreener.xyz/portal).",
       "tools": ["top_gainers", "search_repos", "maintainer_profile"],
       "added": "2026-04-19",
-      "source": "https://github.com/visitportal/portal/tree/main/reference/star-screener",
+      "source": "https://github.com/0motionguy/portal/tree/main/reference/star-screener",
       "source_note": "TODO: repository not yet pushed to GitHub — update this URL after the public push."
     }
   ]

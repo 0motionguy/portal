@@ -15,7 +15,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $Version    = '0.1.0'
-$RepoUrl    = 'https://github.com/visitportal/portal'     # TODO: real URL post-push
+$RepoUrl    = 'https://github.com/0motionguy/portal'     # TODO: real URL post-push
 $RepoRef    = 'main'                                       # TODO: pin to tag v0.1.0
 $InstallDir = if ($env:VISITPORTAL_HOME) { $env:VISITPORTAL_HOME } else { Join-Path $env:USERPROFILE '.visitportal' }
 $BinDir     = Join-Path $InstallDir 'bin'

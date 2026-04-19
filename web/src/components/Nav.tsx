@@ -20,7 +20,7 @@ export function Nav({ active }: { active?: "home" | "docs" | "bench" | "director
             directory
           </Link>
           <a
-            href="https://github.com/mbasildolger/portal"
+            href="https://github.com/0motionguy/portal"
             className="ext"
             target="_blank"
             rel="noreferrer"

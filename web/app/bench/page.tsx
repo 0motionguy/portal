@@ -40,7 +40,7 @@ export default function BenchPage() {
           Started{" "}
           <code>{matrix.startedAt}</code>, finished <code>{matrix.finishedAt}</code>.{" "}
           Full raw JSON:{" "}
-          <a href="https://github.com/mbasildolger/portal/blob/main/packages/bench/results/tokens-matrix-v1.json">
+          <a href="https://github.com/0motionguy/portal/blob/main/packages/bench/results/tokens-matrix-v1.json">
             packages/bench/results/tokens-matrix-v1.json
           </a>
           .
@@ -123,7 +123,7 @@ BENCH_MODE=count_tokens_only pnpm --filter @visitportal/bench bench
           exactly this shape. Real MCP sometimes emits deeply nested JSON Schema
           (<code>$ref</code>, <code>oneOf</code>, <code>allOf</code>) which we skip — so
           our MCP number is a <strong>conservative lower bound</strong>. Full disclosure in{" "}
-          <a href="https://github.com/mbasildolger/portal/blob/main/packages/bench/METHODOLOGY.md">
+          <a href="https://github.com/0motionguy/portal/blob/main/packages/bench/METHODOLOGY.md">
             packages/bench/METHODOLOGY.md
           </a>
           .
