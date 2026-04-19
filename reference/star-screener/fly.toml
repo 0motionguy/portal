@@ -1,0 +1,36 @@
+# Fly.io app config for the reference Portal (star-screener).
+# Deploy from the monorepo root:
+#   flyctl deploy --config reference/star-screener/fly.toml --dockerfile reference/star-screener/Dockerfile
+
+app = "star-screener"
+primary_region = "iad"
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[build]
+  # Dockerfile path is resolved relative to the deploy context (monorepo root when
+  # invoked as documented in the README). Override with `--dockerfile` if needed.
+  dockerfile = "reference/star-screener/Dockerfile"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/healthz"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

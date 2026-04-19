@@ -1,0 +1,33 @@
+{
+  "portal_version": "0.1",
+  "name": "Star Screener",
+  "brief": "I screen trending GitHub repos. Ask for top gainers by weekly star delta, keyword/language matches, or a maintainer profile.",
+  "tools": [
+    {
+      "name": "top_gainers",
+      "description": "Top N repos by weekly star delta.",
+      "params": {
+        "limit": { "type": "number", "required": true, "description": "1-50" },
+        "language": { "type": "string", "description": "filter by primary language, optional" }
+      }
+    },
+    {
+      "name": "search_repos",
+      "description": "Full-text search across trending repos.",
+      "params": {
+        "query": { "type": "string", "required": true },
+        "limit": { "type": "number" }
+      }
+    },
+    {
+      "name": "maintainer_profile",
+      "description": "Profile for a handle (login).",
+      "params": {
+        "handle": { "type": "string", "required": true }
+      }
+    }
+  ],
+  "call_endpoint": "https://starscreener.xyz/portal/call",
+  "auth": "none",
+  "pricing": { "model": "free" }
+}

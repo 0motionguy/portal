@@ -1,0 +1,272 @@
+[
+  {
+    "name_with_owner": "anthropics/claude-code",
+    "stars": 19840,
+    "delta_week": 1620,
+    "language": "TypeScript",
+    "description": "Claude Code CLI — Anthropic's official agentic coding tool.",
+    "topics": ["cli", "agents", "anthropic", "coding"],
+    "maintainer": "anthropic-ops"
+  },
+  {
+    "name_with_owner": "modelcontextprotocol/servers",
+    "stars": 23410,
+    "delta_week": 1180,
+    "language": "TypeScript",
+    "description": "Reference MCP servers for the Model Context Protocol.",
+    "topics": ["mcp", "llm", "protocol", "reference"],
+    "maintainer": "anthropic-ops"
+  },
+  {
+    "name_with_owner": "modelcontextprotocol/typescript-sdk",
+    "stars": 8215,
+    "delta_week": 540,
+    "language": "TypeScript",
+    "description": "Official TypeScript SDK for the Model Context Protocol.",
+    "topics": ["mcp", "sdk", "typescript"],
+    "maintainer": "anthropic-ops"
+  },
+  {
+    "name_with_owner": "vercel/next.js",
+    "stars": 128900,
+    "delta_week": 710,
+    "language": "TypeScript",
+    "description": "The React framework for the web.",
+    "topics": ["react", "framework", "ssr", "web"],
+    "maintainer": "leerob"
+  },
+  {
+    "name_with_owner": "vercel/ai",
+    "stars": 11840,
+    "delta_week": 430,
+    "language": "TypeScript",
+    "description": "Build AI-powered applications with React, Svelte, Vue, Solid.",
+    "topics": ["ai", "llm", "react", "sdk"],
+    "maintainer": "leerob"
+  },
+  {
+    "name_with_owner": "vercel/turborepo",
+    "stars": 26120,
+    "delta_week": 180,
+    "language": "Rust",
+    "description": "Incremental bundler and build system optimized for JavaScript.",
+    "topics": ["monorepo", "rust", "build-tools"],
+    "maintainer": "leerob"
+  },
+  {
+    "name_with_owner": "shadcn-ui/ui",
+    "stars": 79220,
+    "delta_week": 820,
+    "language": "TypeScript",
+    "description": "Beautifully designed components built with Radix UI and Tailwind.",
+    "topics": ["ui", "react", "tailwind", "components"],
+    "maintainer": "shadcn"
+  },
+  {
+    "name_with_owner": "shadcn-ui/taxonomy",
+    "stars": 18420,
+    "delta_week": 90,
+    "language": "TypeScript",
+    "description": "An open-source application built using the new router, server components.",
+    "topics": ["nextjs", "react", "app-router"],
+    "maintainer": "shadcn"
+  },
+  {
+    "name_with_owner": "honojs/hono",
+    "stars": 22180,
+    "delta_week": 390,
+    "language": "TypeScript",
+    "description": "Ultrafast web framework for the Edges.",
+    "topics": ["web", "framework", "edge", "http"],
+    "maintainer": "yusukebe"
+  },
+  {
+    "name_with_owner": "honojs/middleware",
+    "stars": 1240,
+    "delta_week": 60,
+    "language": "TypeScript",
+    "description": "Official middleware collection for Hono.",
+    "topics": [],
+    "maintainer": "yusukebe"
+  },
+  {
+    "name_with_owner": "drizzle-team/drizzle-orm",
+    "stars": 24650,
+    "delta_week": 310,
+    "language": "TypeScript",
+    "description": "Headless TypeScript ORM with a head.",
+    "topics": ["orm", "typescript", "sql", "database"],
+    "maintainer": "andrew-stern"
+  },
+  {
+    "name_with_owner": "langchain-ai/langchain",
+    "stars": 92410,
+    "delta_week": 640,
+    "language": "Python",
+    "description": "Build context-aware reasoning applications with LLMs.",
+    "topics": ["llm", "python", "rag", "agents"],
+    "maintainer": "hwchase17"
+  },
+  {
+    "name_with_owner": "langchain-ai/langgraph",
+    "stars": 7120,
+    "delta_week": 520,
+    "language": "Python",
+    "description": "Build stateful, multi-actor applications with LLMs.",
+    "topics": ["llm", "agents", "graph", "python"],
+    "maintainer": "hwchase17"
+  },
+  {
+    "name_with_owner": "langchain-ai/langsmith-sdk",
+    "stars": 820,
+    "delta_week": 140,
+    "language": "Python",
+    "description": "LangSmith Client SDK implementation.",
+    "topics": ["llm", "observability", "python"],
+    "maintainer": "hwchase17"
+  },
+  {
+    "name_with_owner": "astral-sh/uv",
+    "stars": 28340,
+    "delta_week": 1450,
+    "language": "Rust",
+    "description": "An extremely fast Python package and project manager.",
+    "topics": ["python", "rust", "package-manager", "cli"],
+    "maintainer": "charliermarsh"
+  },
+  {
+    "name_with_owner": "astral-sh/ruff",
+    "stars": 34220,
+    "delta_week": 680,
+    "language": "Rust",
+    "description": "An extremely fast Python linter and code formatter, written in Rust.",
+    "topics": ["python", "linter", "formatter", "rust"],
+    "maintainer": "charliermarsh"
+  },
+  {
+    "name_with_owner": "astral-sh/rye",
+    "stars": 14210,
+    "delta_week": 210,
+    "language": "Rust",
+    "description": "A hassle-free Python experience.",
+    "topics": ["python", "rust", "tooling"],
+    "maintainer": "charliermarsh"
+  },
+  {
+    "name_with_owner": "ggerganov/llama.cpp",
+    "stars": 68920,
+    "delta_week": 920,
+    "language": "C++",
+    "description": "LLM inference in C/C++.",
+    "topics": ["llm", "inference", "cpp", "ggml"],
+    "maintainer": "ggerganov"
+  },
+  {
+    "name_with_owner": "ggerganov/whisper.cpp",
+    "stars": 35210,
+    "delta_week": 240,
+    "language": "C++",
+    "description": "Port of OpenAI's Whisper model in C/C++.",
+    "topics": ["speech", "whisper", "cpp", "asr"],
+    "maintainer": "ggerganov"
+  },
+  {
+    "name_with_owner": "ggerganov/ggml",
+    "stars": 11420,
+    "delta_week": 180,
+    "language": "C++",
+    "description": "Tensor library for machine learning.",
+    "topics": ["ml", "tensor", "cpp"],
+    "maintainer": "ggerganov"
+  },
+  {
+    "name_with_owner": "pydantic/pydantic",
+    "stars": 21780,
+    "delta_week": 180,
+    "language": "Python",
+    "description": "Data validation using Python type hints.",
+    "topics": ["python", "validation", "typing"],
+    "maintainer": "samuelcolvin"
+  },
+  {
+    "name_with_owner": "pydantic/pydantic-ai",
+    "stars": 5420,
+    "delta_week": 740,
+    "language": "Python",
+    "description": "Agent Framework / shim to use Pydantic with LLMs.",
+    "topics": ["agents", "llm", "python", "pydantic"],
+    "maintainer": "samuelcolvin"
+  },
+  {
+    "name_with_owner": "pydantic/logfire",
+    "stars": 2180,
+    "delta_week": 260,
+    "language": "Python",
+    "description": "Uncomplicated Observability for Python and beyond.",
+    "topics": ["observability", "python", "tracing"],
+    "maintainer": "samuelcolvin"
+  },
+  {
+    "name_with_owner": "ollama/ollama",
+    "stars": 96320,
+    "delta_week": 1390,
+    "language": "Go",
+    "description": "Get up and running with Llama 3, Mistral, Gemma, and other LLMs.",
+    "topics": ["llm", "go", "ml", "inference"],
+    "maintainer": "mchiang0610"
+  },
+  {
+    "name_with_owner": "ollama/ollama-python",
+    "stars": 4120,
+    "delta_week": 310,
+    "language": "Python",
+    "description": "Ollama Python library.",
+    "topics": ["ollama", "python", "llm"],
+    "maintainer": "mchiang0610"
+  },
+  {
+    "name_with_owner": "tauri-apps/tauri",
+    "stars": 82110,
+    "delta_week": 310,
+    "language": "Rust",
+    "description": "Build smaller, faster, and more secure desktop applications.",
+    "topics": ["rust", "desktop", "webview", "cross-platform"],
+    "maintainer": "lucasfernog"
+  },
+  {
+    "name_with_owner": "tauri-apps/plugins-workspace",
+    "stars": 1320,
+    "delta_week": 70,
+    "language": "Rust",
+    "description": "Tauri plugins maintained by the core team.",
+    "topics": ["tauri", "plugins", "rust"],
+    "maintainer": "lucasfernog"
+  },
+  {
+    "name_with_owner": "ziglang/zig",
+    "stars": 35010,
+    "delta_week": 340,
+    "language": "Zig",
+    "description": "General-purpose programming language and toolchain.",
+    "topics": [],
+    "maintainer": "andrewrk"
+  },
+  {
+    "name_with_owner": "oven-sh/bun",
+    "stars": 73420,
+    "delta_week": 480,
+    "language": "Zig",
+    "description": "Incredibly fast JavaScript runtime, bundler, test runner, and package manager.",
+    "topics": [],
+    "maintainer": "andrewrk"
+  },
+  {
+    "name_with_owner": "drizzle-team/drizzle-kit",
+    "stars": 2840,
+    "delta_week": 160,
+    "language": "TypeScript",
+    "description": "Migrations and schema management for Drizzle ORM.",
+    "topics": ["orm", "migrations", "typescript"],
+    "maintainer": "andrew-stern"
+  }
+]
