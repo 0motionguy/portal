@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { leanValidate } from "@/lib/lean-validator";
+import { guardUrl } from "./ssrf-guard";
 
 // GET /api/visit?url=<portal-url>
 //
@@ -8,18 +9,21 @@ import { leanValidate } from "@/lib/lean-validator";
 // returns a strict discriminated-union JSON response.
 //
 // Security posture:
-//   1. Only https:// is permitted for non-loopback hosts — the loopback
-//      exception (localhost / 127.0.0.1 / ::1) exists so the dev reference
-//      portal on :3075 works. Every other http:// URL is rejected as a
-//      potential SSRF against the internal network.
-//   2. A hard 5 s timeout via AbortController bounds the wait.
-//   3. A 1 MB response cap prevents memory-blowup manifests.
-//   4. Redirects are followed up to 3 hops; each hop revalidates the host
-//      against the same SSRF rules (redirects cannot escape to a private
-//      address).
-//   5. No client request headers are forwarded — the server constructs
+//   1. In production only https:// is permitted. In dev, plain http:// is
+//      allowed exclusively for loopback hosts so the dev reference portal
+//      on :3075 works.
+//   2. Every hostname is resolved via dns.lookup({all: true}) and each
+//      returned IP is classified by ipaddr.js. Only 'unicast' (public)
+//      addresses are accepted; any private / loopback / link-local /
+//      unique-local / reserved / multicast / broadcast hit is rejected.
+//      This defeats DNS rebinding.
+//   3. A hard 5 s timeout via AbortController bounds the wait.
+//   4. A 1 MB response cap prevents memory-blowup manifests.
+//   5. Redirects are followed up to 3 hops; each hop re-runs the SSRF
+//      guard (redirects cannot escape to a private address).
+//   6. No client request headers are forwarded — the server constructs
 //      its own minimal request.
-//   6. Errors are returned as short, sanitised strings; raw stack traces
+//   7. Errors are returned as short, sanitised strings; raw stack traces
 //      never cross the network boundary.
 
 export const dynamic = "force-dynamic";
@@ -54,7 +58,7 @@ export async function GET(req: Request): Promise<NextResponse<VisitResponse>> {
     return jsonError("url", "missing 'url' query parameter", 400);
   }
 
-  const guard = guardUrl(target);
+  const guard = await guardUrl(target);
   if (!guard.ok) {
     return jsonError("url", guard.error, 400);
   }
@@ -106,73 +110,6 @@ function jsonError(stage: Stage, error: string, status: number) {
   return NextResponse.json<VisitResponse>({ ok: false, stage, error }, { status });
 }
 
-interface UrlGuardOk {
-  ok: true;
-  url: URL;
-}
-interface UrlGuardBad {
-  ok: false;
-  error: string;
-}
-
-function guardUrl(raw: string): UrlGuardOk | UrlGuardBad {
-  let u: URL;
-  try {
-    u = new URL(raw);
-  } catch {
-    return { ok: false, error: "url: not a valid URL" };
-  }
-  if (u.protocol !== "http:" && u.protocol !== "https:") {
-    return { ok: false, error: `url: protocol '${u.protocol.replace(/:$/, "")}' not allowed` };
-  }
-  const host = u.hostname.toLowerCase();
-  if (u.protocol === "http:" && !isLoopback(host)) {
-    return {
-      ok: false,
-      error: "url: plain http:// is only allowed for localhost / 127.0.0.1 / ::1",
-    };
-  }
-  // Even for https://, block obviously-private literal addresses to reduce
-  // the SSRF surface. Real-world Portals live on public hosts.
-  if (isPrivateOrReserved(host) && !isLoopback(host)) {
-    return { ok: false, error: `url: host '${host}' is a private or reserved address` };
-  }
-  return { ok: true, url: u };
-}
-
-function isLoopback(host: string): boolean {
-  return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]";
-}
-
-// Blocks IPv4 literal ranges that should never be addressed from a public
-// fetcher: RFC1918, link-local, CGNAT, metadata services. Public DNS names
-// that resolve to private IPs still slip through this check — this is a
-// defence-in-depth measure, not a complete SSRF solution.
-function isPrivateOrReserved(host: string): boolean {
-  // IPv4 literal?
-  const m = host.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
-  if (m) {
-    const [a, b, _c, _d] = m.slice(1).map((s) => Number.parseInt(s, 10));
-    if (a === 10) return true;
-    if (a === 127) return true;
-    if (a === 169 && b === 254) return true; // link-local + AWS/GCP metadata
-    if (a === 172 && b >= 16 && b <= 31) return true;
-    if (a === 192 && b === 168) return true;
-    if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT
-    if (a === 0) return true;
-    if (a >= 224) return true; // multicast / reserved
-  }
-  // IPv6 literal? Block unique-local, link-local, and loopback cases
-  // beyond ::1 which is already handled by isLoopback.
-  if (host.includes(":")) {
-    const h = host.replace(/^\[|\]$/g, "").toLowerCase();
-    if (h.startsWith("fc") || h.startsWith("fd")) return true; // fc00::/7
-    if (h.startsWith("fe80")) return true; // link-local
-    if (h.startsWith("ff")) return true; // multicast
-  }
-  return false;
-}
-
 interface FetchOk {
   ok: true;
   text: string;
@@ -217,7 +154,7 @@ async function fetchManifest(url: URL): Promise<FetchOk | FetchBad> {
         } catch {
           return { ok: false, stage: "fetch", error: "malformed redirect target" };
         }
-        const guard = guardUrl(next.toString());
+        const guard = await guardUrl(next.toString());
         if (!guard.ok) {
           return { ok: false, stage: "fetch", error: `redirect blocked: ${guard.error}` };
         }

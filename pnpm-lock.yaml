@@ -55,6 +55,10 @@ importers:
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.18.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   packages/visit/ts:
     dependencies:
@@ -93,6 +97,9 @@ importers:
 
   web:
     dependencies:
+      ipaddr.js:
+        specifier: ^2.2.0
+        version: 2.3.0
       next:
         specifier: ^15.1.4
         version: 15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -115,6 +122,9 @@ importers:
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.17)
 
 packages:
 
@@ -1029,6 +1039,10 @@ packages:
     resolution: {integrity: sha512-am5zfg3yu6sqn5yjKBNqhnTX7Cv+m00ox+7jbaKkrLMRJ4rAdldd1xPd/JzbBWspqaQv6RSTrgFN95EsfhC+7w==}
     engines: {node: '>=16.9.0'}
 
+  ipaddr.js@2.3.0:
+    resolution: {integrity: sha512-Zv/pA+ciVFbCSBBjGfaKUya/CcGmUHzTydLMaTwrUUEM2DIEO3iZvueGxmacvmN50fGpGVKeTXpb2LcYQxeVdg==}
+    engines: {node: '>= 10'}
+
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
@@ -1878,6 +1892,8 @@ snapshots:
       resolve-pkg-maps: 1.0.0
 
   hono@4.12.14: {}
+
+  ipaddr.js@2.3.0: {}
 
   json-schema-traverse@1.0.0: {}
 

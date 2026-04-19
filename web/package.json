@@ -9,9 +9,10 @@
     "build": "next build",
     "start": "next start -p 3035",
     "preview": "cd public && npx --yes serve -l 5173",
-    "test": "echo \"(web) no tests yet\" && exit 0"
+    "test": "vitest run"
   },
   "dependencies": {
+    "ipaddr.js": "^2.2.0",
     "next": "^15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -20,6 +21,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
   }
 }
