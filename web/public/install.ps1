@@ -1,19 +1,7 @@
 # visit-portal installer (PowerShell 5+). Windows.
-#
-# WHAT THIS DOES:
-#   1. Clones (or copies) the Portal monorepo to $env:USERPROFILE\.visitportal
-#   2. Writes a visit-portal.cmd shim that runs the CLI via pnpm + tsx
-#   3. Prints the PATH line you should add manually (user env, not machine)
-#
-# WHAT THIS DOES *NOT* DO:
-#   - No admin elevation. Writes only to your user profile.
-#   - No silent env mutation. We print the PATH line; you copy it yourself.
-#   - No silent network calls. Every URL is echoed before fetch.
-#   - No blind pipe. If the host is non-interactive, set
-#     $env:VISITPORTAL_ASSUME_YES = '1' to proceed.
-#
-# TODO(hackathon): Replace $RepoUrl once the repo is pushed to GitHub.
-# TODO(hackathon): Pin a release tag + SHA256 once v0.1.0 is cut.
+# No admin elevation. No silent env mutation. No silent network calls. Confirms before acting.
+# Non-interactive host requires $env:VISITPORTAL_ASSUME_YES = '1'.
+# TODO(hackathon): set $RepoUrl to the real GitHub URL after push; pin $RepoRef to v0.1.0 tag.
 
 [CmdletBinding()]
 param(
@@ -86,7 +74,11 @@ function Confirm-Plan {
   if (-not [Environment]::UserInteractive -or $Host.Name -eq 'ServerRemoteHost') {
     Die 'non-interactive host. Set $env:VISITPORTAL_ASSUME_YES = "1" to proceed.'
   }
-  $ans = Read-Host 'continue? [y/N]'
+  try {
+    $ans = Read-Host 'continue? [y/N]'
+  } catch {
+    Die 'non-interactive host (Read-Host unavailable). Set $env:VISITPORTAL_ASSUME_YES = "1" to proceed.'
+  }
   if ($ans -notmatch '^(y|Y|yes|YES)$') { Die 'aborted by user.' }
 }
 Confirm-Plan
@@ -118,7 +110,7 @@ $RepoDir = Join-Path $InstallDir 'repo'
 
 if ($FromLocal -ne '') {
   if (-not (Test-Path (Join-Path $FromLocal 'packages\cli'))) {
-    Die "no packages\cli at $FromLocal — not a Portal checkout."
+    Die "no packages\cli at $FromLocal -- not a Portal checkout."
   }
   Say "copying $FromLocal -> $RepoDir (excluding node_modules)"
   if (-not (Test-Path $RepoDir)) { New-Item -ItemType Directory -Force -Path $RepoDir | Out-Null }

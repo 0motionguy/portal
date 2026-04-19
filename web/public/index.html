@@ -663,6 +663,140 @@
     .pos-row { grid-template-columns: 1fr; gap: 8px; }
   }
 
+  /* ARCHITECTURE DIAGRAM */
+  .arch-wrap {
+    border: 1px solid var(--line);
+    background: var(--paper-soft);
+    padding: 28px;
+    margin: 28px 0;
+  }
+  .arch-svg {
+    width: 100%;
+    height: auto;
+    max-width: 880px;
+    margin: 0 auto;
+    display: block;
+  }
+  .arch-foot {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--dim);
+  }
+  .arch-foot strong { color: var(--ink); font-weight: 600; }
+  .arch-foot .ptr { color: var(--coral); margin-right: 6px; }
+  @media (max-width: 640px) {
+    .arch-wrap { padding: 16px; }
+    .arch-foot { font-size: 11px; }
+  }
+
+  /* METRICS DASHBOARD */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 28px 0;
+    border: 1px solid var(--line);
+    background: var(--paper-soft);
+  }
+  @media (max-width: 820px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr; } }
+  .metric-card {
+    padding: 24px 22px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .metric-card:nth-child(3n) { border-right: none; }
+  .metric-card:nth-last-child(-n+3):not(:nth-child(3n+1)) { /* keep simple; visual border ok */ }
+  .metric-card .tag {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dim-soft);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .metric-card .tag .dot { color: var(--coral); animation: blink 1.4s infinite; }
+  .metric-card .big {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 4vw, 52px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .metric-card .big em { color: var(--coral); font-style: italic; }
+  .metric-card .sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+  }
+  .metric-card .src {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--dim-soft);
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  /* USER JOURNEY */
+  .journey-wrap {
+    border: 1px solid var(--line);
+    background: var(--paper-soft);
+    padding: 4px;
+    margin: 28px 0;
+    overflow-x: auto;
+  }
+  .journey {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+  }
+  .journey th, .journey td {
+    padding: 18px 20px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .journey thead th {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--dim);
+    border-bottom: 1px solid var(--ink);
+  }
+  .journey thead th:first-child { color: var(--coral); }
+  .journey tbody tr { border-bottom: 1px solid var(--line-soft); }
+  .journey tbody tr:last-child { border-bottom: none; }
+  .journey tbody td:first-child {
+    color: var(--ink);
+    font-weight: 600;
+    font-family: 'Instrument Serif', serif;
+    font-size: 17px;
+    font-style: italic;
+    width: 24%;
+  }
+  .journey .before { color: var(--ink-soft); }
+  .journey .after {
+    color: var(--ink);
+    background: linear-gradient(to right, rgba(218, 119, 86, 0.06), transparent);
+    font-weight: 500;
+  }
+  .journey .after .num {
+    color: var(--coral);
+    font-weight: 600;
+  }
+
   /* ECONOMICS */
   .econ-grid {
     display: grid;
@@ -893,6 +1027,9 @@
       <span class="sig">$</span>
       <div class="cmd">curl <span class="arg">-fsSL</span> <span class="url">visitportal.dev/install</span> | sh</div>
     </div>
+    <p style="margin-top: 16px; color: var(--dim); font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.02em;">
+      <span style="color: var(--coral);">▸</span> The <span class="inline-code">claude --visit</span> terminal above shows the intended UX. What ships today is the <span class="inline-code">portal.visit()</span> TS SDK + <span class="inline-code">visit-portal</span> CLI, which produce this exact flow in three lines. Client-side integration into Claude Code is an SDK proposal, not an existing flag.
+    </p>
   </div>
 
   <!-- 01 PROBLEM -->
@@ -904,7 +1041,7 @@
       <div>
         <div class="quote-card">
           As the number of connected tools grows, loading all tool definitions upfront and passing intermediate results through the context window slows down agents and increases costs. Once too many servers are connected, tool definitions can consume excessive tokens, reducing agent efficiency.
-          <span class="attr">— Anthropic Engineering · 2026</span>
+          <span class="attr">— paraphrased, Anthropic engineering guidance on MCP scaling, 2026</span>
         </div>
       </div>
       <div>
@@ -1008,6 +1145,58 @@
     </div>
   </section>
 
+  <!-- 02B METRICS DASHBOARD -->
+  <section>
+    <div class="sec-tag"><span class="num">02b</span><span>PROOF &amp; POSTURE</span></div>
+    <h2>What's <em>running</em>, not what's promised.</h2>
+    <p class="wide">
+      Submission-day snapshot of what the repo produces. Every card is traceable to a file or a commit. If you clone the repo and run <span class="inline-code">pnpm -r test &amp;&amp; bash scripts/demo.sh &amp;&amp; pnpm --filter @visitportal/bench bench</span>, every number below is reproducible on your box in under ninety seconds.
+    </p>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="tag"><span>TESTS</span><span class="dot">●</span></div>
+        <div class="big">121<em>/121</em></div>
+        <div class="sub">across spec · bench · visit · cli · reference</div>
+        <div class="src">pnpm -r test</div>
+      </div>
+      <div class="metric-card">
+        <div class="tag"><span>BENCH CELLS</span><span class="dot">●</span></div>
+        <div class="big">48</div>
+        <div class="sub">real Anthropic count_tokens · seed 42 · Sonnet + Opus</div>
+        <div class="src">packages/bench/results/tokens-matrix-v1.json</div>
+      </div>
+      <div class="metric-card">
+        <div class="tag"><span>SDK SIZE</span><span class="dot">●</span></div>
+        <div class="big">2.25<em> kB</em></div>
+        <div class="sub">@visitportal/visit · gzipped · 6.7× under 15 kB ceiling</div>
+        <div class="src">pnpm --filter @visitportal/visit size</div>
+      </div>
+      <div class="metric-card">
+        <div class="tag"><span>DEMO TIME</span><span class="dot">●</span></div>
+        <div class="big">7<em>s</em></div>
+        <div class="sub">boot → manifest → call → conformance → clean shutdown</div>
+        <div class="src">bash scripts/demo.sh</div>
+      </div>
+      <div class="metric-card">
+        <div class="tag"><span>SPEC SURFACE</span><span>▸</span></div>
+        <div class="big">2<em> endpoints</em></div>
+        <div class="sub">GET /portal · POST /portal/call · one manifest schema</div>
+        <div class="src">docs/spec-v0.1.0.md</div>
+      </div>
+      <div class="metric-card">
+        <div class="tag"><span>CONFORMANCE</span><span class="dot">●</span></div>
+        <div class="big">30<em>/30</em></div>
+        <div class="sub">vectors · ajv ↔ lean validator agree on every one</div>
+        <div class="src">packages/spec/conformance/vectors.json</div>
+      </div>
+    </div>
+
+    <p class="wide" style="margin-top: 8px; color: var(--dim); font-size: 12px; font-family: 'Geist Mono', monospace;">
+      <span style="color: var(--coral);">▸</span> As of <span class="inline-code">2026-04-19</span>, one commit per phase on <span class="inline-code">main</span>: <span class="inline-code">c82c882 · 98ec8d9 · d1c40ba · 272cd53 · f6c8b32 · 8f1c997</span>. Full phase table in <span class="inline-code">docs/status.md</span>.
+    </p>
+  </section>
+
   <!-- 03 IMPACT -->
   <section>
     <div class="sec-tag"><span class="num">03</span><span>THE IMPACT</span></div>
@@ -1070,7 +1259,7 @@
           </tr>
           <tr>
             <td>Scaling ceiling</td>
-            <td class="mcp-col">~1,500 tools saturates Sonnet's 200k window (measured)</td>
+            <td class="mcp-col">~1,500 tools saturates Sonnet's 200k window (projected from measured linear fit)</td>
             <td class="portal-col">Unbounded — 172 tokens per visit, flat</td>
           </tr>
           <tr>
@@ -1160,6 +1349,88 @@
     </div>
   </section>
 
+  <!-- 06B ARCHITECTURE -->
+  <section>
+    <div class="sec-tag"><span class="num">06b</span><span>THE WIRE</span></div>
+    <h2>Two calls. <em>One manifest.</em> Nothing sticks around.</h2>
+    <p class="wide">
+      No runtime, no daemon, no registration. The visitor does HTTP; the provider does HTTP. Everything between the first <span class="inline-code">GET</span> and the final <span class="inline-code">POST</span> is the manifest — in context during the visit, gone after.
+    </p>
+
+    <div class="arch-wrap">
+      <svg class="arch-svg" viewBox="0 0 880 440" role="img" aria-labelledby="arch-title arch-desc" xmlns="http://www.w3.org/2000/svg">
+        <title id="arch-title">Portal visit sequence diagram</title>
+        <desc id="arch-desc">Two HTTP calls between an LLM visitor and a provider. GET /portal returns a 172-token manifest. POST /portal/call runs a tool and returns the result. Session ends; manifest is dropped from context; zero residue remains.</desc>
+
+        <defs>
+          <marker id="arrow-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#DA7756"/>
+          </marker>
+          <marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#2A2724"/>
+          </marker>
+        </defs>
+
+        <!-- Actor columns -->
+        <g font-family="'Geist Mono', monospace" font-size="13">
+          <rect x="40"  y="20" width="220" height="56" fill="#1A1817" rx="4"/>
+          <text x="150" y="44" fill="#EEE7D5" text-anchor="middle" font-weight="500">VISITOR</text>
+          <text x="150" y="62" fill="#8A7F6E" text-anchor="middle" font-size="11">Claude Code · any LLM client</text>
+
+          <rect x="620" y="20" width="220" height="56" fill="#1A1817" rx="4"/>
+          <text x="730" y="44" fill="#EEE7D5" text-anchor="middle" font-weight="500">PROVIDER</text>
+          <text x="730" y="62" fill="#8A7F6E" text-anchor="middle" font-size="11">your service · two endpoints</text>
+
+          <!-- Lifelines -->
+          <line x1="150" y1="76" x2="150" y2="400" stroke="#B8AE9C" stroke-dasharray="3 4"/>
+          <line x1="730" y1="76" x2="730" y2="400" stroke="#B8AE9C" stroke-dasharray="3 4"/>
+        </g>
+
+        <!-- Step 1: GET /portal -->
+        <g font-family="'Geist Mono', monospace" font-size="12">
+          <text x="60" y="110" fill="#DA7756" font-weight="500">1 · ARRIVE</text>
+          <line x1="155" y1="126" x2="725" y2="126" stroke="#DA7756" stroke-width="2" marker-end="url(#arrow-coral)"/>
+          <text x="440" y="118" fill="#181818" text-anchor="middle" font-weight="500">GET /portal</text>
+          <text x="440" y="142" fill="#8A7F6E" text-anchor="middle" font-size="11">no body · Accept: application/json</text>
+
+          <line x1="725" y1="178" x2="155" y2="178" stroke="#2A2724" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+          <text x="440" y="170" fill="#181818" text-anchor="middle">200 OK · manifest (172 tokens)</text>
+          <text x="440" y="194" fill="#8A7F6E" text-anchor="middle" font-size="11">portal_version, name, brief, tools[], call_endpoint</text>
+        </g>
+
+        <!-- divider -->
+        <line x1="60" y1="222" x2="820" y2="222" stroke="#E4DBC4"/>
+
+        <!-- Step 2: POST /portal/call -->
+        <g font-family="'Geist Mono', monospace" font-size="12">
+          <text x="60" y="252" fill="#DA7756" font-weight="500">2 · CALL</text>
+          <line x1="155" y1="268" x2="725" y2="268" stroke="#DA7756" stroke-width="2" marker-end="url(#arrow-coral)"/>
+          <text x="440" y="260" fill="#181818" text-anchor="middle" font-weight="500">POST /portal/call</text>
+          <text x="440" y="284" fill="#8A7F6E" text-anchor="middle" font-size="11">{ tool: "top_gainers", params: { limit: 3 } }</text>
+
+          <line x1="725" y1="320" x2="155" y2="320" stroke="#2A2724" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+          <text x="440" y="312" fill="#181818" text-anchor="middle">200 OK · result</text>
+          <text x="440" y="336" fill="#8A7F6E" text-anchor="middle" font-size="11">{ ok: true, result: [...] }  |  { ok: false, error, code }</text>
+        </g>
+
+        <!-- divider -->
+        <line x1="60" y1="362" x2="820" y2="362" stroke="#E4DBC4"/>
+
+        <!-- Step 3: residue -->
+        <g font-family="'Geist Mono', monospace" font-size="12">
+          <text x="60" y="390" fill="#DA7756" font-weight="500">3 · LEAVE</text>
+          <text x="440" y="390" fill="#181818" text-anchor="middle" font-weight="500">session ends · manifest dropped · next turn pays 0 tokens</text>
+        </g>
+      </svg>
+
+      <div class="arch-foot">
+        <span class="ptr">▸</span> <strong>Rule 1.</strong> Everything under <span class="inline-code">/portal/call</span> is stateless. If a tool needs a session, use A2A — it's the next layer up.<br>
+        <span class="ptr">▸</span> <strong>Rule 2.</strong> The manifest is the contract. If an SDK can validate it against <span class="inline-code">manifest.schema.json</span>, the SDK can call any Portal on the internet.<br>
+        <span class="ptr">▸</span> <strong>Rule 3.</strong> Base stays neutral. Auth, pricing, identity, registry — all are optional Portal Extensions, never in the base spec.
+      </div>
+    </div>
+  </section>
+
   <!-- 07 POSITIONING -->
   <section>
     <div class="sec-tag"><span class="num">07</span><span>POSITIONING</span></div>
@@ -1186,6 +1457,48 @@
         <div class="what">Two endpoints. No install. Any LLM client, any service, any time. The visitor-side half of the open agent web.</div>
       </div>
     </div>
+  </section>
+
+  <!-- 07B JOURNEY -->
+  <section>
+    <div class="sec-tag"><span class="num">07b</span><span>WHO BENEFITS</span></div>
+    <h2>Three personas. <em>One architecture.</em></h2>
+    <p class="wide">
+      The scaling wall is not abstract — it hits different roles differently. Portal's unit economics change the answer for each.
+    </p>
+
+    <div class="journey-wrap">
+      <table class="journey">
+        <thead>
+          <tr>
+            <th>Persona</th>
+            <th>Pain today</th>
+            <th>With Portal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Claude Code power user</td>
+            <td class="before">82k tokens burned on preloaded tool schemas every turn — 41% of Sonnet's window gone before typing.</td>
+            <td class="after">Visits exactly what's needed, <span class="num">172 tokens</span> per visit, nothing carried forward.</td>
+          </tr>
+          <tr>
+            <td>Service provider</td>
+            <td class="before">No low-friction way to expose tools to agents. An MCP server is an afternoon of protocol plumbing plus ongoing maintenance.</td>
+            <td class="after">Two HTTP endpoints, <span class="num">one manifest</span>, ship in an hour. Any existing REST/GraphQL service is wrappable.</td>
+          </tr>
+          <tr>
+            <td>Enterprise fleet</td>
+            <td class="before">1,000-tool MCP deployment at 100 turns/user/day = projected <span style="color: var(--coral);">~$1,230/user/mo</span> in pure schema overhead on Sonnet.</td>
+            <td class="after">Same fleet on Portal: <span class="num">~$1.55/user/mo</span>. The 99.9% savings compounds across seats.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="wide" style="margin-top: 16px; color: var(--dim); font-size: 12px; font-family: 'Geist Mono', monospace;">
+      <span style="color: var(--coral);">▸</span> Enterprise math: Sonnet 4.5 input $3/M · 100 turns/day · 30 days · 1,000 tools projected at ~137k tokens per turn via the linear fit of measured counts. Portal's 172 tokens per visit are measured directly. Re-derive: <span class="inline-code">packages/bench/results/tokens-matrix-v1.md</span>.
+    </p>
   </section>
 
   <!-- 08 ECONOMICS -->

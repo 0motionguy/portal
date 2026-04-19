@@ -18,15 +18,10 @@ web/
 └── README.md            # this file
 ```
 
-The `docs/one-pager.html` file is the **source of truth** for the pitch. When
-the pitch changes, edit `docs/one-pager.html` and copy it into
-`web/public/index.html` with:
-
-```sh
-cp docs/one-pager.html web/public/index.html
-# then re-apply the production head edits (meta description / og: / manifest link)
-# and the footer directory/install rows — the diff is small and kept in git.
-```
+`docs/one-pager.html` and `web/public/index.html` are kept **byte-identical** in git.
+Edit either one and copy to the other — CI can enforce this later with a
+simple `diff -q` check. Meta / og: / manifest tags live in both files; the
+`/manifest.json` path resolves on both local preview and the deployed site.
 
 ## Preview locally
 
