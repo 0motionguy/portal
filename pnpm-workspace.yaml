@@ -1,0 +1,8 @@
+packages:
+  - "packages/spec"
+  - "packages/visit/ts"
+  - "packages/provider/ts"
+  - "packages/mcp-adapter"
+  - "packages/bench"
+  - "reference/star-screener"
+  - "web"

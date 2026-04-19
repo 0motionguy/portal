@@ -1,0 +1,13 @@
+{
+  "name": "@visitportal/visit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Portal visitor SDK for TypeScript — visit any Portal in 10 lines.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "test": "echo \"(visit/ts) no tests yet\" && exit 0"
+  }
+}

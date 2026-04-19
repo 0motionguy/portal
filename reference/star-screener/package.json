@@ -1,0 +1,13 @@
+{
+  "name": "star-screener",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reference Portal at starscreener.xyz — trending GitHub repo screener.",
+  "type": "module",
+  "main": "./src/server.ts",
+  "scripts": {
+    "dev": "echo \"(star-screener) dev server lands Phase 2\" && exit 0",
+    "start": "echo \"(star-screener) server lands Phase 2\" && exit 0",
+    "test": "echo \"(star-screener) no tests yet\" && exit 0"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@visitportal/spec",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Portal spec artifacts — JSON Schema + conformance test vectors.",
+  "type": "module",
+  "main": "./index.js",
+  "files": ["manifest.schema.json", "conformance/"],
+  "scripts": {
+    "test": "echo \"(spec) no tests yet\" && exit 0"
+  }
+}

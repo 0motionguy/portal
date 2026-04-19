@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: node (pnpm)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm -r --if-present build
+      - run: pnpm -r --if-present test
+      - run: pnpm bench
+      - run: pnpm conformance
+
+  python:
+    name: python (uv)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: sanity check python sdk
+        working-directory: packages/visit/py
+        run: |
+          uv venv
+          uv pip install -e ".[dev]"
+          python -c "import visitportal; print('visitportal', visitportal.__version__)"

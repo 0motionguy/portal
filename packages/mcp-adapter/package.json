@@ -1,0 +1,16 @@
+{
+  "name": "@visitportal/mcp-adapter",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Wrap any MCP server as a Portal. Stretch deliverable.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "visitportal-mcp-adapter": "./dist/cli.js"
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "test": "echo \"(mcp-adapter) no tests yet\" && exit 0"
+  }
+}

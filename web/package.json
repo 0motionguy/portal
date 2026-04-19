@@ -1,0 +1,11 @@
+{
+  "name": "visitportal-web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "visitportal.dev — one-pager + install script + Portal directory.",
+  "type": "module",
+  "scripts": {
+    "build": "echo \"(web) static build lands Phase 6\" && exit 0",
+    "test": "echo \"(web) no tests yet\" && exit 0"
+  }
+}

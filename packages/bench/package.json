@@ -1,0 +1,10 @@
+{
+  "name": "@visitportal/bench",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reproducible MCP-vs-Portal benchmark. Source of truth for every number on visitportal.dev.",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"(bench) no tests yet\" && exit 0"
+  }
+}
