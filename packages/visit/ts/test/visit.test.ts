@@ -10,7 +10,7 @@ import {
 } from "../src/index.ts";
 
 // Tiny in-process HTTP server so these tests don't depend on network or on
-// the star-screener reference. Each test can mount its own handler via the
+// the trending-demo reference. Each test can mount its own handler via the
 // `route()` helper to shape GET /portal and POST /portal/call responses.
 
 type Handler = (req: {

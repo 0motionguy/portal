@@ -9,7 +9,7 @@ Derived from the monorepo's git log and the Phase plan in
 |---|---|---|---|---|
 | 0 | Empty monorepo scaffold (pnpm workspace, biome, tsconfig) | done | `c82c882` | `pnpm-workspace.yaml`, `biome.json` |
 | 1 | Spec v0.1.0 frozen · schema + 30 conformance vectors · lean validator in parity | done | `98ec8d9` | `docs/spec-v0.1.0.md`, `packages/spec/manifest.schema.json`, `packages/spec/conformance/vectors.json` |
-| 2 | `reference/star-screener` — Hono server, 3 tools, 30-repo snapshot, 12-maintainer roster, Fly-ready | done | `d1c40ba` | `reference/star-screener/src/server.ts`, `reference/star-screener/portal.json` |
+| 2 | `reference/trending-demo` — Hono server, 3 tools, 30-repo snapshot, 12-maintainer roster, Fly-ready | done | `d1c40ba` | `reference/trending-demo/src/server.ts`, `reference/trending-demo/portal.json` |
 | 3 | `@visitportal/visit` — TS visitor SDK, 14 vitest cases, ~2.25 kB gzipped | done | `272cd53` | `packages/visit/ts/src/index.ts`, `packages/visit/ts/test/visit.test.ts` |
 | 5 | `@visitportal/bench` — 48-cell `count_tokens` matrix, measured 81× less overhead than MCP at 100 tools | done | `f6c8b32` | `packages/bench/src/run.ts`, `packages/bench/results/tokens-matrix-v1.md` |
 
@@ -47,7 +47,7 @@ packages/spec            30 vectors OK
 packages/bench           65 tests  (3 files)
 packages/visit/ts        14 tests  (1 file)
 packages/cli              6 tests  (1 file)
-reference/star-screener   6 tests  (1 file)
+reference/trending-demo   6 tests  (1 file)
 ----------------------------------
                         121 tests  (10 files + spec vectors)
 ```

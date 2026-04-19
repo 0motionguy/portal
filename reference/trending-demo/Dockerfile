@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Multi-stage build for star-screener (reference Portal).
+# Multi-stage build for trending-demo (reference Portal).
 # Build context must be the monorepo root so the workspace resolves.
 
 # ---------- deps stage ----------
@@ -11,11 +11,11 @@ RUN corepack enable && corepack prepare pnpm@10.23.0 --activate
 # Copy workspace manifest + lockfile first for layer caching.
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
 COPY packages/spec/package.json packages/spec/
-COPY reference/star-screener/package.json reference/star-screener/
+COPY reference/trending-demo/package.json reference/trending-demo/
 
-# Install only star-screener's dependency closure (includes @visitportal/spec via workspace).
+# Install only trending-demo's dependency closure (includes @visitportal/spec via workspace).
 # --frozen-lockfile=false because the root lockfile may have drifted during the hackathon.
-RUN pnpm install --filter star-screener... --prod=false --frozen-lockfile=false
+RUN pnpm install --filter trending-demo... --prod=false --frozen-lockfile=false
 
 # ---------- runner stage ----------
 FROM node:22-alpine AS runner
@@ -26,14 +26,14 @@ RUN corepack enable && corepack prepare pnpm@10.23.0 --activate
 # Copy installed node_modules from the deps stage.
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/spec/node_modules ./packages/spec/node_modules
-COPY --from=deps /app/reference/star-screener/node_modules ./reference/star-screener/node_modules
+COPY --from=deps /app/reference/trending-demo/node_modules ./reference/trending-demo/node_modules
 
 # Copy source.
 COPY tsconfig.base.json ./tsconfig.base.json
 COPY packages/spec ./packages/spec
-COPY reference/star-screener ./reference/star-screener
+COPY reference/trending-demo ./reference/trending-demo
 
-WORKDIR /app/reference/star-screener
+WORKDIR /app/reference/trending-demo
 
 ENV NODE_ENV=production
 ENV PORT=3000

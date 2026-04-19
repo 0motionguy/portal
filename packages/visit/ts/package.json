@@ -1,6 +1,6 @@
 {
   "name": "@visitportal/visit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Portal visitor SDK for TypeScript — visit any Portal in 10 lines.",
   "type": "module",

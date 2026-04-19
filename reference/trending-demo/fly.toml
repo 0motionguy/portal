@@ -1,8 +1,8 @@
-# Fly.io app config for the reference Portal (star-screener).
+# Fly.io app config for the reference Portal (trending-demo, displays "Star Screener (reference demo)").
 # Deploy from the monorepo root:
-#   flyctl deploy --config reference/star-screener/fly.toml --dockerfile reference/star-screener/Dockerfile
+#   flyctl deploy --config reference/trending-demo/fly.toml --dockerfile reference/trending-demo/Dockerfile
 
-app = "star-screener"
+app = "trending-demo"
 primary_region = "iad"
 kill_signal = "SIGINT"
 kill_timeout = 5
@@ -10,7 +10,7 @@ kill_timeout = 5
 [build]
   # Dockerfile path is resolved relative to the deploy context (monorepo root when
   # invoked as documented in the README). Override with `--dockerfile` if needed.
-  dockerfile = "reference/star-screener/Dockerfile"
+  dockerfile = "reference/trending-demo/Dockerfile"
 
 [env]
   PORT = "3000"

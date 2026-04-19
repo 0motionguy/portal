@@ -24,13 +24,13 @@ pnpm install
 ### 2. Terminal 1 — start the reference Portal
 
 ```sh
-PORT=3075 PORTAL_PUBLIC_URL=http://localhost:3075 pnpm --filter star-screener start
+PORT=3075 PORTAL_PUBLIC_URL=http://localhost:3075 pnpm --filter trending-demo start
 ```
 
 Expected first line:
 
 ```
-star-screener listening on http://localhost:3075
+trending-demo (Star Screener) listening on http://localhost:3075
 ```
 
 Leave this terminal running. Wait ~2s for it to be ready before switching.

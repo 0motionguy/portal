@@ -54,7 +54,7 @@ Providers MAY co-locate `/portal` and `/portal/call` on any path as long as `cal
       }
     }
   ],
-  "call_endpoint": "https://starscreener.xyz/portal/call",
+  "call_endpoint": "https://demo.visitportal.dev/portal/call",
   "auth": "none",
   "pricing": { "model": "free" }
 }

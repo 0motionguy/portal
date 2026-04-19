@@ -56,7 +56,7 @@ const tsJs = (langCounts.get("TypeScript") ?? 0) + (langCounts.get("JavaScript")
 const python = langCounts.get("Python") ?? 0;
 const rustGo = (langCounts.get("Rust") ?? 0) + (langCounts.get("Go") ?? 0);
 
-console.log("== star-screener seed self-check ==");
+console.log("== trending-demo seed self-check ==");
 console.log(`repos:       ${repos.length}`);
 console.log(`maintainers: ${maintainers.length}`);
 console.log(`TS/JS:       ${tsJs}`);

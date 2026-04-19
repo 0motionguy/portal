@@ -5,5 +5,5 @@ packages:
   - "packages/mcp-adapter"
   - "packages/bench"
   - "packages/cli"
-  - "reference/star-screener"
+  - "reference/trending-demo"
   - "web"

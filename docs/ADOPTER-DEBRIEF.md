@@ -41,7 +41,7 @@ truth: [`packages/bench/results/tokens-matrix-v1.json`](../packages/bench/result
    /app/api/visit            → SSRF-guarded Portal proxy
    /src/components           HeroActionsSlot · LiveVisit · SlotMount · Nav
  ──────────────────────────────────────────────────────────────────────────
- /reference/star-screener    Hono server, 3 tools, 30 frozen repos
+ /reference/trending-demo    Hono server, 3 tools, 30 frozen repos
  /packages/cli               visit-portal info|call|conformance
  /packages/bench             Anthropic count_tokens measurement matrix
  ──────────────────────────────────────────────────────────────────────────
@@ -65,9 +65,9 @@ pnpm -r test` after any of these should produce green tests.
 
 | Commit | Phase | What shipped |
 |---|---|---|
-| `c82c882` | 0 · scaffold | Empty pnpm monorepo (spec, visit/ts, provider/ts, mcp-adapter, bench, reference/star-screener, web). Placeholder `bench` and `conformance` CLIs. |
+| `c82c882` | 0 · scaffold | Empty pnpm monorepo (spec, visit/ts, provider/ts, mcp-adapter, bench, reference/trending-demo, web). Placeholder `bench` and `conformance` CLIs. |
 | `98ec8d9` | 1 · spec v0.1.0 | Frozen spec + `manifest.schema.json` + 30 conformance vectors + ajv/lean dual-validator. Spec self-test asserts ajv ↔ lean parity. |
-| `d1c40ba` | 2 · reference | Hono server at `reference/star-screener/` with `top_gainers`, `search_repos`, `maintainer_profile` tools, 30-repo frozen snapshot, 12-maintainer roster. Docker + fly.toml ready. |
+| `d1c40ba` | 2 · reference | Hono server at `reference/trending-demo/` with `top_gainers`, `search_repos`, `maintainer_profile` tools, 30-repo frozen snapshot, 12-maintainer roster. Docker + fly.toml ready. |
 | `272cd53` | 3 · TS SDK | `@visitportal/visit` with `visit(url)` → `Portal`, typed `.call()`, error taxonomy (`PortalNotFound`, `ManifestInvalid`, `ToolNotInManifest`, `CallFailed`). Bundle: **2.25 kB gzipped** vs 15 kB ceiling. Lean validator kept separate from ajv so SDK doesn't ship ajv to browsers. |
 | `f6c8b32` | 5 · benchmark | Harness + MCP simulator + tasks + Anthropic client. 48-cell real-API matrix run; numbers updated the one-pager (claims went UP, 30× → 81×, because measurements were stronger than the conservative pitch). |
 | `8f1c997` | 6 · demo+polish | `@visitportal/cli` (`visit-portal info/call/conformance`), `scripts/demo.sh` (7-second end-to-end demo), install script (safety-first POSIX sh + PowerShell variants), root README, LICENSE (Apache 2.0 for code + CC0 for spec), `docs/{quickstart-provider,quickstart-visitor,demo-script,architecture,status}.md`, `.github/` templates. |
@@ -201,7 +201,7 @@ Not regressions — documented skip decisions.
   server as a Portal requires stdio introspection + schema translation;
   first-to-cut if Phase 4 slipped. Deferred to v0.2.
 - **Live deploy (as of this writing)** — Local-first. `bash scripts/demo.sh`
-  is the primary. A Fly / Vercel hookup exists in `reference/star-screener/fly.toml`
+  is the primary. A Fly / Vercel hookup exists in `reference/trending-demo/fly.toml`
   and `web/vercel.json`; deploy is a one-flag swap when ready.
 - **Full `sendMessage` bench matrix** (~$34 in Anthropic API cost) —
   the one-pager's core claim is schema overhead, which `count_tokens_only`

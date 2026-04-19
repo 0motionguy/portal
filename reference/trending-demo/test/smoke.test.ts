@@ -14,7 +14,7 @@ async function call(tool: string, params: Record<string, unknown>): Promise<unkn
   return (await res.json()) as unknown;
 }
 
-describe("star-screener smoke", () => {
+describe("trending-demo smoke", () => {
   it("GET /portal returns a valid manifest with an absolute call_endpoint", async () => {
     const res = await app.request("/portal");
     expect(res.status).toBe(200);

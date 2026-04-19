@@ -29,7 +29,7 @@ We aim to:
 - `@visitportal/provider` — provider helper library.
 - `@visitportal/bench` — reproducible benchmark harness.
 - The install script served at `visitportal.dev/install` (curl-to-sh).
-- `reference/star-screener` when run locally.
+- `reference/trending-demo` when run locally.
 
 ## Out of scope
 

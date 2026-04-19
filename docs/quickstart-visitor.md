@@ -20,7 +20,7 @@ pnpm add @visitportal/visit
 
 ## The ten-line example
 
-Against the reference Portal running locally (see [`reference/star-screener/README.md`](../reference/star-screener/README.md)):
+Against the reference Portal running locally (see [`reference/trending-demo/README.md`](../reference/trending-demo/README.md)):
 
 ```ts
 import { visit, CallFailed } from "@visitportal/visit";

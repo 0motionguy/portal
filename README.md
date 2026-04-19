@@ -19,7 +19,7 @@ Or break it apart:
 
 ```sh
 # Terminal 1 — run the reference Portal
-PORT=3075 PORTAL_PUBLIC_URL=http://localhost:3075 pnpm --filter star-screener start
+PORT=3075 PORTAL_PUBLIC_URL=http://localhost:3075 pnpm --filter trending-demo start
 
 # Terminal 2 — visit it
 pnpm --filter @visitportal/cli exec tsx src/cli.ts info http://localhost:3075/portal
@@ -53,7 +53,7 @@ MCP scales linearly at ~137 tokens per preloaded tool. Portal stays flat at 172 
 ```
  /web/public                 visitportal.dev · one-pager, install, directory
  ─────────────────────────────────────────────────────────────────────────
- /reference/star-screener    demo Portal (Hono, 3 tools, 30 repos seeded)
+ /reference/trending-demo    demo Portal (Hono, 3 tools, 30 repos seeded) — "Star Screener"
  /packages/cli               visit-portal info|call|conformance
  /packages/bench             measured MCP-vs-Portal (Anthropic count_tokens)
  ─────────────────────────────────────────────────────────────────────────
@@ -89,8 +89,9 @@ packages/
   cli/           src/{cli,commands}.ts + test
 
 reference/
-  star-screener/ Hono server, portal.json, tools/{top_gainers,search_repos,maintainer_profile}.ts,
-                 frozen 30-repo + 12-maintainer snapshot, Dockerfile, fly.toml
+  trending-demo/ Hono server, portal.json, tools/{top_gainers,search_repos,maintainer_profile}.ts,
+                 frozen 30-repo + 12-maintainer snapshot, Dockerfile, fly.toml.
+                 Manifest display name: "Star Screener (reference demo)".
 
 web/
   public/        index.html, install, install.ps1, directory.json, manifest.json
@@ -130,7 +131,7 @@ Explicit non-goals for v0.1: no task lifecycles, no stateful sessions, no server
 
 Full table with artifacts in [`docs/status.md`](docs/status.md).
 
-**Deliberately cut for the hackathon:** a live public deploy. The demo is local-first. `bash scripts/demo.sh` spins the reference Portal on port 3075 and exits clean in ~6 s. A Fly/Vercel hookup is documented in [`reference/star-screener/README.md`](reference/star-screener/README.md) and [`web/README.md`](web/README.md) for when DNS is ready.
+**Deliberately cut for the hackathon:** a live public deploy. The demo is local-first. `bash scripts/demo.sh` spins the reference Portal on port 3075 and exits clean in ~6 s. A Fly/Vercel hookup is documented in [`reference/trending-demo/README.md`](reference/trending-demo/README.md) and [`web/README.md`](web/README.md) for when DNS is ready.
 
 ## Reproducibility
 

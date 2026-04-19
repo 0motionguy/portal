@@ -9,7 +9,7 @@ You are building a Portal: one manifest at `GET /portal`, one dispatcher at `POS
 
 ## The 10-minute path
 
-There is nothing published on npm yet (hackathon week). Build a Portal directly against the raw HTTP shape — it is three fields of JSON and one POST handler. The reference implementation in [`reference/star-screener/src/server.ts`](../reference/star-screener/src/server.ts) is under 100 lines of Hono and is the canonical pattern.
+There is nothing published on npm yet (hackathon week). Build a Portal directly against the raw HTTP shape — it is three fields of JSON and one POST handler. The reference implementation in [`reference/trending-demo/src/server.ts`](../reference/trending-demo/src/server.ts) is under 100 lines of Hono and is the canonical pattern.
 
 ### 1. Write the manifest
 
@@ -97,7 +97,7 @@ See [`packages/cli/README.md`](../packages/cli/README.md) for the full CLI refer
 
 ## Deploying
 
-- **Fly.io** — the reference Portal ships on Fly with `reference/star-screener/fly.toml` + `Dockerfile`. Run `flyctl launch --no-deploy --copy-config --config fly.toml` then `flyctl deploy`. Full walkthrough in [`reference/star-screener/README.md`](../reference/star-screener/README.md).
+- **Fly.io** — the reference Portal ships on Fly with `reference/trending-demo/fly.toml` + `Dockerfile`. Run `flyctl launch --no-deploy --copy-config --config fly.toml` then `flyctl deploy`. Full walkthrough in [`reference/trending-demo/README.md`](../reference/trending-demo/README.md).
 - **Vercel** — Portal is just two HTTP handlers; any serverless runtime works. Expose `GET /portal` and `POST /portal/call` as two Edge functions and set `PORTAL_PUBLIC_URL` to the deployment URL so the manifest rewrites `call_endpoint` correctly.
 - **Cloudflare Workers** — identical shape to Vercel. One Worker, two routes. Return the manifest as JSON, dispatch by `tool` field.
 

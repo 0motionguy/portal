@@ -4,12 +4,12 @@
   "note": "Stub directory — v0.1. Grows as more Portals publish. Open a PR against web/public/directory.json to add yours.",
   "portals": [
     {
-      "name": "Star Screener",
+      "name": "Star Screener (reference demo)",
       "brief": "I screen trending GitHub repos. Ask for top gainers by weekly star delta, keyword/language matches, or a maintainer profile.",
-      "url": "https://starscreener.vercel.app/portal",
+      "url": "https://demo.visitportal.dev/portal",
       "tools": ["top_gainers", "search_repos", "maintainer_profile"],
       "added": "2026-04-19",
-      "source": "https://github.com/0motionguy/portal/tree/main/reference/star-screener"
+      "source": "https://github.com/0motionguy/portal/tree/main/reference/trending-demo"
     }
   ]
 }

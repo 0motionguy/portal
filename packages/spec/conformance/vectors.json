@@ -31,7 +31,7 @@
             }
           }
         ],
-        "call_endpoint": "https://starscreener.xyz/portal/call"
+        "call_endpoint": "https://example.com/portal/call"
       }
     },
     {
@@ -46,7 +46,7 @@
           { "name": "search_repos", "params": { "query": { "type": "string", "required": true } } },
           { "name": "maintainer_profile", "params": { "handle": { "type": "string", "required": true } } }
         ],
-        "call_endpoint": "https://starscreener.xyz/portal/call"
+        "call_endpoint": "https://example.com/portal/call"
       }
     },
     {

@@ -72,7 +72,7 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.17)
 
-  reference/star-screener:
+  reference/trending-demo:
     dependencies:
       '@hono/node-server':
         specifier: ^1.13.7

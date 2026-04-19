@@ -1,6 +1,6 @@
 {
   "portal_version": "0.1",
-  "name": "Star Screener",
+  "name": "Star Screener (reference demo)",
   "brief": "I screen trending GitHub repos. Ask for top gainers by weekly star delta, keyword/language matches, or a maintainer profile.",
   "tools": [
     {
@@ -27,7 +27,7 @@
       }
     }
   ],
-  "call_endpoint": "https://starscreener.xyz/portal/call",
+  "call_endpoint": "https://demo.visitportal.dev/portal/call",
   "auth": "none",
   "pricing": { "model": "free" }
 }

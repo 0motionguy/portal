@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Portal demo — one-click reproduction of the visitportal.dev one-pager flow.
-# Starts star-screener, runs the three CLI commands + conformance, cleans up.
+# Starts trending-demo, runs the three CLI commands + conformance, cleans up.
 #
 # Usage:
 #   bash scripts/demo.sh          # uses PORT=3075 by default
@@ -32,11 +32,11 @@ fail()    { printf "  \033[31mFAIL\033[0m %s\n" "$1"; exit 1; }
 
 START_TS=$(date +%s)
 
-section "1. Start star-screener on port $PORT"
+section "1. Start trending-demo on port $PORT"
 PORT="$PORT" PORTAL_PUBLIC_URL="$BASE" \
-  pnpm --filter star-screener start > /tmp/star-screener.log 2>&1 &
+  pnpm --filter trending-demo start > /tmp/trending-demo.log 2>&1 &
 SERVER_PID=$!
-ok "pid=$SERVER_PID log=/tmp/star-screener.log"
+ok "pid=$SERVER_PID log=/tmp/trending-demo.log"
 
 section "2. Wait for /healthz (10s timeout)"
 WAITED=0
@@ -44,8 +44,8 @@ until curl -sf "$BASE/healthz" > /dev/null 2>&1; do
   sleep 0.2
   WAITED=$((WAITED + 1))
   if [ "$WAITED" -gt 50 ]; then
-    echo "--- star-screener.log ---"
-    cat /tmp/star-screener.log || true
+    echo "--- trending-demo.log ---"
+    cat /tmp/trending-demo.log || true
     fail "healthz never returned 200 within 10s"
   fi
 done

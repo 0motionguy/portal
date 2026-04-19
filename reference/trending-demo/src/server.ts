@@ -113,7 +113,7 @@ const isMain = entry ? resolve(fileURLToPath(import.meta.url)) === resolve(entry
 if (isMain) {
   const port = Number(process.env.PORT ?? 3000);
   serve({ fetch: createApp().fetch, port }, (info) => {
-    console.log(`star-screener listening on http://localhost:${info.port}`);
+    console.log(`trending-demo (Star Screener) listening on http://localhost:${info.port}`);
     console.log(`  GET  /portal`);
     console.log(`  POST /portal/call`);
   });

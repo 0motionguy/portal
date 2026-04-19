@@ -5,7 +5,7 @@ TypeScript visitor SDK for Portal — visit any Portal in ten lines, no install 
 ```ts
 import { visit } from "@visitportal/visit";
 
-const portal = await visit("https://starscreener.xyz/portal");
+const portal = await visit("https://demo.visitportal.dev/portal");
 const top = await portal.call("top_gainers", { limit: 3 });
 // → [{ name_with_owner: "anthropics/claude-code", delta_week: 1620, ... }, ...]
 ```

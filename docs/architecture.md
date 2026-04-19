@@ -10,7 +10,7 @@ surface. Everything else is a rule.
 |  /web/public                                                  |
 |    visitportal.dev — the one-pager, install curl, directory   |
 +---------------------------------------------------------------+
-|  /reference/star-screener         (demo Portal — 3 tools)     |
+|  /reference/trending-demo         (demo Portal — 3 tools)     |
 |  /packages/cli                    (visit-portal CLI)          |
 |  /packages/bench                  (measured MCP vs Portal)    |
 +---------------------------------------------------------------+
@@ -67,7 +67,7 @@ intentionally and bump `portal_version` if the spec moves.
   the drive-by experience from any shell; wraps the TS SDK and the
   spec's conformance runner.
 
-- **`reference/star-screener`** — a v0.1-conformant Portal over a
+- **`reference/trending-demo`** — a v0.1-conformant Portal over a
   frozen GitHub-star-snapshot dataset (30 repos, 12 maintainers). The
   one thing the demo shell talks to.
 
@@ -77,7 +77,7 @@ intentionally and bump `portal_version` if the spec moves.
 ## The visit, in shape
 
 ```
- visitor                                provider (star-screener)
+ visitor                                provider (trending-demo)
  -------                                ------------------------
  GET /portal   ────────────────────▶    return manifest JSON
  validate manifest ◀────────────────    (per @visitportal/spec schema)
