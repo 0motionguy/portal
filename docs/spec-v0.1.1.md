@@ -1,9 +1,10 @@
-# Portal v0.1.0 — Specification
+# Portal v0.1.1 — Specification
 
-**Status:** FROZEN. Published 2026-04-19 as `v0.1.0`.
+**Status:** CURRENT. Published 2026-04-19 as `v0.1.1`. Supersedes v0.1.0 (additive clarifications only; every v0.1.0 conformant portal remains v0.1.1 conformant).
 **License:** Public domain. No copyright is asserted over this specification.
 **Normative schema:** [`packages/spec/manifest.schema.json`](../packages/spec/manifest.schema.json).
 **Conformance suite:** [`packages/spec/conformance/`](../packages/spec/conformance/).
+**Changelog vs v0.1.0:** see "Changelog" at end of document.
 
 ---
 
@@ -162,9 +163,9 @@ Base Portal implementations (visitor SDKs, provider helpers, MCP adapter, benchm
 
 ## 9. Conformance
 
-A provider is **v0.1.0-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
+A provider is **v0.1.1-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
 
-A visitor SDK is **v0.1.0-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
+A visitor SDK is **v0.1.1-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
 
 `pnpm conformance <url>` runs the suite against a live URL and emits a pass/fail report.
 
@@ -179,4 +180,21 @@ The following top-level manifest keys are reserved for future minor versions and
 - All bodies are JSON (`Content-Type: application/json; charset=utf-8`).
 - Both endpoints MUST accept `Accept: application/json`.
 - Providers SHOULD set `Cache-Control: public, max-age=60` or shorter on `GET /portal` to allow manifest caching without breaking the fire-and-forget model.
-- CORS: providers serving browser-resident visitors SHOULD allow `*` on `GET /portal` and configure `POST /portal/call` per their auth model.
+- CORS: providers serving browser-resident visitors SHOULD allow `*` on `GET /portal` and configure `POST /portal/call` per their auth model. See Appendix C for normative CORS requirements.
+
+## Changelog
+
+### v0.1.1 (2026-04-19) — additive clarifications
+
+All v0.1.0-conformant providers remain v0.1.1-conformant. Changes are strict tightenings that align the schema with the spec text, plus two new normative sections for concerns that were previously under-specified:
+
+- **§4 Manifest.** `call_endpoint` pattern now requires `https://` with a loopback escape hatch (`http://localhost` and `http://127.0.0.1`) for local development. v0.1.0 regex permitted `http(s)://` for any host; the v0.1.0 prose already required HTTPS, so the schema now matches the prose.
+- **§6 Error codes.** No enum change. `RATE_LIMITED` was already in the v0.1.0 enum; its usage is formalised in the new Appendix D.
+- **Appendix C (NEW).** Normative CORS requirements for browser-resident visitors.
+- **Appendix D (NEW).** SHOULD-level rate-limit defaults and `Retry-After` guidance.
+
+No breaking changes. Visitor SDKs that validate manifests against the v0.1.0 schema will continue to accept every v0.1.1 manifest (the pattern tightening rejects a subset of what v0.1.0 allowed, never adds).
+
+### v0.1.0 (2026-04-19) — initial freeze
+
+First public cut for the Claude Code hackathon submission. Frozen; superseded by v0.1.1 the same day after adopter-debrief findings.

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://visitportal.dev/schema/manifest-v0.1.0.json",
-  "title": "Portal manifest (v0.1.0)",
+  "$id": "https://visitportal.dev/schema/manifest-v0.1.1.json",
+  "title": "Portal manifest (v0.1.1)",
   "description": "The JSON document returned from GET /portal. Describes the service, its tools, and optional auth/pricing metadata.",
   "type": "object",
   "required": ["portal_version", "name", "brief", "tools", "call_endpoint"],

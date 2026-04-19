@@ -92,6 +92,6 @@ parity assertion in the spec self-test.
 
 ## Spec
 
-This SDK conforms to [Portal v0.1.0](../../../docs/spec-v0.1.0.md). Every
+This SDK conforms to [Portal v0.1.1](../../../docs/spec-v0.1.1.md). Every
 `manifest_valid` vector from `@visitportal/spec/vectors` is accepted; every
 `manifest_invalid` vector is rejected as `ManifestInvalid`.

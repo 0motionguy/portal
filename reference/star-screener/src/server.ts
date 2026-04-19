@@ -40,7 +40,7 @@ function errorEnvelope(message: string, code: ErrorCode) {
 export function createApp(): Hono {
   const app = new Hono();
 
-  // TODO: add CORS middleware — see spec-v0.1.0.md Appendix B (Phase 6 web work).
+  // TODO: add CORS middleware — see spec-v0.1.1.md Appendix C (Phase 6 web work).
 
   app.get("/", (c) => c.redirect("/portal"));
 

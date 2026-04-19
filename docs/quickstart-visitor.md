@@ -12,7 +12,7 @@ cd visitportal.dev && pnpm install
 # From a package inside the monorepo, depend on "@visitportal/visit": "workspace:*".
 ```
 
-After v0.1.0 publishes:
+After v0.1.1 publishes:
 
 ```sh
 pnpm add @visitportal/visit
@@ -49,7 +49,7 @@ All errors extend `PortalError`. Branch with `instanceof`:
 | `ToolNotInManifest` | Client called `.call("x")` but `"x"` isn't in `manifest.tools[]` | Client bug — fix caller |
 | `CallFailed` | HTTP failure, malformed envelope, or `{ ok:false, error, code }` | Inspect `err.code` |
 
-`CallFailed.code` is one of: `NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL` ([spec §6](./spec-v0.1.0.md#6-error-codes-normative)).
+`CallFailed.code` is one of: `NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL` ([spec §6](./spec-v0.1.1.md#6-error-codes-normative)).
 
 ## CLI alternative
 
@@ -65,6 +65,6 @@ Add `--json` to any command to get machine-readable output for piping into `jq`.
 
 ## Next steps
 
-- [Spec v0.1.0](./spec-v0.1.0.md) — two endpoints, one manifest, six pages total.
+- [Spec v0.1.1](./spec-v0.1.1.md) — two endpoints, one manifest, six pages total.
 - [Benchmark results](../packages/bench/results/tokens-matrix-v1.md) — measured Portal overhead is flat 172 tokens regardless of tool count; MCP scales linearly (13,929 tokens at 100 tools, 54,677 at 400).
 - [`docs/demo-script.md`](./demo-script.md) — reproduce the one-pager's terminal flow in 7 seconds.

@@ -1,4 +1,4 @@
-// Portal v0.1.0 conformance runner.
+// Portal v0.1.1 conformance runner.
 //
 // Two modes of use:
 //   1. `validateManifest(obj)` — pure function. Given a parsed manifest, returns
@@ -11,7 +11,7 @@
 // No dependencies on any visitor SDK — this package is the authority and must
 // not pull in @visitportal/visit. `fetch` is the only IO primitive.
 //
-// Spec: docs/spec-v0.1.0.md · Schema: ../manifest.schema.json
+// Spec: docs/spec-v0.1.1.md · Schema: ../manifest.schema.json
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";

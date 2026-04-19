@@ -1,6 +1,6 @@
 {
-  "$comment": "Portal v0.1.0 conformance vectors. Every provider MUST pass every vector; every visitor SDK MUST handle every response shape. Categories: manifest_valid, manifest_invalid, call_pair. See docs/spec-v0.1.0.md §9.",
-  "spec_version": "0.1.0",
+  "$comment": "Portal v0.1.1 conformance vectors. Every provider MUST pass every vector; every visitor SDK MUST handle every response shape. Categories: manifest_valid, manifest_invalid, call_pair. See docs/spec-v0.1.1.md §9.",
+  "spec_version": "0.1.1",
   "generated": "2026-04-19",
   "manifest_valid": [
     {

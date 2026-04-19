@@ -11,7 +11,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ documentation · v0.1.0</span>
+        <span className="eyebrow">▶ documentation · v0.1.1</span>
         <h1>
           Ship a Portal in <em>an hour.</em> Visit one in <em>three lines.</em>
         </h1>
@@ -112,9 +112,9 @@ app.post("/portal/call", async (c) => {
 
         <h2 id="spec-glance">Spec — <em>at a glance</em></h2>
         <p>
-          Full text: <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.0.md">
-            docs/spec-v0.1.0.md
-          </a> (public domain). One page of core + three appendices.
+          Full text: <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.1.md">
+            docs/spec-v0.1.1.md
+          </a> (public domain). One page of core + three appendices plus CORS and rate-limit appendices added in v0.1.1.
         </p>
         <table>
           <thead>

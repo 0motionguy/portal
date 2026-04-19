@@ -1,6 +1,6 @@
 # @visitportal/cli
 
-`visit-portal` — drive-by tool invocation against any Portal, from any shell. Fetches the manifest, validates against v0.1.0, and either prints it (`info`), calls a tool (`call`), or runs the live conformance probe (`conformance`).
+`visit-portal` — drive-by tool invocation against any Portal, from any shell. Fetches the manifest, validates against v0.1.1, and either prints it (`info`), calls a tool (`call`), or runs the live conformance probe (`conformance`).
 
 Built on top of [`@visitportal/visit`](../visit/ts/README.md); no extra dependencies.
 
@@ -117,4 +117,4 @@ visit-portal conformance http://localhost:3075/portal --json | jq '.failures | l
 
 ## Spec
 
-This CLI is thin — every behavior follows the [visit SDK](../visit/ts/README.md) and the [Portal v0.1.0 spec](../../docs/spec-v0.1.0.md). If CLI output and the spec disagree, the spec wins.
+This CLI is thin — every behavior follows the [visit SDK](../visit/ts/README.md) and the [Portal v0.1.1 spec](../../docs/spec-v0.1.1.md). If CLI output and the spec disagree, the spec wins.

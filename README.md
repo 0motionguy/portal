@@ -2,11 +2,11 @@
 
 > Two endpoints. One manifest. Any LLM client can visit cold.
 
-**Built with Opus 4.7** · Portal v0.1.0 draft · Claude Code hackathon, Apr 2026
+**Built with Opus 4.7** · Portal v0.1.1 · Claude Code hackathon, Apr 2026
 
 Portal is an open HTTP standard — two endpoints, one manifest, fire-and-forget — that lets any LLM client with function-calling discover and invoke a service's tools without pre-configuration. It is a complement to MCP, not a replacement: MCP = installed tools (trusted, daily), Portal = drive-by visits (long tail, zero residue).
 
-This repo contains the v0.1.0 spec, a conformance runner, a TypeScript visitor SDK, a CLI, a reference Portal, and a reproducible MCP-vs-Portal benchmark.
+This repo contains the v0.1.1 spec, a conformance runner, a TypeScript visitor SDK, a CLI, a reference Portal, and a reproducible MCP-vs-Portal benchmark.
 
 ## See it in 30 seconds
 
@@ -71,7 +71,7 @@ Flow is strictly downhill: upper layers import from lower, never the other way. 
 
 ```
 docs/
-  spec-v0.1.0.md                the frozen spec
+  spec-v0.1.1.md                the current spec (supersedes v0.1.0)
   one-pager.html                the pitch (rendered at web/public/index.html)
   quickstart-provider.md        ship a Portal in 10 min
   quickstart-visitor.md         visit a Portal in 10 lines
@@ -109,9 +109,9 @@ scripts/
 - **CLI:** [`packages/cli/README.md`](packages/cli/README.md) — `visit-portal` reference.
 - **Demo:** [`docs/demo-script.md`](docs/demo-script.md) — the human-runnable script behind `scripts/demo.sh`.
 
-## Spec — v0.1.0
+## Spec — v0.1.1
 
-The [spec](docs/spec-v0.1.0.md) is one printed page of core + three appendices. Two endpoints (`GET /portal`, `POST /portal/call`), one manifest, a five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`), dual params form (simple sugar + JSON Schema escape hatch).
+The [spec](docs/spec-v0.1.1.md) is one printed page of core + three appendices (plus CORS and rate-limit appendices added in v0.1.1). Two endpoints (`GET /portal`, `POST /portal/call`), one manifest, a five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`), dual params form (simple sugar + JSON Schema escape hatch).
 
 Explicit non-goals for v0.1: no task lifecycles, no stateful sessions, no server-initiated messages, no streaming, no multi-agent choreography. Those either live in MCP or A2A, or arrive as Portal Extensions (PE-001 verified identity, PE-002 x402 micropayments, etc.).
 

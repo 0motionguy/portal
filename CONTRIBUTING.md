@@ -67,11 +67,12 @@ tool.
 
 ## Touching the spec
 
-Don't, unless you mean it. `docs/spec-v0.1.0.md` is **frozen** as
-published on 2026-04-19. A spec change requires:
+Don't, unless you mean it. `docs/spec-v0.1.1.md` is the **current** spec
+(v0.1.0 was superseded the same day by v0.1.1; both are preserved in git
+history). A spec change requires:
 
 - A new file `docs/spec-v0.1.x.md` (minor) or `v0.2.0.md` (breaking),
-  not an edit to `v0.1.0`.
+  not an edit to the current published version.
 - A matching bump in `@visitportal/spec`'s `package.json`.
 - New vectors in `conformance/vectors.json` exercising the change.
 
