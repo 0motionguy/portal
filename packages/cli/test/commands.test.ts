@@ -127,6 +127,62 @@ describe("conformance", () => {
     const r = await run("conformance", p, [], { help: false, json: false });
     expect(r.exitCode).toBe(0);
     expect(r.output).toContain("manifest valid");
-    expect(r.output).toContain("NOT_FOUND probe");
+    expect(r.output).toContain("NOT_FOUND probe round-tripped");
+    expect(r.output).not.toContain("✗");
+  });
+
+  test("PASS exits 0 when provider returns proper NOT_FOUND envelope", async () => {
+    // Stand up a provider that faithfully returns a NOT_FOUND envelope for
+    // any unknown tool (including the probe). This re-uses the main test
+    // server shape but verifies the new raw-fetch probe path end-to-end.
+    const p = await visit(`${baseUrl}/portal`);
+    const r = await run("conformance", p, [], { help: false, json: true });
+    expect(r.exitCode).toBe(0);
+    const parsed = JSON.parse(r.output ?? "") as {
+      passes: string[];
+      failures: string[];
+    };
+    expect(parsed.failures).toEqual([]);
+    expect(parsed.passes.some((s) => s.includes("round-tripped"))).toBe(true);
+  });
+
+  test("FAIL exits non-zero when provider returns unexpected shape for unknown tool", async () => {
+    // Regression: previously the probe went through @visitportal/visit's
+    // portal.call(), which throws ToolNotInManifest CLIENT-SIDE before the
+    // wire — so non-conforming providers falsely PASSed. With the raw fetch,
+    // a provider that echoes { ok: true, result: [] } must now be caught.
+    const badServer = createServer((req, res) => {
+      const url = req.url ?? "";
+      const method = req.method ?? "";
+      if (method === "GET" && url === "/portal") {
+        res.writeHead(200, { "content-type": "application/json" });
+        const addr = badServer.address();
+        if (!addr || typeof addr === "string") throw new Error("no address");
+        const badBase = `http://127.0.0.1:${addr.port}`;
+        res.end(JSON.stringify(manifest(`${badBase}/portal/call`)));
+        return;
+      }
+      if (method === "POST" && url === "/portal/call") {
+        // Buggy: returns OK envelope for the probe tool instead of NOT_FOUND.
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: true, result: [] }));
+        return;
+      }
+      res.writeHead(404);
+      res.end();
+    });
+    await new Promise<void>((r) => badServer.listen(0, "127.0.0.1", r));
+    try {
+      const addr = badServer.address();
+      if (!addr || typeof addr === "string") throw new Error("no address");
+      const badUrl = `http://127.0.0.1:${addr.port}/portal`;
+      const p = await visit(badUrl);
+      const r = await run("conformance", p, [], { help: false, json: false });
+      expect(r.exitCode).toBe(1);
+      expect(r.output).toContain("NOT_FOUND probe returned wrong envelope");
+      expect(r.output).toContain("✗");
+    } finally {
+      await new Promise<void>((r) => badServer.close(() => r()));
+    }
   });
 });

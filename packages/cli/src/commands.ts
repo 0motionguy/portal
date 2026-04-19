@@ -1,9 +1,7 @@
-import {
-  CallFailed,
-  type Portal,
-  ToolNotInManifest,
-} from "@visitportal/visit";
+import { type Portal } from "@visitportal/visit";
 import type { CliFlags } from "./cli.ts";
+
+const PROBE_TOOL_NAME = "__visitportal_cli_probe__";
 
 export interface CommandResult {
   exitCode: number;
@@ -81,19 +79,32 @@ async function conformance(portal: Portal, flags: CliFlags): Promise<CommandResu
   const passes: string[] = [];
   passes.push(`manifest valid (tools: ${portal.tools.length})`);
 
+  // Probe with a tool name that MUST NOT exist on the provider. We go direct
+  // to call_endpoint (bypassing @visitportal/visit.call, which would throw
+  // ToolNotInManifest client-side before the request ever hits the wire —
+  // that would let non-conforming providers falsely PASS).
   try {
-    await portal.call("__visitportal_cli_probe__", {});
-    failures.push("NOT_FOUND probe succeeded — expected a CallFailed with code=NOT_FOUND");
-  } catch (e) {
-    if (e instanceof ToolNotInManifest) {
-      passes.push("NOT_FOUND probe caught client-side (ToolNotInManifest)");
-    } else if (e instanceof CallFailed && e.code === "NOT_FOUND") {
-      passes.push("NOT_FOUND probe round-tripped with correct envelope");
-    } else if (e instanceof CallFailed) {
-      failures.push(`NOT_FOUND probe returned wrong code: ${e.code}`);
+    const res = await fetch(portal.manifest.call_endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ tool: PROBE_TOOL_NAME, params: {} }),
+    });
+    if (!res.ok) {
+      failures.push(
+        `NOT_FOUND probe got HTTP ${res.status} — expected 200 with NOT_FOUND envelope`,
+      );
     } else {
-      failures.push(`NOT_FOUND probe failed unexpectedly: ${describe(e)}`);
+      const body = (await res.json()) as unknown;
+      if (!isNotFoundEnvelope(body)) {
+        failures.push(
+          `NOT_FOUND probe returned wrong envelope: ${JSON.stringify(body)}`,
+        );
+      } else {
+        passes.push("NOT_FOUND probe round-tripped with correct envelope");
+      }
     }
+  } catch (e) {
+    failures.push(`NOT_FOUND probe failed unexpectedly: ${describe(e)}`);
   }
 
   const body = flags.json
@@ -103,6 +114,16 @@ async function conformance(portal: Portal, flags: CliFlags): Promise<CommandResu
         ...failures.map((f) => `  ✗ ${f}`),
       ].join("\n");
   return { exitCode: failures.length === 0 ? 0 : 1, output: body };
+}
+
+function isNotFoundEnvelope(
+  x: unknown,
+): x is { ok: false; code: "NOT_FOUND"; error: string } {
+  if (typeof x !== "object" || x === null) return false;
+  const r = x as Record<string, unknown>;
+  return (
+    r.ok === false && r.code === "NOT_FOUND" && typeof r.error === "string"
+  );
 }
 
 function stringify(x: unknown): string {
