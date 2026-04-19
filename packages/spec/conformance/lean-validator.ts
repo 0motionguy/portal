@@ -28,7 +28,10 @@ const VALID_PRICING = new Set(["free", "x402"]);
 const VALID_PARAM_TYPES = new Set(["string", "number", "boolean", "object", "array"]);
 const VERSION_RE = /^0\.1(\.[0-9]+)?$/;
 const TOOL_NAME_RE = /^[a-z][a-z0-9_]*$/;
-const URL_RE = /^https?:\/\//;
+// call_endpoint must be https://, with a loopback escape hatch for local
+// development (http://localhost and http://127.0.0.1 only). Matches the
+// "call_endpoint.pattern" constraint in manifest.schema.json.
+const URL_RE = /^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?(\/|$))/;
 
 export function leanValidate(obj: unknown): LeanResult {
   const errs: string[] = [];
@@ -69,7 +72,7 @@ export function leanValidate(obj: unknown): LeanResult {
   if ("call_endpoint" in obj) {
     const e = obj.call_endpoint;
     if (typeof e !== "string" || !URL_RE.test(e)) {
-      errs.push(`call_endpoint: must be an http(s) URL`);
+      errs.push(`call_endpoint: must be https:// (or http://localhost for local dev)`);
     }
   }
 

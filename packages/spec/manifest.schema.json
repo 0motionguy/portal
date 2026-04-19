@@ -32,9 +32,9 @@
     },
     "call_endpoint": {
       "type": "string",
-      "description": "Absolute HTTPS URL that accepts POST /portal/call-style requests.",
+      "description": "Absolute HTTPS URL that accepts POST /portal/call-style requests. Plain http:// is allowed only for the loopback hosts 'localhost' and '127.0.0.1' (local development); in production the endpoint MUST be https://.",
       "format": "uri",
-      "pattern": "^https?://"
+      "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?(/|$))"
     },
     "auth": {
       "type": "string",

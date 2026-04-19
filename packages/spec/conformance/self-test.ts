@@ -24,7 +24,10 @@ for (const v of vectors.manifest_invalid) {
 
 const anyFailures = report.failures.length > 0 || disagreements.length > 0;
 if (!anyFailures) {
-  console.log(`spec self-test · ${report.totals.pass} vectors OK · ajv↔lean agree on all 20`);
+  const manifestCount = vectors.manifest_valid.length + vectors.manifest_invalid.length;
+  console.log(
+    `spec self-test · ${report.totals.pass} vectors OK · ajv↔lean agree on all ${manifestCount} manifest vectors`,
+  );
   process.exit(0);
 }
 

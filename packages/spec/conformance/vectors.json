@@ -141,6 +141,17 @@
         "tools": [{ "name": "echo", "params": {} }],
         "call_endpoint": "https://example.com/portal/call"
       }
+    },
+    {
+      "id": "MV-11-loopback-http",
+      "note": "http://localhost and http://127.0.0.1 are the only permitted plain-http hosts; used for local development.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "LocalDev",
+        "brief": "Local dev portal.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "http://localhost:3075/portal/call"
+      }
     }
   ],
   "manifest_invalid": [
@@ -253,13 +264,24 @@
     },
     {
       "id": "MI-10-non-https-endpoint",
-      "violates": "call_endpoint must be an http(s) URL",
+      "violates": "call_endpoint must be https:// (or http://localhost for local dev)",
       "manifest": {
         "portal_version": "0.1",
         "name": "WrongScheme",
         "brief": "ftp is not allowed.",
         "tools": [{ "name": "x" }],
         "call_endpoint": "ftp://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-11-plain-http-public-host",
+      "violates": "call_endpoint must be https:// in production (only http://localhost and http://127.0.0.1 are allowed as a loopback escape hatch)",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "PlainHttpHost",
+        "brief": "http:// is only permitted on loopback hosts.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "http://example.com/portal/call"
       }
     }
   ],
