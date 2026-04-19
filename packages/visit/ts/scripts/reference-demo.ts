@@ -1,6 +1,9 @@
-// End-to-end integration check: @visitportal/visit against a live Portal.
-// Usage: tsx scripts/integration.ts <portal-url>
-//   defaults to http://localhost:3075/portal (star-screener dev server).
+// Runs the reference adopter end-to-end for demo purposes. Not a spec
+// conformance tool — for that use runSmokeConformance() or validateAgainstVectors()
+// from @visitportal/spec, or the `visit-portal conformance <url>` CLI subcommand.
+//
+// Usage: tsx scripts/reference-demo.ts <portal-url>
+//   defaults to http://localhost:3075/portal (reference Portal dev server).
 
 import { CallFailed, ToolNotInManifest, visit } from "../src/index.ts";
 
