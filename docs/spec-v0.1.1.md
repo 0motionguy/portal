@@ -182,6 +182,42 @@ The following top-level manifest keys are reserved for future minor versions and
 - Providers SHOULD set `Cache-Control: public, max-age=60` or shorter on `GET /portal` to allow manifest caching without breaking the fire-and-forget model.
 - CORS: providers serving browser-resident visitors SHOULD allow `*` on `GET /portal` and configure `POST /portal/call` per their auth model. See Appendix C for normative CORS requirements.
 
+## Appendix C — CORS (normative)
+
+Portals MUST support cross-origin requests on both `/portal` and `/portal/call` so that browser-resident visitors (web-based LLM clients, playgrounds, dashboards) can discover and invoke tools without a server-side proxy.
+
+### `GET /portal`
+
+- Respond to `OPTIONS /portal` with **`204 No Content`** and these headers:
+  - `Access-Control-Allow-Origin: *`
+  - `Access-Control-Allow-Methods: GET, OPTIONS`
+  - `Access-Control-Allow-Headers: Content-Type`
+  - `Access-Control-Max-Age: 86400` (SHOULD, for browser caching)
+- On the `GET /portal` response itself, include:
+  - `Access-Control-Allow-Origin: *`
+
+### `POST /portal/call`
+
+- Respond to `OPTIONS /portal/call` with **`204 No Content`** and these headers:
+  - `Access-Control-Allow-Methods: POST, OPTIONS`
+  - `Access-Control-Allow-Headers: Content-Type, Authorization, X-API-Key`
+  - `Access-Control-Max-Age: 86400` (SHOULD)
+  - `Access-Control-Allow-Origin`: per auth mode (below)
+- On the `POST /portal/call` response itself, include `Access-Control-Allow-Origin` per auth mode:
+
+| `auth`     | `Access-Control-Allow-Origin`                                    | `Access-Control-Allow-Credentials` |
+|------------|------------------------------------------------------------------|------------------------------------|
+| `none`     | `*` (MUST), OR echo `Origin` (OK)                                | omit                               |
+| `api_key`  | SHOULD echo `Origin` (MUST if key is expected in a cookie)       | `true` when echoing `Origin`       |
+| `erc8004`  | SHOULD echo `Origin` (MUST if credentials are sent)              | `true` when echoing `Origin`       |
+| `x402`     | MUST echo `Origin` (payment headers are credentialed)            | `true`                             |
+
+Echoing `Origin` rather than `*` is REQUIRED whenever the visitor is expected to send credentials (cookies, `Authorization` header with a secret). Browsers reject credentialed requests against wildcard origins.
+
+### Non-browser visitors
+
+Visitors that do not originate from a browser (server-side SDKs, CLI clients, native apps) MUST NOT rely on CORS headers for access control. CORS is a defence-in-depth mechanism for browser-resident clients only; it is not an authentication layer.
+
 ## Changelog
 
 ### v0.1.1 (2026-04-19) — additive clarifications
