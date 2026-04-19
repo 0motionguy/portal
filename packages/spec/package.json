@@ -7,7 +7,8 @@
   "exports": {
     "./schema": "./manifest.schema.json",
     "./vectors": "./conformance/vectors.json",
-    "./runner": "./conformance/runner.ts"
+    "./runner": "./conformance/runner.ts",
+    "./lean-validator": "./conformance/lean-validator.ts"
   },
   "files": ["manifest.schema.json", "conformance/"],
   "scripts": {

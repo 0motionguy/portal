@@ -1,19 +1,41 @@
-// `pnpm --filter @visitportal/spec test` entry.
-// Runs every manifest vector against the schema and asserts each fails/passes
-// as declared. This is the contract that protects the spec from drift.
+// `pnpm --filter @visitportal/spec test` entry. Two passes:
+// 1) Every vector is handled correctly by the ajv validator (authoritative).
+// 2) The lean validator (shipped to SDKs) agrees with ajv on every manifest
+//    vector — same ok/!ok decision. Strings differ by design; the decision
+//    must not.
 
-import { runVectorSuite } from "./runner.ts";
+import { getVectors, runVectorSuite, validateManifest } from "./runner.ts";
+import { leanValidate } from "./lean-validator.ts";
 
 const report = runVectorSuite();
+const vectors = getVectors();
 
-if (report.failures.length === 0) {
-  console.log(`spec self-test · ${report.totals.pass} vectors OK`);
+const disagreements: string[] = [];
+for (const v of vectors.manifest_valid) {
+  const a = validateManifest(v.manifest).ok;
+  const l = leanValidate(v.manifest).ok;
+  if (a !== l) disagreements.push(`${v.id}: ajv=${a} lean=${l} (expected both ok)`);
+}
+for (const v of vectors.manifest_invalid) {
+  const a = validateManifest(v.manifest).ok;
+  const l = leanValidate(v.manifest).ok;
+  if (a !== l) disagreements.push(`${v.id}: ajv=${a} lean=${l} (expected both fail)`);
+}
+
+const anyFailures = report.failures.length > 0 || disagreements.length > 0;
+if (!anyFailures) {
+  console.log(`spec self-test · ${report.totals.pass} vectors OK · ajv↔lean agree on all 20`);
   process.exit(0);
-} else {
-  console.error(`spec self-test · ${report.totals.fail} vector failure(s):`);
+}
+
+if (report.failures.length > 0) {
+  console.error(`ajv vector failures:`);
   for (const f of report.failures) {
     console.error(`  - ${f.id} (expected ${f.expected}): ${f.detail}`);
   }
-  console.error(`  pass=${report.totals.pass} fail=${report.totals.fail}`);
-  process.exit(1);
 }
+if (disagreements.length > 0) {
+  console.error(`ajv ↔ lean disagreements (SDK validator drift):`);
+  for (const d of disagreements) console.error(`  - ${d}`);
+}
+process.exit(1);

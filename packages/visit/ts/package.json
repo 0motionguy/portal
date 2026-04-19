@@ -1,13 +1,25 @@
 {
   "name": "@visitportal/visit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Portal visitor SDK for TypeScript — visit any Portal in 10 lines.",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": ["dist", "README.md"],
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": ["src", "README.md"],
   "scripts": {
-    "test": "echo \"(visit/ts) no tests yet\" && exit 0"
+    "build": "tsc --noEmit",
+    "test": "vitest run",
+    "size": "tsx scripts/size.ts"
+  },
+  "dependencies": {
+    "@visitportal/spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.24.2",
+    "vitest": "^2.1.8"
   }
 }
