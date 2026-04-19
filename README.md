@@ -37,6 +37,20 @@ BENCH_MODE=count_tokens_only pnpm --filter @visitportal/bench bench
 # 48 cells against Anthropic's count_tokens API in ~20 s, ~$0.10 total
 ```
 
+## First Adopter Debrief
+
+Portal was independently adopted by a production service (Star Screener)
+in ~2h15m of engineering time. The protocol itself survived contact
+with reality — 8/8 conformance checks passed on the first green run.
+Of that 2h15m, roughly 25 minutes was avoidable friction (package not
+on npm, script naming confusion) — all of which is fixed in v0.1.1.
+
+> "The core spec is solid. The adopter onramp is what needs work."
+> — first production adopter, April 2026
+
+Full debrief: [`docs/ADOPTER-DEBRIEF.md`](docs/ADOPTER-DEBRIEF.md)
+Roadmap addressing remaining items: [`docs/ROADMAP.md`](docs/ROADMAP.md)
+
 ## The measured numbers
 
 Source of truth: [`packages/bench/results/tokens-matrix-v1.md`](packages/bench/results/tokens-matrix-v1.md). Every cell writes to [tokens-matrix-v1.json](packages/bench/results/tokens-matrix-v1.json).
