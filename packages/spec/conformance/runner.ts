@@ -19,18 +19,30 @@
 //
 // Spec: docs/spec-v0.1.1.md · Schema: ../manifest.schema.json
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import Ajv, { type ErrorObject, type ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
 
+// Resolve spec artifacts relative to the package root regardless of whether
+// this module is executing from its source location (packages/spec/conformance/)
+// or the published/compiled location (packages/spec/dist/conformance/). The
+// package root is either one or two levels up.
 const here = dirname(fileURLToPath(import.meta.url));
-const schemaPath = resolve(here, "..", "manifest.schema.json");
-const vectorsPath = resolve(here, "vectors.json");
+const schemaPath = findUp("manifest.schema.json", here);
+const vectorsPath = findUp("conformance/vectors.json", here);
 
 const schema = JSON.parse(readFileSync(schemaPath, "utf8")) as Record<string, unknown>;
 const vectors = JSON.parse(readFileSync(vectorsPath, "utf8")) as VectorsFile;
+
+function findUp(rel: string, from: string): string {
+  for (const up of ["..", "../.."]) {
+    const candidate = resolve(from, up, rel);
+    if (existsSync(candidate)) return candidate;
+  }
+  throw new Error(`@visitportal/spec: could not locate ${rel} near ${from}`);
+}
 
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);

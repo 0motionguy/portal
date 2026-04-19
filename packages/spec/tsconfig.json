@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "noEmit": false,
+    "rootDir": ".",
+    "composite": false,
+    "types": ["node"]
+  },
+  "include": ["index.ts", "conformance/*.ts"],
+  "exclude": ["conformance/self-test.ts", "conformance/mock-server.ts", "node_modules", "dist"]
+}
