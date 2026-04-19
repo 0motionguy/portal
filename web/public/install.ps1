@@ -1,7 +1,9 @@
 # visit-portal installer (PowerShell 5+). Windows.
 # No admin elevation. No silent env mutation. No silent network calls. Confirms before acting.
 # Non-interactive host requires $env:VISITPORTAL_ASSUME_YES = '1'.
-# TODO(hackathon): set $RepoUrl to the real GitHub URL after push; pin $RepoRef to v0.1.0 tag.
+#
+# Release pinning: $RepoRef and $RepoTarballSha256 must be updated each release.
+# Helper: scripts/compute-install-sha.sh v0.1.1 prints both values to paste here.
 
 [CmdletBinding()]
 param(
@@ -14,9 +16,10 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$Version    = '0.1.0'
-$RepoUrl    = 'https://github.com/0motionguy/portal'     # TODO: real URL post-push
-$RepoRef    = 'main'                                       # TODO: pin to tag v0.1.0
+$Version           = '0.1.1'
+$RepoUrl           = 'https://github.com/0motionguy/portal'
+$RepoRef           = 'main'                                       # TODO: pin to tag v0.1.1 post-release
+$RepoTarballSha256 = ''                                           # TODO: set after `gh release create v0.1.1` (use scripts/compute-install-sha.sh)
 $InstallDir = if ($env:VISITPORTAL_HOME) { $env:VISITPORTAL_HOME } else { Join-Path $env:USERPROFILE '.visitportal' }
 $BinDir     = Join-Path $InstallDir 'bin'
 $Shim       = Join-Path $BinDir 'visit-portal.cmd'

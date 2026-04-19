@@ -2,14 +2,16 @@
 # visit-portal installer — POSIX sh. macOS · Linux · Git Bash on Windows.
 # No sudo. No silent shell-rc edits. No silent network calls. Confirms before acting.
 # Non-TTY stdin (e.g. curl|sh) requires VISITPORTAL_ASSUME_YES=1.
-# TODO(hackathon): set REPO_URL to the real GitHub URL after the repo is pushed.
-# TODO(hackathon): pin REPO_REF to v0.1.0 tag + verify a release tarball SHA256.
+#
+# Release pinning: REPO_REF and REPO_TARBALL_SHA256 must be updated each release.
+# Helper: scripts/compute-install-sha.sh v0.1.1 prints both values to paste here.
 
 set -eu
 
-VERSION="0.1.0"
-REPO_URL="https://github.com/0motionguy/portal"    # TODO: real URL post-push
-REPO_REF="main"                                      # TODO: pin to tag v0.1.0
+VERSION="0.1.1"
+REPO_URL="https://github.com/0motionguy/portal"
+REPO_REF="main"                                      # TODO: pin to tag v0.1.1 post-release
+REPO_TARBALL_SHA256=""                               # TODO: set after `gh release create v0.1.1` (use scripts/compute-install-sha.sh)
 INSTALL_DIR="${VISITPORTAL_HOME:-$HOME/.visitportal}"
 BIN_DIR="$INSTALL_DIR/bin"
 SHIM="$BIN_DIR/visit-portal"
