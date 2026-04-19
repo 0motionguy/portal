@@ -42,7 +42,7 @@ interface Manifest {
 
 type Phase = "idle" | "fetching" | "success" | "error";
 
-const DEFAULT_URL = "http://localhost:3075/portal";
+const DEFAULT_URL = "https://starscreener.vercel.app/portal";
 const LINE_STAGGER_MS = 110;
 
 export default function LiveVisit(): React.ReactElement {

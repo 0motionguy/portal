@@ -31,9 +31,12 @@ export interface MatrixJson {
   results: Cell[];
 }
 
-const REPO_ROOT = join(process.cwd(), "..");
-const JSON_PATH = join(REPO_ROOT, "packages", "bench", "results", "tokens-matrix-v1.json");
-const SVG_PATH = join(REPO_ROOT, "packages", "bench", "results", "tokens-matrix-v1.svg");
+// Bench results are committed as build-time data inside web/src/bench-data/
+// so the web package is self-contained for Vercel deploys. The canonical
+// source lives at packages/bench/results/tokens-matrix-v1.{json,svg} and
+// is copied here on every bench run (or manually when results refresh).
+const JSON_PATH = join(process.cwd(), "src", "bench-data", "tokens-matrix-v1.json");
+const SVG_PATH = join(process.cwd(), "src", "bench-data", "tokens-matrix-v1.svg");
 
 let jsonCache: MatrixJson | null = null;
 

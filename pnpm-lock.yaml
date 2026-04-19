@@ -93,9 +93,6 @@ importers:
 
   web:
     dependencies:
-      '@visitportal/spec':
-        specifier: workspace:*
-        version: link:../packages/spec
       next:
         specifier: ^15.1.4
         version: 15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)

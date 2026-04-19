@@ -36,3 +36,5 @@ pnpm-debug.log*
 
 # Local bench artifacts (committed results stay under packages/bench/results/)
 packages/bench/results/tmp/
+
+.vercel

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { leanValidate } from "@visitportal/spec/lean-validator";
+import { leanValidate } from "@/lib/lean-validator";
 
 // GET /api/visit?url=<portal-url>
 //
