@@ -21,7 +21,17 @@ kill_timeout = 5
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 0
+  # Keep one machine warm so the first visitor doesn't eat a 1-2s cold
+  # start. Still auto-stops/starts above the minimum under load spikes.
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    # Fly starts shedding load back to other machines above soft_limit;
+    # hard_limit is the absolute cap before 503s. Sized for one 512 MB
+    # instance running Hono + the frozen 30-repo snapshot.
+    hard_limit = 100
+    soft_limit = 50
 
   [[http_service.checks]]
     grace_period = "10s"
@@ -33,4 +43,19 @@ kill_timeout = 5
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
-  memory_mb = 256
+  # 512 MB gives Node 22 + Hono + manifest loading comfortable headroom
+  # for bursty load; 256 MB was tight once a handful of concurrent
+  # requests landed.
+  memory_mb = 512
+
+# ---- Secondary region (commented out until traffic justifies the cost) ----
+# To add a London instance for European / Asian traffic after Hacker News
+# or a launch spike:
+#
+#   flyctl scale count 2 --region lhr --config reference/trending-demo/fly.toml
+#
+# and uncomment the block below so Fly persists the topology.
+#
+# [[regions]]
+#   region = "lhr"
+#   min_machines_running = 1
