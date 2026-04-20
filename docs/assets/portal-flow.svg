@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" role="img" aria-labelledby="flow-title flow-desc" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="flow-title">Portal visit flow — arrive, read, call, use, leave</title>
+  <desc id="flow-desc">Five-step horizontal flow diagram showing a visitor agent arriving at a Portal URL, reading the manifest, calling a tool, using the result, and leaving without residue.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#DA7756"/>
+    </marker>
+    <pattern id="grid2" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#181818" stroke-opacity="0.04" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="280" fill="#EEE7D5"/>
+  <rect width="1200" height="280" fill="url(#grid2)"/>
+
+  <!-- header -->
+  <g transform="translate(60 48)">
+    <rect x="0" y="-14" width="6" height="6" fill="#DA7756"/>
+    <text x="16" y="-8" font-size="12" letter-spacing="2.2" fill="#2A2724" font-weight="500">
+      FIVE STEPS · ONE VISIT · NO INSTALL
+    </text>
+  </g>
+
+  <!-- nodes -->
+  <g font-family="'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace">
+    <!-- 1. arrive -->
+    <g transform="translate(60 96)">
+      <rect width="192" height="120" rx="10" fill="#181818"/>
+      <text x="16" y="28" font-size="11" fill="#6B6359">01 &#x00B7; ARRIVE</text>
+      <text x="16" y="60" font-size="16" fill="#EEE7D5" font-weight="600">visit(url)</text>
+      <text x="16" y="84" font-size="11" fill="#D4A574">visitor SDK</text>
+      <text x="16" y="102" font-size="10" fill="#6B6359">you hand it a URL</text>
+    </g>
+
+    <!-- arrow 1 -->
+    <line x1="260" y1="156" x2="294" y2="156" stroke="#DA7756" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 2. read -->
+    <g transform="translate(302 96)">
+      <rect width="192" height="120" rx="10" fill="#FFFFFF" stroke="#181818" stroke-opacity="0.14"/>
+      <text x="16" y="28" font-size="11" fill="#6B6359">02 &#x00B7; READ</text>
+      <text x="16" y="60" font-size="14" fill="#181818" font-weight="600">GET /portal</text>
+      <text x="16" y="84" font-size="11" fill="#DA7756">manifest.json</text>
+      <text x="16" y="102" font-size="10" fill="#6B6359">schema + tool list</text>
+    </g>
+
+    <!-- arrow 2 -->
+    <line x1="502" y1="156" x2="536" y2="156" stroke="#DA7756" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 3. call -->
+    <g transform="translate(544 96)">
+      <rect width="192" height="120" rx="10" fill="#FFFFFF" stroke="#181818" stroke-opacity="0.14"/>
+      <text x="16" y="28" font-size="11" fill="#6B6359">03 &#x00B7; CALL</text>
+      <text x="16" y="60" font-size="14" fill="#181818" font-weight="600">POST /portal/call</text>
+      <text x="16" y="84" font-size="11" fill="#DA7756">{ tool, params }</text>
+      <text x="16" y="102" font-size="10" fill="#6B6359">one tool per turn</text>
+    </g>
+
+    <!-- arrow 3 -->
+    <line x1="744" y1="156" x2="778" y2="156" stroke="#DA7756" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 4. use -->
+    <g transform="translate(786 96)">
+      <rect width="192" height="120" rx="10" fill="#FFFFFF" stroke="#181818" stroke-opacity="0.14"/>
+      <text x="16" y="28" font-size="11" fill="#6B6359">04 &#x00B7; USE</text>
+      <text x="16" y="60" font-size="14" fill="#181818" font-weight="600">{ ok: true, result }</text>
+      <text x="16" y="84" font-size="11" fill="#DA7756">typed response</text>
+      <text x="16" y="102" font-size="10" fill="#6B6359">5-code error enum</text>
+    </g>
+
+    <!-- arrow 4 -->
+    <line x1="986" y1="156" x2="1020" y2="156" stroke="#DA7756" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 5. leave -->
+    <g transform="translate(1028 96)">
+      <rect width="112" height="120" rx="10" fill="#DA7756"/>
+      <text x="14" y="28" font-size="11" fill="#FFE9DD">05 &#x00B7; LEAVE</text>
+      <text x="14" y="60" font-size="14" fill="#FFFFFF" font-weight="600">close()</text>
+      <text x="14" y="84" font-size="11" fill="#FFE9DD">no residue</text>
+      <text x="14" y="102" font-size="10" fill="#FFE9DD">0 tokens after exit</text>
+    </g>
+  </g>
+
+  <!-- bottom caption -->
+  <g transform="translate(60 252)" font-family="'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11" fill="#6B6359">
+    <text>MANIFEST ENTERS CONTEXT ONLY DURING THE VISIT &#x00B7; END OF SESSION = CLEAN DROP</text>
+  </g>
+</svg>
