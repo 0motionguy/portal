@@ -2,9 +2,11 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
 import { validateManifest } from "@visitportal/spec/runner";
 import { registry } from "./tools/index.ts";
+import { rateLimit } from "./rate-limit.ts";
 import { NotFoundError, ParamError } from "./types.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -33,6 +35,14 @@ function buildManifest(): ManifestFile {
 
 type ErrorCode = "NOT_FOUND" | "INVALID_PARAMS" | "UNAUTHORIZED" | "RATE_LIMITED" | "INTERNAL";
 
+const STATUS: Record<ErrorCode, 400 | 401 | 404 | 429 | 500> = {
+  NOT_FOUND: 404,
+  INVALID_PARAMS: 400,
+  UNAUTHORIZED: 401,
+  RATE_LIMITED: 429,
+  INTERNAL: 500,
+};
+
 function errorEnvelope(message: string, code: ErrorCode) {
   return { ok: false as const, error: message, code };
 }
@@ -40,7 +50,23 @@ function errorEnvelope(message: string, code: ErrorCode) {
 export function createApp(): Hono {
   const app = new Hono();
 
-  // TODO: add CORS middleware — see spec-v0.1.1.md Appendix C (Phase 6 web work).
+  // CORS per spec v0.1.1 Appendix C (normative for browser-resident visitors).
+  app.use(
+    "/portal",
+    cors({ origin: "*", allowMethods: ["GET", "OPTIONS"], maxAge: 86400 }),
+  );
+  app.use(
+    "/portal/call",
+    cors({
+      origin: "*",
+      allowMethods: ["POST", "OPTIONS"],
+      allowHeaders: ["content-type", "accept"],
+      maxAge: 86400,
+    }),
+  );
+
+  // Rate limit /portal/call only — /portal is cache-friendly at the edge.
+  app.use("/portal/call", rateLimit());
 
   app.get("/", (c) => c.redirect("/portal"));
 
@@ -63,26 +89,41 @@ export function createApp(): Hono {
     try {
       body = await c.req.json();
     } catch {
-      return c.json(errorEnvelope("request body is not valid JSON", "INVALID_PARAMS"));
+      return c.json(
+        errorEnvelope("request body is not valid JSON", "INVALID_PARAMS"),
+        STATUS.INVALID_PARAMS,
+      );
     }
 
     if (!isRecord(body)) {
-      return c.json(errorEnvelope("request body must be a JSON object", "INVALID_PARAMS"));
+      return c.json(
+        errorEnvelope("request body must be a JSON object", "INVALID_PARAMS"),
+        STATUS.INVALID_PARAMS,
+      );
     }
 
     const toolName = body.tool;
     if (typeof toolName !== "string" || toolName.length === 0) {
-      return c.json(errorEnvelope("'tool' must be a non-empty string", "INVALID_PARAMS"));
+      return c.json(
+        errorEnvelope("'tool' must be a non-empty string", "INVALID_PARAMS"),
+        STATUS.INVALID_PARAMS,
+      );
     }
 
     const rawParams = body.params ?? {};
     if (!isRecord(rawParams)) {
-      return c.json(errorEnvelope("'params' must be an object", "INVALID_PARAMS"));
+      return c.json(
+        errorEnvelope("'params' must be an object", "INVALID_PARAMS"),
+        STATUS.INVALID_PARAMS,
+      );
     }
 
     const tool = registry.get(toolName);
     if (!tool) {
-      return c.json(errorEnvelope(`tool '${toolName}' not in manifest`, "NOT_FOUND"));
+      return c.json(
+        errorEnvelope(`tool '${toolName}' not in manifest`, "NOT_FOUND"),
+        STATUS.NOT_FOUND,
+      );
     }
 
     try {
@@ -90,13 +131,13 @@ export function createApp(): Hono {
       return c.json({ ok: true as const, result });
     } catch (err) {
       if (err instanceof ParamError) {
-        return c.json(errorEnvelope(err.message, "INVALID_PARAMS"));
+        return c.json(errorEnvelope(err.message, "INVALID_PARAMS"), STATUS.INVALID_PARAMS);
       }
       if (err instanceof NotFoundError) {
-        return c.json(errorEnvelope(err.message, "NOT_FOUND"));
+        return c.json(errorEnvelope(err.message, "NOT_FOUND"), STATUS.NOT_FOUND);
       }
       const msg = err instanceof Error ? err.message : String(err);
-      return c.json(errorEnvelope(msg, "INTERNAL"));
+      return c.json(errorEnvelope(msg, "INTERNAL"), STATUS.INTERNAL);
     }
   });
 
