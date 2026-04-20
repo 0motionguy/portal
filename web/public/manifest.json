@@ -1,9 +1,16 @@
 {
-  "name": "Portal",
+  "name": "Portal — visitportal.dev",
   "short_name": "Portal",
-  "description": "The drop-in visit layer for LLM clients.",
+  "description": "The drop-in visit layer for LLM clients. Open HTTP standard. Two endpoints, one manifest, zero install on the visitor side.",
   "start_url": "/",
+  "scope": "/",
   "display": "browser",
+  "lang": "en-US",
   "background_color": "#EEE7D5",
-  "theme_color": "#DA7756"
+  "theme_color": "#DA7756",
+  "categories": ["developer", "productivity", "utilities"],
+  "icons": [
+    { "src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "maskable" }
+  ]
 }

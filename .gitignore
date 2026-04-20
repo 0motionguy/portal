@@ -38,3 +38,4 @@ pnpm-debug.log*
 packages/bench/results/tmp/
 
 .vercel
+.claude/worktrees/
