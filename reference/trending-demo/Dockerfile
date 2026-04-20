@@ -14,8 +14,10 @@ COPY packages/spec/package.json packages/spec/
 COPY reference/trending-demo/package.json reference/trending-demo/
 
 # Install only trending-demo's dependency closure (includes @visitportal/spec via workspace).
-# --frozen-lockfile=false because the root lockfile may have drifted during the hackathon.
-RUN pnpm install --filter trending-demo... --prod=false --frozen-lockfile=false
+# --frozen-lockfile enforces the committed pnpm-lock.yaml — if CI or a local
+# install has drifted the lockfile, the Docker build fails loudly instead of
+# pulling in an unpinned dependency graph.
+RUN pnpm install --filter trending-demo... --prod=false --frozen-lockfile
 
 # ---------- runner stage ----------
 FROM node:22-alpine AS runner

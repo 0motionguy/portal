@@ -34,8 +34,11 @@ Thumbs.db
 npm-debug.log*
 pnpm-debug.log*
 
-# Local bench artifacts (committed results stay under packages/bench/results/)
+# Local bench artifacts. Canonical results like tokens-matrix-v1.* stay
+# committed; smoke-run outputs (timestamped bench-<ISO>.{json,md,svg}) and
+# tmp/ scratch do not.
 packages/bench/results/tmp/
+packages/bench/results/bench-*
 
 .vercel
 .claude/worktrees/

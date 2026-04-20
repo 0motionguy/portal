@@ -1,6 +1,19 @@
 // `pnpm bench` entry point.
-// Phase 0: stub. Phase 5 wires up scenarios from packages/bench/scenarios/.
+//
+// Delegates to @visitportal/bench's smoke run (2 cells, mock API, no paid
+// tokens) so CI runs real work instead of a no-op. The full Anthropic
+// count_tokens matrix lives at `pnpm --filter @visitportal/bench bench` and
+// requires ANTHROPIC_API_KEY (~$0.10/run); the smoke is deterministic and
+// free.
+//
+// If the smoke fails, this script exits non-zero so CI catches the drift.
 
-console.log("portal-bench · no scenarios registered yet (Phase 5 deliverable)");
-console.log("see packages/bench/README.md for the planned scenario matrix");
-process.exit(0);
+import { spawnSync } from "node:child_process";
+
+const result = spawnSync(
+  "pnpm",
+  ["--filter", "@visitportal/bench", "bench:smoke"],
+  { stdio: "inherit", shell: true },
+);
+
+process.exit(result.status ?? 1);

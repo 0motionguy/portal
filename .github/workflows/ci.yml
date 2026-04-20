@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm install --frozen-lockfile
       - run: pnpm -r --if-present build
       - run: pnpm -r --if-present test
       - run: pnpm bench
