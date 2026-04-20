@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { leanValidate } from "@/lib/lean-validator";
 import { guardUrl } from "./ssrf-guard";
+import { check as rateLimitCheck } from "./rate-limit";
 
 // GET /api/visit?url=<portal-url>
 //
@@ -54,13 +55,27 @@ export async function GET(req: Request): Promise<NextResponse<VisitResponse>> {
   const { searchParams } = new URL(req.url);
   const target = searchParams.get("url");
 
+  // Rate limit per client IP before any outbound work. When Upstash env vars
+  // are absent (dev), check() returns ok:true with an empty headers map.
+  const ip = getClientIp(req);
+  const rl = await rateLimitCheck(ip);
+  const respond = (body: VisitResponse, status: number): NextResponse<VisitResponse> => {
+    const res = NextResponse.json<VisitResponse>(body, { status });
+    for (const [k, v] of Object.entries(rl.headers)) res.headers.set(k, v);
+    return res;
+  };
+
+  if (!rl.ok) {
+    return respond({ ok: false, stage: "url", error: "rate limit exceeded" }, 429);
+  }
+
   if (!target) {
-    return jsonError("url", "missing 'url' query parameter", 400);
+    return respond({ ok: false, stage: "url", error: "missing 'url' query parameter" }, 400);
   }
 
   const guard = await guardUrl(target);
   if (!guard.ok) {
-    return jsonError("url", guard.error, 400);
+    return respond({ ok: false, stage: "url", error: guard.error }, 400);
   }
 
   const started = Date.now();
@@ -68,46 +83,57 @@ export async function GET(req: Request): Promise<NextResponse<VisitResponse>> {
   const durationMs = Date.now() - started;
 
   if (!fetched.ok) {
-    return jsonError(fetched.stage, fetched.error, 502);
+    return respond({ ok: false, stage: fetched.stage, error: fetched.error }, 502);
   }
 
   let manifest: unknown;
   try {
     manifest = JSON.parse(fetched.text);
   } catch (err) {
-    return jsonError("parse", sanitise(err, "response body was not valid JSON"), 502);
+    return respond(
+      { ok: false, stage: "parse", error: sanitise(err, "response body was not valid JSON") },
+      502,
+    );
   }
 
   const result = leanValidate(manifest);
   if (!result.ok) {
-    return NextResponse.json<VisitResponse>(
+    return respond(
       {
         ok: false,
         stage: "validate",
         error: "manifest failed schema validation",
         errors: result.errors,
       },
-      { status: 422 },
+      422,
     );
   }
 
-  return NextResponse.json<VisitResponse>({
-    ok: true,
-    manifest,
-    rawBytes: fetched.rawBytes,
-    durationMs,
-    status: fetched.status,
-    finalUrl: fetched.finalUrl,
-    validated: true,
-  });
+  return respond(
+    {
+      ok: true,
+      manifest,
+      rawBytes: fetched.rawBytes,
+      durationMs,
+      status: fetched.status,
+      finalUrl: fetched.finalUrl,
+      validated: true,
+    },
+    200,
+  );
 }
 
 // ---------- helpers ----------
 
-type Stage = "url" | "fetch" | "parse" | "validate";
-
-function jsonError(stage: Stage, error: string, status: number) {
-  return NextResponse.json<VisitResponse>({ ok: false, stage, error }, { status });
+function getClientIp(req: Request): string {
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) {
+    const first = xff.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  const xri = req.headers.get("x-real-ip")?.trim();
+  if (xri) return xri;
+  return "anon";
 }
 
 interface FetchOk {

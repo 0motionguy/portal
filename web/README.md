@@ -76,6 +76,33 @@ The installer is intentionally boring.
 See `web/public/install` (POSIX sh, macOS + Linux + Git Bash) and
 `web/public/install.ps1` (PowerShell 5+, Windows). Same semantics, same flags.
 
+## `/api/visit` rate limiting (optional, production)
+
+The LiveVisit widget's server-side proxy (`/api/visit`) is IP rate-limited
+via Upstash Redis — 10 requests per minute per IP on a sliding window.
+This prevents the route from being used as an outbound scanner.
+
+Set both variables on the Vercel project (or in a local `.env.local` if you
+want real rate limiting in dev):
+
+```
+UPSTASH_REDIS_REST_URL=https://<your-instance>.upstash.io
+UPSTASH_REDIS_REST_TOKEN=<your-token>
+```
+
+Free tier (10k requests/day) is enough for Portal's traffic shape — see
+<https://upstash.com/docs/redis/overall/pricing>. When either variable is
+missing the endpoint logs a one-time warning and continues without rate
+limiting, so local `pnpm dev` keeps working out of the box.
+
+Allowed requests carry the standard `X-RateLimit-Limit`,
+`X-RateLimit-Remaining`, `X-RateLimit-Reset` headers. A blocked request
+returns HTTP 429 with `Retry-After` plus the existing error envelope:
+
+```json
+{ "ok": false, "stage": "url", "error": "rate limit exceeded" }
+```
+
 ## Where the numbers on the one-pager come from
 
 All token-count claims on `index.html` are produced by
