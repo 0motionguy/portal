@@ -22,11 +22,13 @@ export interface RateLimitResult {
 
 let limiter: Ratelimit | null = null;
 let warned = false;
+let constructFailed = false;
 
 function getLimiter(): Ratelimit | null {
   if (limiter) return limiter;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (constructFailed) return null; // don't retry on every request once we've failed once
+  const url = process.env.UPSTASH_REDIS_REST_URL?.trim();
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
   if (!url || !token) {
     if (!warned) {
       console.warn(
@@ -36,13 +38,25 @@ function getLimiter(): Ratelimit | null {
     }
     return null;
   }
-  limiter = new Ratelimit({
-    redis: new Redis({ url, token }),
-    limiter: Ratelimit.slidingWindow(10, "1 m"),
-    analytics: false,
-    prefix: "visitportal:api-visit",
-  });
-  return limiter;
+  try {
+    limiter = new Ratelimit({
+      redis: new Redis({ url, token }),
+      limiter: Ratelimit.slidingWindow(10, "1 m"),
+      analytics: false,
+      prefix: "visitportal:api-visit",
+    });
+    return limiter;
+  } catch (err) {
+    // Bad URL, bad token format, or any other client-construction error.
+    // Fail-open so one misconfigured env var doesn't take the whole endpoint
+    // offline. One-shot warn; don't retry per request.
+    constructFailed = true;
+    console.warn(
+      "[rate-limit] Failed to construct Upstash client, rate limiting DISABLED:",
+      err instanceof Error ? err.message : String(err),
+    );
+    return null;
+  }
 }
 
 export async function check(ip: string): Promise<RateLimitResult> {
