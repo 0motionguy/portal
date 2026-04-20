@@ -159,28 +159,47 @@ function makePortal(
           throw new CallFailed(tool, "INTERNAL", describe(e));
         }
 
-        if (!res.ok) {
-          throw new CallFailed(tool, "INTERNAL", `HTTP ${res.status} ${text.slice(0, 400)}`);
-        }
-
+        // Parse BEFORE rejecting on non-2xx. The spec allows providers to
+        // return 4xx (or 200) with a proper `{ok:false, error, code}`
+        // envelope; the reference Portal uses 4xx in v0.1.1+. Previously we
+        // short-circuited on !res.ok and surfaced every error as INTERNAL,
+        // which dropped the provider's structured error code.
         let body: unknown;
+        let parsed = false;
         try {
           body = JSON.parse(text) as unknown;
-        } catch (e) {
-          throw new CallFailed(tool, "INTERNAL", `response was not JSON: ${describe(e)}`);
+          parsed = true;
+        } catch {
+          /* fall through; handled below based on HTTP status */
         }
 
+        if (parsed && isObject(body) && body.ok === false) {
+          // Error envelope — respect the provider's code regardless of HTTP
+          // status. This is the spec-compliant path.
+          const code = isErrorCode(body.code) ? body.code : "INTERNAL";
+          const msg = typeof body.error === "string" ? body.error : "(no error message)";
+          throw new CallFailed(tool, code, msg);
+        }
+
+        if (!res.ok) {
+          // Non-2xx without a parseable error envelope. Keep INTERNAL with a
+          // short context string for operator debugging.
+          throw new CallFailed(
+            tool,
+            "INTERNAL",
+            `HTTP ${res.status} ${text.slice(0, 400)}`,
+          );
+        }
+
+        if (!parsed) {
+          throw new CallFailed(tool, "INTERNAL", "response was not valid JSON");
+        }
         if (!isObject(body)) {
           throw new CallFailed(tool, "INTERNAL", "response body is not an object");
         }
         if (body.ok === true) {
           ok = true;
           return body.result as T;
-        }
-        if (body.ok === false) {
-          const code = isErrorCode(body.code) ? body.code : "INTERNAL";
-          const msg = typeof body.error === "string" ? body.error : "(no error message)";
-          throw new CallFailed(tool, code, msg);
         }
         throw new CallFailed(tool, "INTERNAL", "response envelope missing 'ok' field");
       } finally {

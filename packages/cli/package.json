@@ -18,7 +18,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@visitportal/visit": "workspace:*"
+    "@visitportal/visit": "workspace:*",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

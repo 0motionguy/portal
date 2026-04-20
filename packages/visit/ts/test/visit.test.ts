@@ -185,17 +185,59 @@ describe("Portal.call()", () => {
     await expect(p.call("echo", { msg: "hi" })).rejects.toBeInstanceOf(CallFailed);
   });
 
-  test("throws CallFailed on transport failure (4xx/5xx)", async () => {
+  test("4xx with proper NOT_FOUND envelope preserves the provider's code", async () => {
+    // Spec-compliant path: reference Portal returns 404 with
+    // { ok:false, error, code:"NOT_FOUND" } on unknown tool. The SDK must
+    // surface NOT_FOUND, not INTERNAL. Previously this short-circuited on
+    // !res.ok and dropped the structured code; audit HIGH.
     route(({ method, path }) => {
       if (method === "GET" && path === "/portal") {
         return { status: 200, body: validManifest(`${baseUrl}/portal/call`) };
       }
-      return { status: 400, body: { error: "bad" } };
+      return {
+        status: 404,
+        body: { ok: false, error: "tool not in manifest", code: "NOT_FOUND" },
+      };
     });
     const p = await visit(`${baseUrl}/portal`, DEV);
     const err = await p.call("echo", { msg: "hi" }).catch((e) => e);
     expect(err).toBeInstanceOf(CallFailed);
+    expect((err as CallFailed).code).toBe("NOT_FOUND");
+    expect((err as CallFailed).message).toContain("tool not in manifest");
+  });
+
+  test("4xx with INVALID_PARAMS envelope preserves INVALID_PARAMS", async () => {
+    route(({ method, path }) => {
+      if (method === "GET" && path === "/portal") {
+        return { status: 200, body: validManifest(`${baseUrl}/portal/call`) };
+      }
+      return {
+        status: 400,
+        body: { ok: false, error: "bad param", code: "INVALID_PARAMS" },
+      };
+    });
+    const p = await visit(`${baseUrl}/portal`, DEV);
+    const err = await p.call("echo", { msg: "hi" }).catch((e) => e);
+    expect(err).toBeInstanceOf(CallFailed);
+    expect((err as CallFailed).code).toBe("INVALID_PARAMS");
+  });
+
+  test("non-2xx without a parseable envelope falls back to INTERNAL", async () => {
+    // 4xx / 5xx bodies that are not valid error envelopes (HTML error pages,
+    // plain text, non-spec JSON) are still surfaced as INTERNAL with a short
+    // context string so operators can see the HTTP status.
+    route(({ method, path }) => {
+      if (method === "GET" && path === "/portal") {
+        return { status: 200, body: validManifest(`${baseUrl}/portal/call`) };
+      }
+      // retries disabled below so we don't exhaust both attempts
+      return { status: 400, body: { error: "bad" } };
+    });
+    const p = await visit(`${baseUrl}/portal`, DEV);
+    const err = await p.call("echo", { msg: "hi" }, { retries: 0 }).catch((e) => e);
+    expect(err).toBeInstanceOf(CallFailed);
     expect((err as CallFailed).code).toBe("INTERNAL");
+    expect((err as CallFailed).message).toContain("HTTP 400");
   });
 });
 

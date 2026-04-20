@@ -25,7 +25,9 @@ Against the reference Portal running locally (see [`reference/trending-demo/READ
 ```ts
 import { visit, CallFailed } from "@visitportal/visit";
 
-const portal = await visit("http://localhost:3075/portal");
+// allowInsecure:true opts into plain http:// for loopback (localhost,
+// 127.0.0.1, ::1) — dev only. Production URLs must be https://.
+const portal = await visit("http://localhost:3075/portal", { allowInsecure: true });
 console.log(portal.manifest.brief);
 
 try {

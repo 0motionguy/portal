@@ -10,7 +10,9 @@ import { CallFailed, ToolNotInManifest, visit } from "../src/index.ts";
 const url = process.argv[2] ?? "http://localhost:3075/portal";
 
 console.log(`→ visit(${url})`);
-const p = await visit(url);
+// allowInsecure:true is needed for plain http://localhost in dev; the SDK
+// still rejects non-loopback http:// even with the flag set.
+const p = await visit(url, { allowInsecure: true });
 console.log(`  manifest OK: name='${p.manifest.name}' tools=[${p.tools.join(", ")}]`);
 
 console.log("→ top_gainers({limit: 3})");

@@ -50,13 +50,17 @@ bash scripts/demo.sh          # ~6 s end-to-end: boots Portal, visits it, leaves
 ```ts
 import { visit } from "@visitportal/visit";
 
-const portal = await visit("http://localhost:3075/portal");
+// Production:
+const portal = await visit("https://demo.visitportal.dev/portal");
+
+// Or against a local reference Portal:
+// const portal = await visit("http://localhost:3075/portal", { allowInsecure: true });
 
 const top = await portal.call("top_gainers", { limit: 3 });
 // { ok: true, result: { repos: [...] } }
-
-await portal.close();
 ```
+
+Visitors are **fire-and-forget** — no `close()` or lifecycle. When you're done, drop the reference and the garbage collector handles the rest.
 
 ### Expose your service as a Portal
 

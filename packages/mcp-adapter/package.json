@@ -3,17 +3,8 @@
   "license": "Apache-2.0",
   "version": "0.0.0",
   "private": true,
-  "description": "Wrap any MCP server as a Portal. Stretch deliverable.",
+  "description": "Wrap any MCP server as a Portal. Stub — planned for v0.2. See docs/ROADMAP.md.",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "bin": {
-    "visitportal-mcp-adapter": "./dist/cli.js"
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
   "scripts": {
     "test": "echo \"(mcp-adapter) no tests yet\" && exit 0"
   }
