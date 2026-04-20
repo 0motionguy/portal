@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { leanValidate } from "@/lib/lean-validator";
+// Single source of truth for manifest validation — keeps the web /api/visit
+// proxy byte-for-byte decision-equivalent with the visitor SDK and the spec
+// self-test. Previously a local copy at web/src/lib/lean-validator.ts
+// drifted (accepted any http:// host instead of https-with-loopback-only).
+import { leanValidate } from "@visitportal/spec/lean-validator";
 import { guardUrl } from "./ssrf-guard";
 import { check as rateLimitCheck } from "./rate-limit";
 
