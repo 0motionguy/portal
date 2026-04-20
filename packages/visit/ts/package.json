@@ -1,5 +1,6 @@
 {
   "name": "@visitportal/visit",
+  "license": "Apache-2.0",
   "version": "0.1.1",
   "private": true,
   "description": "Portal visitor SDK for TypeScript — visit any Portal in 10 lines.",
@@ -8,7 +9,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": ["src", "README.md"],
+  "files": [
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc --noEmit",
     "test": "vitest run",

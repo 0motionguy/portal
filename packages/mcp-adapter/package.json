@@ -1,5 +1,6 @@
 {
   "name": "@visitportal/mcp-adapter",
+  "license": "Apache-2.0",
   "version": "0.0.0",
   "private": true,
   "description": "Wrap any MCP server as a Portal. Stretch deliverable.",
@@ -9,7 +10,10 @@
   "bin": {
     "visitportal-mcp-adapter": "./dist/cli.js"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"(mcp-adapter) no tests yet\" && exit 0"
   }

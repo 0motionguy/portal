@@ -1,6 +1,17 @@
 # Changelog
 
-All notable changes to Portal are recorded here. The specification is versioned independently in `docs/spec-v*.md`; npm packages track the spec version.
+All notable changes to Portal are recorded here. The specification is versioned independently in `docs/spec-v*.md`; npm packages track the spec version, except where noted.
+
+## [0.1.2] — 2026-04-20
+
+### Fixed
+
+- **`@visitportal/spec@0.1.1` was published with no `"license"` field**, causing the npm registry page to show "License: not specified". Every `package.json` in the monorepo now declares `"license": "Apache-2.0"` to match the root `LICENSE` file.
+
+### Notes
+
+- **Package-metadata-only release.** No normative spec change — the spec document remains at v0.1.1 (`docs/spec-v0.1.1.md`). The `manifest.schema.json` `$id`, the `conformance/vectors.json` `spec_version`, and all runtime behaviour are identical to 0.1.1.
+- Decision captured: Portal stays **Apache 2.0** (code) + **CC0 1.0** (spec documents + `conformance/vectors.json`). Apache's explicit patent grant is load-bearing for a protocol aiming at multi-party adoption; the spec itself is public domain under CC0. See the rationale in `README.md` "License" section.
 
 ## [0.1.1] — 2026-04-19
 

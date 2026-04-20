@@ -1,5 +1,6 @@
 {
   "name": "@visitportal/cli",
+  "license": "Apache-2.0",
   "version": "0.1.1",
   "private": true,
   "description": "visit-portal CLI — drive-by tool invocation from any shell.",
@@ -8,7 +9,10 @@
     "visit-portal": "./src/cli.ts"
   },
   "main": "./src/cli.ts",
-  "files": ["src", "README.md"],
+  "files": [
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc --noEmit",
     "test": "vitest run"

@@ -1,19 +1,35 @@
 {
   "name": "@visitportal/spec",
-  "version": "0.1.1",
+  "license": "Apache-2.0",
+  "version": "0.1.2",
   "private": false,
   "description": "Portal spec artifacts — JSON Schema + conformance test vectors + runner.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./schema": "./manifest.schema.json",
     "./vectors": "./conformance/vectors.json",
-    "./runner": { "types": "./dist/conformance/runner.d.ts", "default": "./dist/conformance/runner.js" },
-    "./lean-validator": { "types": "./dist/conformance/lean-validator.d.ts", "default": "./dist/conformance/lean-validator.js" }
+    "./runner": {
+      "types": "./dist/conformance/runner.d.ts",
+      "default": "./dist/conformance/runner.js"
+    },
+    "./lean-validator": {
+      "types": "./dist/conformance/lean-validator.d.ts",
+      "default": "./dist/conformance/lean-validator.js"
+    }
   },
-  "files": ["dist/", "manifest.schema.json", "conformance/vectors.json", "README.md", "LICENSE"],
+  "files": [
+    "dist/",
+    "manifest.schema.json",
+    "conformance/vectors.json",
+    "README.md",
+    "LICENSE"
+  ],
   "publishConfig": {
     "access": "public"
   },
