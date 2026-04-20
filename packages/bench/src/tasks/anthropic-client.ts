@@ -44,9 +44,7 @@ export interface CreateClientOptions {
   maxRetries?: number;
 }
 
-export function createAnthropicClient(
-  opts: CreateClientOptions,
-): AnthropicClient {
+export function createAnthropicClient(opts: CreateClientOptions): AnthropicClient {
   const baseUrl = (opts.baseUrl ?? DEFAULT_BASE_URL).replace(/\/+$/, "");
   const fetchImpl = opts.fetchImpl ?? globalThis.fetch;
   if (typeof fetchImpl !== "function") {
@@ -131,11 +129,8 @@ export function createAnthropicClient(
 
   return {
     async countTokens(req: CountTokensRequest) {
-      const json = await request<Record<string, unknown>>(
-        "/v1/messages/count_tokens",
-        req,
-      );
-      const v = json["input_tokens"];
+      const json = await request<Record<string, unknown>>("/v1/messages/count_tokens", req);
+      const v = json.input_tokens;
       if (typeof v !== "number") {
         throw new AnthropicApiError({
           status: 200,
@@ -153,9 +148,9 @@ export function createAnthropicClient(
 }
 
 function toMessageResponse(json: Record<string, unknown>): MessageResponse {
-  const content = json["content"];
-  const stopReason = json["stop_reason"];
-  const usage = json["usage"] as Record<string, unknown> | undefined;
+  const content = json.content;
+  const stopReason = json.stop_reason;
+  const usage = json.usage as Record<string, unknown> | undefined;
   if (!Array.isArray(content)) {
     throw new AnthropicApiError({
       status: 200,
@@ -167,17 +162,13 @@ function toMessageResponse(json: Record<string, unknown>): MessageResponse {
     throw new AnthropicApiError({
       status: 200,
       code: "invalid_response",
-      message: `messages response missing stop_reason`,
+      message: "messages response missing stop_reason",
     });
   }
   const inputTokens =
-    usage && typeof usage["input_tokens"] === "number"
-      ? (usage["input_tokens"] as number)
-      : 0;
+    usage && typeof usage.input_tokens === "number" ? (usage.input_tokens as number) : 0;
   const outputTokens =
-    usage && typeof usage["output_tokens"] === "number"
-      ? (usage["output_tokens"] as number)
-      : 0;
+    usage && typeof usage.output_tokens === "number" ? (usage.output_tokens as number) : 0;
   return {
     content: content as Array<Record<string, unknown>>,
     stop_reason: stopReason,

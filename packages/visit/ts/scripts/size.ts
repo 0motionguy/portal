@@ -1,8 +1,8 @@
 // Bundles the SDK with esbuild and reports minified + gzipped size. Used to
 // enforce the <15 kB gzipped claim from the plan (Phase 3 acceptance).
 
-import { build } from "esbuild";
 import { gzipSync } from "node:zlib";
+import { build } from "esbuild";
 
 const result = await build({
   entryPoints: ["src/index.ts"],
@@ -28,7 +28,7 @@ const gzKb = (gz.byteLength / 1024).toFixed(2);
 const LIMIT_KB = 15;
 const gzSize = gz.byteLength / 1024;
 
-console.log(`@visitportal/visit bundle`);
+console.log("@visitportal/visit bundle");
 console.log(`  minified: ${rawKb} kB`);
 console.log(`  gzipped:  ${gzKb} kB (limit ${LIMIT_KB} kB)`);
 

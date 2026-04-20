@@ -6,9 +6,18 @@
       "type": "object",
       "properties": {
         "url": { "type": "string", "description": "The fully qualified URL to fetch" },
-        "max_length": { "type": "number", "description": "Maximum number of characters to return in the body" },
-        "start_index": { "type": "number", "description": "Start reading the body from this character index (useful for continuation)" },
-        "raw": { "type": "boolean", "description": "If true, return the raw HTML instead of Markdown" }
+        "max_length": {
+          "type": "number",
+          "description": "Maximum number of characters to return in the body"
+        },
+        "start_index": {
+          "type": "number",
+          "description": "Start reading the body from this character index (useful for continuation)"
+        },
+        "raw": {
+          "type": "boolean",
+          "description": "If true, return the raw HTML instead of Markdown"
+        }
       },
       "required": ["url"]
     }
@@ -28,7 +37,10 @@
           "type": "object",
           "description": "Additional headers to include with the request"
         },
-        "timeout_ms": { "type": "number", "description": "Request timeout in milliseconds (default 30000)" }
+        "timeout_ms": {
+          "type": "number",
+          "description": "Request timeout in milliseconds (default 30000)"
+        }
       },
       "required": ["url", "body"]
     }
@@ -40,8 +52,14 @@
       "type": "object",
       "properties": {
         "url": { "type": "string", "description": "URL of the file to download" },
-        "destination": { "type": "string", "description": "Absolute local path to write the file to" },
-        "overwrite": { "type": "boolean", "description": "If true, replace an existing file at the destination" }
+        "destination": {
+          "type": "string",
+          "description": "Absolute local path to write the file to"
+        },
+        "overwrite": {
+          "type": "boolean",
+          "description": "If true, replace an existing file at the destination"
+        }
       },
       "required": ["url", "destination"]
     }
@@ -53,7 +71,10 @@
       "type": "object",
       "properties": {
         "url": { "type": "string", "description": "URL to probe with a HEAD request" },
-        "follow_redirects": { "type": "boolean", "description": "If true, follow redirects up to the default limit" }
+        "follow_redirects": {
+          "type": "boolean",
+          "description": "If true, follow redirects up to the default limit"
+        }
       },
       "required": ["url"]
     }
@@ -124,10 +145,19 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "url": { "type": "string", "description": "Target URL that accepts a multipart file upload" },
+        "url": {
+          "type": "string",
+          "description": "Target URL that accepts a multipart file upload"
+        },
         "path": { "type": "string", "description": "Absolute local path of the file to upload" },
-        "field": { "type": "string", "description": "Name of the form field to use (default: 'file')" },
-        "content_type": { "type": "string", "description": "Explicit content type to set on the part" }
+        "field": {
+          "type": "string",
+          "description": "Name of the form field to use (default: 'file')"
+        },
+        "content_type": {
+          "type": "string",
+          "description": "Explicit content type to set on the part"
+        }
       },
       "required": ["url", "path"]
     }
@@ -139,7 +169,10 @@
       "type": "object",
       "properties": {
         "url": { "type": "string", "description": "URL to probe for reachability" },
-        "timeout_ms": { "type": "number", "description": "Timeout in milliseconds before considering the endpoint down" }
+        "timeout_ms": {
+          "type": "number",
+          "description": "Timeout in milliseconds before considering the endpoint down"
+        }
       },
       "required": ["url"]
     }

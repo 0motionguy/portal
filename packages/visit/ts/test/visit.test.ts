@@ -1,11 +1,11 @@
+import { type Server, createServer } from "node:http";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
-import { createServer, type Server } from "node:http";
 import {
   CallFailed,
   ManifestInvalid,
+  type Portal,
   PortalNotFound,
   ToolNotInManifest,
-  type Portal,
   type VisitEvent,
   type VisitOptions,
   visit,
@@ -104,9 +104,9 @@ describe("visit()", () => {
   });
 
   test("throws PortalNotFound on network failure", async () => {
-    await expect(
-      visit("http://127.0.0.1:1/portal", { ...DEV, retries: 0 }),
-    ).rejects.toBeInstanceOf(PortalNotFound);
+    await expect(visit("http://127.0.0.1:1/portal", { ...DEV, retries: 0 })).rejects.toBeInstanceOf(
+      PortalNotFound,
+    );
   });
 
   test("throws ManifestInvalid when schema validation fails", async () => {
@@ -298,9 +298,9 @@ describe("hardening · size cap", () => {
 
   test("custom maxBytes honoured (tight cap rejects normal-sized manifest)", async () => {
     route(() => ({ status: 200, body: validManifest(`${baseUrl}/portal/call`) }));
-    await expect(
-      visit(`${baseUrl}/portal`, { ...DEV, maxBytes: 50 }),
-    ).rejects.toBeInstanceOf(PortalNotFound);
+    await expect(visit(`${baseUrl}/portal`, { ...DEV, maxBytes: 50 })).rejects.toBeInstanceOf(
+      PortalNotFound,
+    );
   });
 });
 
@@ -328,7 +328,10 @@ describe("hardening · HTTPS enforcement", () => {
   test("manifest.call_endpoint with plain http:// rejected as ManifestInvalid", async () => {
     route(() => ({
       status: 200,
-      body: { ...validManifest(`${baseUrl}/portal/call`), call_endpoint: "http://evil.example.com/portal/call" },
+      body: {
+        ...validManifest(`${baseUrl}/portal/call`),
+        call_endpoint: "http://evil.example.com/portal/call",
+      },
     }));
     // Visit URL is loopback http:// (allowed), but call_endpoint is http://<public>
     // which the manifest.schema.json now rejects at parse time; the SDK catches
@@ -397,9 +400,9 @@ describe("hardening · retry on transport + 5xx", () => {
       hits++;
       return { status: 500, body: "" };
     });
-    await expect(
-      visit(`${baseUrl}/portal`, { ...DEV, retries: 0 }),
-    ).rejects.toBeInstanceOf(PortalNotFound);
+    await expect(visit(`${baseUrl}/portal`, { ...DEV, retries: 0 })).rejects.toBeInstanceOf(
+      PortalNotFound,
+    );
     expect(hits).toBe(1);
   });
 });

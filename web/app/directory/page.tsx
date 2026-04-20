@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { Nav, Foot } from "@/components/Nav";
+import { Foot, Nav } from "@/components/Nav";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Directory",
-  description: "Public directory of Portals conforming to v0.1. A stub today; grows as the ecosystem grows.",
+  description:
+    "Public directory of Portals conforming to v0.1. A stub today; grows as the ecosystem grows.",
 };
 
 interface Entry {
@@ -40,9 +41,8 @@ export default function DirectoryPage() {
           Portals you can <em>visit.</em>
         </h1>
         <p className="lede">
-          A stub today — the Portal registry is meant to grow the way the MCP
-          server list did. For v0.1 it's the reference Portal plus space for
-          what comes next.
+          A stub today — the Portal registry is meant to grow the way the MCP server list did. For
+          v0.1 it's the reference Portal plus space for what comes next.
         </p>
 
         {dir.portals.map((p) => (
@@ -85,12 +85,9 @@ export default function DirectoryPage() {
                 marginBottom: 8,
               }}
             >
-              <strong style={{ color: "var(--ink)" }}>URL:</strong>{" "}
-              <code>{p.url}</code>
+              <strong style={{ color: "var(--ink)" }}>URL:</strong> <code>{p.url}</code>
               {p.url_note && (
-                <span style={{ color: "var(--coral)", marginLeft: 8 }}>
-                  ({p.url_note})
-                </span>
+                <span style={{ color: "var(--coral)", marginLeft: 8 }}>({p.url_note})</span>
               )}
             </div>
             <div
@@ -125,20 +122,24 @@ export default function DirectoryPage() {
 
         <h2>Add your Portal</h2>
         <p>
-          A self-serve submission form lands in v0.2 (planned as part of the
-          Portal Extensions spec PE-004 registry/discovery). For now, submit a
-          PR to{" "}
-          <code>web/public/directory.json</code> or open a GitHub issue.
+          A self-serve submission form lands in v0.2 (planned as part of the Portal Extensions spec
+          PE-004 registry/discovery). For now, submit a PR to <code>web/public/directory.json</code>{" "}
+          or open a GitHub issue.
         </p>
         <p>
           Your Portal must pass <code>pnpm conformance &lt;url&gt;</code> — see the{" "}
-          <a href="/docs">docs</a> for the spec surface and{" "}
-          <a href="/bench">bench</a> for the reproducible token-cost measurements.
+          <a href="/docs">docs</a> for the spec surface and <a href="/bench">bench</a> for the
+          reproducible token-cost measurements.
         </p>
 
-        <p style={{ fontSize: 11, color: "var(--dim-soft)", fontFamily: "'Geist Mono', monospace" }}>
-          ▸ Raw JSON: <a href="/directory.json"><code>/directory.json</code></a> (served with{" "}
-          <code>content-type: application/json</code>). Last updated {dir.generated}.
+        <p
+          style={{ fontSize: 11, color: "var(--dim-soft)", fontFamily: "'Geist Mono', monospace" }}
+        >
+          ▸ Raw JSON:{" "}
+          <a href="/directory.json">
+            <code>/directory.json</code>
+          </a>{" "}
+          (served with <code>content-type: application/json</code>). Last updated {dir.generated}.
         </p>
       </main>
       <Foot />

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export type McpPropertyType = "string" | "number" | "boolean" | "array" | "object";
 
@@ -44,13 +44,61 @@ const VARIANT_PREFIXES: Record<Domain, readonly string[]> = {
 };
 
 const VARIANT_SUFFIXES: Record<Domain, readonly string[]> = {
-  filesystem: ["by_glob", "by_size", "by_mtime", "recursive", "shallow", "with_metadata", "streaming"],
-  github: ["by_label", "by_author", "by_date", "by_milestone", "by_reviewer", "with_reviews", "with_checks"],
-  search: ["by_domain", "by_language", "by_date", "by_type", "with_snippets", "with_embeddings", "ranked"],
-  database: ["by_schema", "by_owner", "by_index", "with_stats", "with_plan", "by_tablespace", "with_constraints"],
+  filesystem: [
+    "by_glob",
+    "by_size",
+    "by_mtime",
+    "recursive",
+    "shallow",
+    "with_metadata",
+    "streaming",
+  ],
+  github: [
+    "by_label",
+    "by_author",
+    "by_date",
+    "by_milestone",
+    "by_reviewer",
+    "with_reviews",
+    "with_checks",
+  ],
+  search: [
+    "by_domain",
+    "by_language",
+    "by_date",
+    "by_type",
+    "with_snippets",
+    "with_embeddings",
+    "ranked",
+  ],
+  database: [
+    "by_schema",
+    "by_owner",
+    "by_index",
+    "with_stats",
+    "with_plan",
+    "by_tablespace",
+    "with_constraints",
+  ],
   http: ["with_retry", "with_timeout", "with_proxy", "with_auth", "streaming", "binary", "json"],
-  communication: ["by_channel", "by_user", "by_date", "threaded", "with_attachments", "pinned_only", "unread_only"],
-  knowledge: ["by_type", "by_tag", "by_depth", "with_relations", "with_observations", "shortest_path", "ranked"],
+  communication: [
+    "by_channel",
+    "by_user",
+    "by_date",
+    "threaded",
+    "with_attachments",
+    "pinned_only",
+    "unread_only",
+  ],
+  knowledge: [
+    "by_type",
+    "by_tag",
+    "by_depth",
+    "with_relations",
+    "with_observations",
+    "shortest_path",
+    "ranked",
+  ],
 };
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
@@ -76,9 +124,9 @@ function validateTool(value: unknown, where: string): McpTool {
     throw new Error(`[mcp-simulator] ${where}: not an object`);
   }
   const obj = value as Record<string, unknown>;
-  const name = obj["name"];
-  const description = obj["description"];
-  const inputSchema = obj["input_schema"];
+  const name = obj.name;
+  const description = obj.description;
+  const inputSchema = obj.input_schema;
   if (typeof name !== "string" || name.length === 0) {
     throw new Error(`[mcp-simulator] ${where}: missing name`);
   }
@@ -89,14 +137,14 @@ function validateTool(value: unknown, where: string): McpTool {
     throw new Error(`[mcp-simulator] ${where}: missing input_schema`);
   }
   const schema = inputSchema as Record<string, unknown>;
-  if (schema["type"] !== "object") {
+  if (schema.type !== "object") {
     throw new Error(`[mcp-simulator] ${where}: input_schema.type must be 'object'`);
   }
-  const properties = schema["properties"];
+  const properties = schema.properties;
   if (typeof properties !== "object" || properties === null) {
     throw new Error(`[mcp-simulator] ${where}: input_schema.properties missing`);
   }
-  const required = schema["required"];
+  const required = schema.required;
   if (required !== undefined && !Array.isArray(required)) {
     throw new Error(`[mcp-simulator] ${where}: input_schema.required must be an array`);
   }
@@ -208,7 +256,10 @@ function variantExtras(variant: string, base: string): string {
   const idx = variant.indexOf(base);
   if (idx < 0) return "";
   const prefix = variant.slice(0, idx).replace(/_+$/, "").replace(/_/g, " ");
-  const suffix = variant.slice(idx + base.length).replace(/^_+/, "").replace(/_/g, " ");
+  const suffix = variant
+    .slice(idx + base.length)
+    .replace(/^_+/, "")
+    .replace(/_/g, " ");
   const parts = [prefix, suffix].filter((p) => p.length > 0);
   return parts.join(" · ");
 }
@@ -222,12 +273,7 @@ function clampDescription(text: string): string {
   return `${normalized.slice(0, boundary).trim()}...`;
 }
 
-function variantTool(
-  base: McpTool,
-  domain: Domain,
-  rng: () => number,
-  used: Set<string>,
-): McpTool {
+function variantTool(base: McpTool, domain: Domain, rng: () => number, used: Set<string>): McpTool {
   const name = buildVariantName(base, domain, rng, used);
   used.add(name);
   const clone = cloneTool(base);
@@ -236,7 +282,7 @@ function variantTool(
   return clone;
 }
 
-export function simulateTools(count: number, seed: number = 1): McpTool[] {
+export function simulateTools(count: number, seed = 1): McpTool[] {
   if (!Number.isFinite(count) || count < 0 || !Number.isInteger(count)) {
     throw new Error(`[mcp-simulator] count must be a non-negative integer, got ${count}`);
   }

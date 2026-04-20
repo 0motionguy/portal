@@ -20,8 +20,8 @@
 // Spec: docs/spec-v0.1.1.md · Schema: ../manifest.schema.json
 
 import { existsSync, readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv, { type ErrorObject, type ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
 
@@ -50,9 +50,7 @@ const validate: ValidateFunction = ajv.compile(schema);
 
 export type ValidationErrors = ErrorObject[];
 
-export type ValidationResult =
-  | { ok: true }
-  | { ok: false; errors: ValidationErrors };
+export type ValidationResult = { ok: true } | { ok: false; errors: ValidationErrors };
 
 export function validateManifest(obj: unknown): ValidationResult {
   const ok = validate(obj);
@@ -70,9 +68,7 @@ export interface VectorsFile {
     kind: "success" | "error";
     note?: string;
     request: { tool: string; params: Record<string, unknown> };
-    response:
-      | { ok: true; result: unknown }
-      | { ok: false; error: string; code: string };
+    response: { ok: true; result: unknown } | { ok: false; error: string; code: string };
   }>;
 }
 

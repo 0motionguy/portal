@@ -1,13 +1,13 @@
-import { createServer, type Server } from "node:http";
+import { type Server, createServer } from "node:http";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import {
   AnthropicApiError,
-  TASKS,
-  createAnthropicClient,
-  createMockClient,
   type CountTokensRequest,
   type MessageRequest,
   type MessageResponse,
+  TASKS,
+  createAnthropicClient,
+  createMockClient,
 } from "../src/tasks/index.ts";
 
 interface RecordedRequest {
@@ -118,11 +118,7 @@ describe("TASKS", () => {
 
   test("each task id is unique and matches the expected literal union", () => {
     const ids = TASKS.map((t) => t.id).sort();
-    expect(ids).toEqual([
-      "find_trending_ai",
-      "search_agent_protocol",
-      "summarize_repo",
-    ]);
+    expect(ids).toEqual(["find_trending_ai", "search_agent_protocol", "summarize_repo"]);
   });
 
   test("user messages cold-read to the right tool", () => {
@@ -165,8 +161,10 @@ describe("createAnthropicClient.countTokens", () => {
     let calls = 0;
     responder = () => {
       calls++;
-      if (calls === 1) return { status: 429, body: { error: { type: "rate_limit_error", message: "slow down" } } };
-      if (calls === 2) return { status: 503, body: { error: { type: "overloaded_error", message: "busy" } } };
+      if (calls === 1)
+        return { status: 429, body: { error: { type: "rate_limit_error", message: "slow down" } } };
+      if (calls === 2)
+        return { status: 503, body: { error: { type: "overloaded_error", message: "busy" } } };
       return { status: 200, body: { input_tokens: 9 } };
     };
     const client = makeClient();
@@ -200,7 +198,10 @@ describe("createAnthropicClient.countTokens", () => {
       calls++;
       return {
         status: 400,
-        body: { type: "error", error: { type: "invalid_request_error", message: "model foo not found" } },
+        body: {
+          type: "error",
+          error: { type: "invalid_request_error", message: "model foo not found" },
+        },
       };
     };
     const client = makeClient();
@@ -284,8 +285,8 @@ describe("createAnthropicClient.sendMessage", () => {
     expect(res.content).toHaveLength(1);
     const block = res.content[0];
     if (!block) throw new Error("no block");
-    expect(block["type"]).toBe("tool_use");
-    expect(block["name"]).toBe("top_gainers");
+    expect(block.type).toBe("tool_use");
+    expect(block.name).toBe("top_gainers");
 
     expect(recorded).toHaveLength(1);
     const r = recorded[0];
@@ -422,8 +423,8 @@ describe("createMockClient", () => {
     expect(res.content).toHaveLength(1);
     const block = res.content[0];
     if (!block) throw new Error("no block");
-    expect(block["type"]).toBe("tool_use");
-    expect(block["name"]).toBe("top_gainers");
+    expect(block.type).toBe("tool_use");
+    expect(block.name).toBe("top_gainers");
     expect(res.usage.output_tokens).toBe(30);
   });
 
@@ -437,7 +438,7 @@ describe("createMockClient", () => {
     expect(res.stop_reason).toBe("end_turn");
     const block = res.content[0];
     if (!block) throw new Error("no block");
-    expect(block["type"]).toBe("text");
+    expect(block.type).toBe("text");
   });
 
   test("sendMessage usage.input_tokens equals countTokens output", async () => {

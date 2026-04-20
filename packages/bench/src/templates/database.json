@@ -5,7 +5,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "sql": { "type": "string", "description": "SQL statement to execute; must be read-only (SELECT, WITH, EXPLAIN)" },
+        "sql": {
+          "type": "string",
+          "description": "SQL statement to execute; must be read-only (SELECT, WITH, EXPLAIN)"
+        },
         "params": {
           "type": "array",
           "items": { "type": "string" },
@@ -21,7 +24,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "sql": { "type": "string", "description": "SQL statement to execute; wrapped in a transaction" },
+        "sql": {
+          "type": "string",
+          "description": "SQL statement to execute; wrapped in a transaction"
+        },
         "params": {
           "type": "array",
           "items": { "type": "string" },
@@ -37,7 +43,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "schema": { "type": "string", "description": "Schema name to list (defaults to the search path)" }
+        "schema": {
+          "type": "string",
+          "description": "Schema name to list (defaults to the search path)"
+        }
       }
     }
   },
@@ -98,7 +107,10 @@
       "type": "object",
       "properties": {
         "table": { "type": "string", "description": "Fully qualified table name to update" },
-        "where": { "type": "string", "description": "SQL WHERE clause (without the WHERE keyword)" },
+        "where": {
+          "type": "string",
+          "description": "SQL WHERE clause (without the WHERE keyword)"
+        },
         "patch": {
           "type": "object",
           "description": "Column name to new value map to apply"
@@ -126,7 +138,10 @@
       "type": "object",
       "properties": {
         "sql": { "type": "string", "description": "SQL statement to explain" },
-        "analyze": { "type": "boolean", "description": "If true, run EXPLAIN ANALYZE for real timings" }
+        "analyze": {
+          "type": "boolean",
+          "description": "If true, run EXPLAIN ANALYZE for real timings"
+        }
       },
       "required": ["sql"]
     }
@@ -138,7 +153,10 @@
       "type": "object",
       "properties": {
         "table": { "type": "string", "description": "Fully qualified table name" },
-        "exact": { "type": "boolean", "description": "If true, run COUNT(*) for an exact row count" }
+        "exact": {
+          "type": "boolean",
+          "description": "If true, run COUNT(*) for an exact row count"
+        }
       },
       "required": ["table"]
     }
@@ -156,7 +174,10 @@
           "description": "Ordered list of column names for the index"
         },
         "unique": { "type": "boolean", "description": "If true, create a UNIQUE index" },
-        "concurrent": { "type": "boolean", "description": "If true, build the index without blocking writes" }
+        "concurrent": {
+          "type": "boolean",
+          "description": "If true, build the index without blocking writes"
+        }
       },
       "required": ["table", "columns"]
     }

@@ -51,7 +51,9 @@ export function renderMarkdown(report: MatrixReport, stamp: string): string {
   lines.push("");
   lines.push("## Methodology");
   lines.push("");
-  lines.push("- **Token counts** come from `POST /v1/messages/count_tokens` on the Anthropic API (not estimated).");
+  lines.push(
+    "- **Token counts** come from `POST /v1/messages/count_tokens` on the Anthropic API (not estimated).",
+  );
   lines.push(
     "- **MCP path:** every tool in the simulated catalog is passed in `tools` on every count_tokens request. This is the preloaded-schema overhead the protocol pays per turn.",
   );
@@ -75,7 +77,9 @@ export function renderMarkdown(report: MatrixReport, stamp: string): string {
   lines.push("|---|---:|---:|");
   for (const id of report.modelIds) {
     const p = MODEL_PRICING[id];
-    lines.push(`| \`${id}\` | ${p.inputPerMillion.toFixed(2)} | ${p.outputPerMillion.toFixed(2)} |`);
+    lines.push(
+      `| \`${id}\` | ${p.inputPerMillion.toFixed(2)} | ${p.outputPerMillion.toFixed(2)} |`,
+    );
   }
   lines.push("");
   const failures = report.results.filter((r) => !r.ok);
@@ -109,7 +113,9 @@ function renderSummaryTable(report: MatrixReport): string {
 
 function renderDetailTable(report: MatrixReport): string {
   const lines: string[] = [];
-  lines.push("| # | Protocol | Tools | Task | Model | Run | Input | Output | Latency ms | Cost USD | ok |");
+  lines.push(
+    "| # | Protocol | Tools | Task | Model | Run | Input | Output | Latency ms | Cost USD | ok |",
+  );
   lines.push("|---:|---|---:|---|---|---:|---:|---:|---:|---:|:-:|");
   report.results.forEach((r, i) => {
     lines.push(
@@ -119,9 +125,7 @@ function renderDetailTable(report: MatrixReport): string {
   return lines.join("\n");
 }
 
-function aggregate(
-  report: MatrixReport,
-): Array<[number, { mcp: number; portal: number }]> {
+function aggregate(report: MatrixReport): Array<[number, { mcp: number; portal: number }]> {
   const byCount = new Map<number, { mcp: number[]; portal: number[] }>();
   for (const r of report.results) {
     if (!r.ok) continue;

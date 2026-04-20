@@ -44,7 +44,11 @@ const server = createServer(async (req, res) => {
     }
     res.writeHead(200, { "content-type": "application/json" });
     res.end(
-      JSON.stringify({ ok: false, error: `tool '${parsed.tool}' not in manifest`, code: "NOT_FOUND" }),
+      JSON.stringify({
+        ok: false,
+        error: `tool '${parsed.tool}' not in manifest`,
+        code: "NOT_FOUND",
+      }),
     );
     return;
   }

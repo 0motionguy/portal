@@ -1,10 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { guardUrl, type GuardDeps } from "./ssrf-guard";
+import { type GuardDeps, guardUrl } from "./ssrf-guard";
 
 // Helper: build a deps bundle with a controllable DNS stub and NODE_ENV.
-function deps(
-  opts: { env?: string; resolve?: Record<string, string[]> } = {},
-): GuardDeps {
+function deps(opts: { env?: string; resolve?: Record<string, string[]> } = {}): GuardDeps {
   return {
     getEnv: () => opts.env,
     dnsLookup: async (host: string) => {

@@ -1,5 +1,5 @@
-import { ParamError, type ToolHandler } from "../types.ts";
 import { loadSeed } from "../seed.ts";
+import { ParamError, type ToolHandler } from "../types.ts";
 
 export const search_repos: ToolHandler = {
   name: "search_repos",

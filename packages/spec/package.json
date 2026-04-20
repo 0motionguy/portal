@@ -23,13 +23,7 @@
       "default": "./dist/conformance/lean-validator.js"
     }
   },
-  "files": [
-    "dist/",
-    "manifest.schema.json",
-    "conformance/vectors.json",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist/", "manifest.schema.json", "conformance/vectors.json", "README.md", "LICENSE"],
   "publishConfig": {
     "access": "public"
   },

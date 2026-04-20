@@ -1,5 +1,5 @@
-import type { SeedData } from "./types.ts";
 import { fixture } from "./fixture.ts";
+import type { SeedData } from "./types.ts";
 
 let cached: SeedData | null = null;
 

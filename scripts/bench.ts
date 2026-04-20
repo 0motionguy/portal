@@ -10,10 +10,9 @@
 
 import { spawnSync } from "node:child_process";
 
-const result = spawnSync(
-  "pnpm",
-  ["--filter", "@visitportal/bench", "bench:smoke"],
-  { stdio: "inherit", shell: true },
-);
+const result = spawnSync("pnpm", ["--filter", "@visitportal/bench", "bench:smoke"], {
+  stdio: "inherit",
+  shell: true,
+});
 
 process.exit(result.status ?? 1);

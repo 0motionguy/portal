@@ -1,6 +1,6 @@
-import { afterAll, beforeAll, describe, expect, test } from "vitest";
-import { createServer, type Server } from "node:http";
+import { type Server, createServer } from "node:http";
 import { visit } from "@visitportal/visit";
+import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { run } from "../src/commands.ts";
 
 // Spin up an in-process Portal for the CLI commands. Same shape as the SDK's

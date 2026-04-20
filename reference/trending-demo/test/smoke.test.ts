@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { validateManifest } from "@visitportal/spec/runner";
+import { describe, expect, it } from "vitest";
 import { createApp } from "../src/server.ts";
 
 const app = createApp();

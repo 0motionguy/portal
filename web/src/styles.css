@@ -1,36 +1,44 @@
 :root {
-  --paper: #EEE7D5;
-  --paper-soft: #F3EDDC;
-  --paper-dark: #E4DBC4;
+  --paper: #eee7d5;
+  --paper-soft: #f3eddc;
+  --paper-dark: #e4dbc4;
   --ink: #181818;
-  --ink-soft: #2A2724;
-  --coral: #DA7756;
-  --coral-deep: #BF5D3D;
+  --ink-soft: #2a2724;
+  --coral: #da7756;
+  --coral-deep: #bf5d3d;
   --coral-dim: rgba(218, 119, 86, 0.15);
-  --dim: #8A7F6E;
-  --dim-soft: #B8AE9C;
+  --dim: #8a7f6e;
+  --dim-soft: #b8ae9c;
   --line: rgba(24, 24, 24, 0.12);
   --line-soft: rgba(24, 24, 24, 0.06);
-  --term-bg: #1A1817;
-  --term-fg: #EEE7D5;
-  --term-green: #93B88B;
-  --term-coral: #E88B6A;
-  --term-amber: #D4A574;
-  --term-dim: #6B6359;
-  --term-blue: #7EA8C4;
+  --term-bg: #1a1817;
+  --term-fg: #eee7d5;
+  --term-green: #93b88b;
+  --term-coral: #e88b6a;
+  --term-amber: #d4a574;
+  --term-dim: #6b6359;
+  --term-blue: #7ea8c4;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--coral); color: var(--paper); }
+::selection {
+  background: var(--coral);
+  color: var(--paper);
+}
 
 /* ---- Shared nav ---- */
 .nav {
@@ -49,7 +57,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 28px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   letter-spacing: 0.08em;
 }
@@ -60,7 +68,9 @@ html, body {
   letter-spacing: 0.12em;
   text-decoration: none;
 }
-.nav-brand:hover { color: var(--coral); }
+.nav-brand:hover {
+  color: var(--coral);
+}
 .nav-links {
   display: flex;
   gap: 24px;
@@ -73,9 +83,15 @@ html, body {
   text-transform: lowercase;
   letter-spacing: 0.06em;
 }
-.nav-links a:hover { color: var(--ink); }
-.nav-links a.active { color: var(--coral); }
-.nav-links a.ext::after { content: " ↗"; }
+.nav-links a:hover {
+  color: var(--ink);
+}
+.nav-links a.active {
+  color: var(--coral);
+}
+.nav-links a.ext::after {
+  content: " ↗";
+}
 .nav-status {
   display: inline-flex;
   align-items: center;
@@ -92,14 +108,27 @@ html, body {
   animation: blink 1.4s infinite;
 }
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0.3; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0.3;
+  }
 }
 
 @media (max-width: 600px) {
-  .nav-inner { padding: 12px 18px; gap: 16px; }
-  .nav-links { gap: 14px; }
-  .nav-status { display: none; }
+  .nav-inner {
+    padding: 12px 18px;
+    gap: 16px;
+  }
+  .nav-links {
+    gap: 14px;
+  }
+  .nav-status {
+    display: none;
+  }
 }
 
 /* ---- Shared page shell for non-/ routes ---- */
@@ -109,24 +138,30 @@ html, body {
   padding: 48px 32px 80px;
 }
 .page h1 {
-  font-family: 'Instrument Serif', serif;
+  font-family: "Instrument Serif", serif;
   font-size: clamp(44px, 6vw, 72px);
   font-weight: 400;
   line-height: 1.02;
   letter-spacing: -0.02em;
   margin-bottom: 24px;
 }
-.page h1 em { color: var(--coral); font-style: italic; }
+.page h1 em {
+  color: var(--coral);
+  font-style: italic;
+}
 .page h2 {
-  font-family: 'Instrument Serif', serif;
+  font-family: "Instrument Serif", serif;
   font-size: clamp(28px, 3.2vw, 36px);
   font-weight: 400;
   letter-spacing: -0.01em;
   margin: 40px 0 16px;
 }
-.page h2 em { color: var(--coral); font-style: italic; }
+.page h2 em {
+  color: var(--coral);
+  font-style: italic;
+}
 .page h3 {
-  font-family: 'Instrument Serif', serif;
+  font-family: "Instrument Serif", serif;
   font-size: 22px;
   font-weight: 400;
   margin: 28px 0 12px;
@@ -137,18 +172,31 @@ html, body {
   margin-bottom: 18px;
   color: var(--ink-soft);
 }
-.page p strong { color: var(--ink); font-weight: 600; }
+.page p strong {
+  color: var(--ink);
+  font-weight: 600;
+}
 .page a {
   color: var(--coral);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
-.page a:hover { color: var(--coral-deep); }
-.page ul, .page ol { padding-left: 24px; margin-bottom: 18px; color: var(--ink-soft); max-width: 720px; }
-.page li { margin-bottom: 4px; }
+.page a:hover {
+  color: var(--coral-deep);
+}
+.page ul,
+.page ol {
+  padding-left: 24px;
+  margin-bottom: 18px;
+  color: var(--ink-soft);
+  max-width: 720px;
+}
+.page li {
+  margin-bottom: 4px;
+}
 .page .eyebrow {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -157,7 +205,7 @@ html, body {
   display: inline-block;
 }
 .page .lede {
-  font-family: 'Instrument Serif', serif;
+  font-family: "Instrument Serif", serif;
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1.45;
   color: var(--ink-soft);
@@ -169,8 +217,10 @@ html, body {
 }
 
 /* Mono / code */
-.mono, code, pre {
-  font-family: 'Geist Mono', monospace;
+.mono,
+code,
+pre {
+  font-family: "Geist Mono", monospace;
 }
 code {
   font-size: 0.92em;
@@ -200,13 +250,14 @@ pre code {
 .page table {
   width: 100%;
   border-collapse: collapse;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 13px;
   margin: 20px 0;
   background: var(--paper-soft);
   border: 1px solid var(--line);
 }
-.page th, .page td {
+.page th,
+.page td {
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid var(--line-soft);
@@ -219,7 +270,9 @@ pre code {
   color: var(--dim);
   border-bottom: 1px solid var(--ink);
 }
-.page tbody tr:last-child td { border-bottom: none; }
+.page tbody tr:last-child td {
+  border-bottom: none;
+}
 
 /* Footer (shared across non-/ routes) */
 .foot {
@@ -227,7 +280,7 @@ pre code {
   margin: 80px auto 0;
   padding: 32px;
   border-top: 1px solid var(--line);
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   color: var(--dim);
   display: flex;
@@ -235,9 +288,19 @@ pre code {
   gap: 16px;
   flex-wrap: wrap;
 }
-.foot a { color: var(--dim); text-decoration: none; }
-.foot a:hover { color: var(--ink); }
-.foot .left, .foot .right { display: flex; gap: 20px; flex-wrap: wrap; }
+.foot a {
+  color: var(--dim);
+  text-decoration: none;
+}
+.foot a:hover {
+  color: var(--ink);
+}
+.foot .left,
+.foot .right {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 
 /* ---- Inline nav links inside the one-pager status bar ---- */
 .status-bar a.nav-inline {
@@ -270,7 +333,7 @@ pre code {
   color: var(--term-fg);
   padding: 16px 20px;
   border-radius: 6px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -288,13 +351,17 @@ pre code {
   white-space: nowrap;
   flex: 1 1 auto;
 }
-.hero-actions__install .cmd .arg { color: var(--term-amber); }
-.hero-actions__install .cmd .url { color: var(--term-green); }
+.hero-actions__install .cmd .arg {
+  color: var(--term-amber);
+}
+.hero-actions__install .cmd .url {
+  color: var(--term-green);
+}
 .hero-actions__copy {
   background: transparent;
   border: 1px solid rgba(238, 231, 213, 0.22);
   color: var(--term-coral);
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: lowercase;
@@ -325,7 +392,7 @@ pre code {
   border-radius: 6px;
   background: var(--paper-soft);
   color: var(--ink);
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 13px;
   letter-spacing: 0.04em;
   text-decoration: none;
@@ -337,7 +404,10 @@ pre code {
   color: var(--paper);
   border-color: var(--ink);
 }
-.hero-actions__github svg { display: block; flex-shrink: 0; }
+.hero-actions__github svg {
+  display: block;
+  flex-shrink: 0;
+}
 .hero-actions__secondary {
   display: flex;
   gap: 20px;
@@ -345,7 +415,7 @@ pre code {
   padding-left: 4px;
 }
 .hero-actions__secondary a {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: lowercase;
@@ -359,8 +429,12 @@ pre code {
 }
 
 @media (max-width: 500px) {
-  .hero-actions__row { flex-direction: column; }
-  .hero-actions__github { justify-content: center; }
+  .hero-actions__row {
+    flex-direction: column;
+  }
+  .hero-actions__github {
+    justify-content: center;
+  }
 }
 
 /* ---- /docs landing cards ---- */
@@ -370,8 +444,16 @@ pre code {
   gap: 18px;
   margin: 28px 0 48px;
 }
-@media (max-width: 900px) { .docs-cards { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px) { .docs-cards { grid-template-columns: 1fr; } }
+@media (max-width: 900px) {
+  .docs-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .docs-cards {
+    grid-template-columns: 1fr;
+  }
+}
 .docs-card {
   display: flex;
   flex-direction: column;
@@ -390,14 +472,14 @@ pre code {
   transform: translateY(-1px);
 }
 .docs-card .tag {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.14em;
   color: var(--coral);
   text-transform: uppercase;
 }
 .docs-card h3 {
-  font-family: 'Instrument Serif', serif;
+  font-family: "Instrument Serif", serif;
   font-size: 22px;
   font-weight: 400;
   line-height: 1.15;
@@ -405,9 +487,12 @@ pre code {
   color: var(--ink);
   margin: 2px 0 4px;
 }
-.docs-card h3 em { color: var(--coral); font-style: italic; }
+.docs-card h3 em {
+  color: var(--coral);
+  font-style: italic;
+}
 .docs-card p {
-  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
   font-size: 13px;
   line-height: 1.5;
   color: var(--ink-soft);
@@ -417,9 +502,11 @@ pre code {
 .docs-card .jump {
   margin-top: auto;
   padding-top: 10px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--coral);
 }
-.docs-card:hover .jump { color: var(--coral-deep); }
+.docs-card:hover .jump {
+  color: var(--coral-deep);
+}

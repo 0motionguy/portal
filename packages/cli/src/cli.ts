@@ -7,7 +7,7 @@ import {
   ToolNotInManifest,
   visit,
 } from "@visitportal/visit";
-import { run, type CommandResult } from "./commands.ts";
+import { type CommandResult, run } from "./commands.ts";
 
 const argv = process.argv.slice(2);
 const { command, url, rest, flags } = parseArgs(argv);
@@ -104,7 +104,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
         try {
           flags.params = JSON.parse(next) as Record<string, unknown>;
         } catch {
-          process.stderr.write(`error: --params must be valid JSON\n`);
+          process.stderr.write("error: --params must be valid JSON\n");
           process.exit(2);
         }
       }

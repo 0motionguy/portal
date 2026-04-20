@@ -1,7 +1,4 @@
-export type BenchTaskId =
-  | "find_trending_ai"
-  | "summarize_repo"
-  | "search_agent_protocol";
+export type BenchTaskId = "find_trending_ai" | "summarize_repo" | "search_agent_protocol";
 
 export interface BenchTask {
   id: BenchTaskId;

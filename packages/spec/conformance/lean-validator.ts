@@ -51,28 +51,28 @@ export function leanValidate(obj: unknown): LeanResult {
   if ("portal_version" in obj) {
     const v = obj.portal_version;
     if (typeof v !== "string" || !VERSION_RE.test(v)) {
-      errs.push(`portal_version: must match ^0\\.1(\\.[0-9]+)?$`);
+      errs.push("portal_version: must match ^0\\.1(\\.[0-9]+)?$");
     }
   }
 
   if ("name" in obj) {
     const n = obj.name;
     if (typeof n !== "string" || n.length < 1 || n.length > 120) {
-      errs.push(`name: must be a string 1..120 chars`);
+      errs.push("name: must be a string 1..120 chars");
     }
   }
 
   if ("brief" in obj) {
     const b = obj.brief;
     if (typeof b !== "string" || b.length < 1 || b.length > 2000) {
-      errs.push(`brief: must be a string 1..2000 chars`);
+      errs.push("brief: must be a string 1..2000 chars");
     }
   }
 
   if ("call_endpoint" in obj) {
     const e = obj.call_endpoint;
     if (typeof e !== "string" || !URL_RE.test(e)) {
-      errs.push(`call_endpoint: must be https:// (or http://localhost for local dev)`);
+      errs.push("call_endpoint: must be https:// (or http://localhost for local dev)");
     }
   }
 
@@ -95,7 +95,7 @@ export function leanValidate(obj: unknown): LeanResult {
 
 function validatePricing(p: unknown, errs: string[]): void {
   if (!isObject(p)) {
-    errs.push(`pricing: must be an object`);
+    errs.push("pricing: must be an object");
     return;
   }
   for (const k of Object.keys(p)) {
@@ -116,17 +116,17 @@ function validatePricing(p: unknown, errs: string[]): void {
     errs.push(`pricing.rate: required when model='${m}'`);
   }
   if ("rate" in p && typeof p.rate !== "string") {
-    errs.push(`pricing.rate: must be a string`);
+    errs.push("pricing.rate: must be a string");
   }
 }
 
 function validateTools(t: unknown, errs: string[]): void {
   if (!Array.isArray(t)) {
-    errs.push(`tools: must be an array`);
+    errs.push("tools: must be an array");
     return;
   }
   if (t.length < 1) {
-    errs.push(`tools: must contain at least 1 item`);
+    errs.push("tools: must contain at least 1 item");
     return;
   }
   for (let i = 0; i < t.length; i++) {

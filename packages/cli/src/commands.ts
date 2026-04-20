@@ -1,4 +1,4 @@
-import { type Portal } from "@visitportal/visit";
+import type { Portal } from "@visitportal/visit";
 import type { CliFlags } from "./cli.ts";
 
 const PROBE_TOOL_NAME = "__visitportal_cli_probe__";
@@ -107,9 +107,7 @@ async function conformance(portal: Portal, flags: CliFlags): Promise<CommandResu
         /* fall through — isNotFoundEnvelope will reject */
       }
       if (!isNotFoundEnvelope(body)) {
-        failures.push(
-          `NOT_FOUND probe returned wrong envelope: ${JSON.stringify(body)}`,
-        );
+        failures.push(`NOT_FOUND probe returned wrong envelope: ${JSON.stringify(body)}`);
       } else {
         passes.push("NOT_FOUND probe round-tripped with correct envelope");
       }
@@ -120,21 +118,14 @@ async function conformance(portal: Portal, flags: CliFlags): Promise<CommandResu
 
   const body = flags.json
     ? JSON.stringify({ passes, failures }, null, 2)
-    : [
-        ...passes.map((p) => `  ✓ ${p}`),
-        ...failures.map((f) => `  ✗ ${f}`),
-      ].join("\n");
+    : [...passes.map((p) => `  ✓ ${p}`), ...failures.map((f) => `  ✗ ${f}`)].join("\n");
   return { exitCode: failures.length === 0 ? 0 : 1, output: body };
 }
 
-function isNotFoundEnvelope(
-  x: unknown,
-): x is { ok: false; code: "NOT_FOUND"; error: string } {
+function isNotFoundEnvelope(x: unknown): x is { ok: false; code: "NOT_FOUND"; error: string } {
   if (typeof x !== "object" || x === null) return false;
   const r = x as Record<string, unknown>;
-  return (
-    r.ok === false && r.code === "NOT_FOUND" && typeof r.error === "string"
-  );
+  return r.ok === false && r.code === "NOT_FOUND" && typeof r.error === "string";
 }
 
 function stringify(x: unknown): string {

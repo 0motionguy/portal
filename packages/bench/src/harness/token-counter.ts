@@ -56,11 +56,7 @@ export function createTokenCounter(opts: TokenCounterOptions): TokenCounter {
         detail = "(no body)";
       }
       const code = status === 401 ? "unauthorized" : status === 429 ? "rate_limited" : "http_error";
-      throw new TokenCountError(
-        `count_tokens ${status}: ${truncate(detail, 300)}`,
-        status,
-        code,
-      );
+      throw new TokenCountError(`count_tokens ${status}: ${truncate(detail, 300)}`, status, code);
     }
 
     let body: unknown;
@@ -102,11 +98,7 @@ export function createTokenCounter(opts: TokenCounterOptions): TokenCounter {
         }
       }
       if (lastError instanceof TokenCountError) throw lastError;
-      throw new TokenCountError(
-        `count_tokens failed: ${describe(lastError)}`,
-        null,
-        "unknown",
-      );
+      throw new TokenCountError(`count_tokens failed: ${describe(lastError)}`, null, "unknown");
     },
   };
 }
@@ -122,7 +114,11 @@ function isRetryable(e: unknown): boolean {
 }
 
 function isCountTokensResponse(x: unknown): x is CountTokensResponse {
-  return typeof x === "object" && x !== null && typeof (x as { input_tokens: unknown }).input_tokens === "number";
+  return (
+    typeof x === "object" &&
+    x !== null &&
+    typeof (x as { input_tokens: unknown }).input_tokens === "number"
+  );
 }
 
 function describe(e: unknown): string {

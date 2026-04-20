@@ -1,4 +1,4 @@
-import { repos, maintainers } from "./index.ts";
+import { maintainers, repos } from "./index.ts";
 
 interface Issue {
   kind: string;

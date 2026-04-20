@@ -1,21 +1,18 @@
-import { createServer, type Server } from "node:http";
 import { mkdtempSync, readFileSync, readdirSync } from "node:fs";
+import { type Server, createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { runMatrix } from "../src/harness/bench.ts";
-import { renderChart, _internalForTest as chartInternals } from "../src/harness/chart.ts";
-import { seedRng, shuffleInPlace } from "../src/harness/rng.ts";
+import { _internalForTest as chartInternals, renderChart } from "../src/harness/chart.ts";
 import {
   renderMarkdown,
   writeChartSvg,
   writeJsonReport,
   writeMarkdownReport,
 } from "../src/harness/result-writer.ts";
-import {
-  TokenCountError,
-  createTokenCounter,
-} from "../src/harness/token-counter.ts";
+import { seedRng, shuffleInPlace } from "../src/harness/rng.ts";
+import { TokenCountError, createTokenCounter } from "../src/harness/token-counter.ts";
 import type {
   AnthropicClient,
   BenchCell,
@@ -38,7 +35,12 @@ type Handler = (req: {
 let currentHandler: Handler | null = null;
 let server: Server;
 let baseUrl = "";
-const receivedRequests: Array<{ method: string; path: string; headers: Record<string, string | string[] | undefined>; body: unknown }> = [];
+const receivedRequests: Array<{
+  method: string;
+  path: string;
+  headers: Record<string, string | string[] | undefined>;
+  body: unknown;
+}> = [];
 
 beforeAll(async () => {
   server = createServer((req, res) => {
@@ -215,10 +217,12 @@ describe("runMatrix", () => {
     sendCalls: number;
   }
 
-  function makeClient(overrides: Partial<{
-    countTokens: AnthropicClient["countTokens"];
-    sendMessage: AnthropicClient["sendMessage"];
-  }> = {}): CountingClient {
+  function makeClient(
+    overrides: Partial<{
+      countTokens: AnthropicClient["countTokens"];
+      sendMessage: AnthropicClient["sendMessage"];
+    }> = {},
+  ): CountingClient {
     const state = { countCalls: 0, sendCalls: 0 };
     const client: CountingClient = {
       countCalls: 0,
@@ -229,9 +233,7 @@ describe("runMatrix", () => {
         if (overrides.countTokens) return overrides.countTokens(req);
         const toolTokens = (req.tools?.length ?? 0) * 150;
         const sysTokens = req.system ? Math.ceil(req.system.length / 4) : 0;
-        const userTokens = Math.ceil(
-          req.messages.reduce((a, m) => a + m.content.length, 0) / 4,
-        );
+        const userTokens = Math.ceil(req.messages.reduce((a, m) => a + m.content.length, 0) / 4);
         return { input_tokens: toolTokens + sysTokens + userTokens };
       },
       async sendMessage(req: MessageRequest): Promise<MessageResponse> {
@@ -260,9 +262,7 @@ describe("runMatrix", () => {
       seed: 1,
       client,
       simulator,
-      tasks: [
-        { id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" },
-      ],
+      tasks: [{ id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" }],
     });
     expect(report.results).toHaveLength(2 * 2 * 1 * 1 * 3);
     const perProto = new Map<Protocol, number>();
@@ -285,9 +285,7 @@ describe("runMatrix", () => {
       seed: 1,
       client,
       simulator,
-      tasks: [
-        { id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" },
-      ],
+      tasks: [{ id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" }],
     });
     expect(client.countCalls).toBe(2);
     expect(client.sendCalls).toBe(0);
@@ -305,9 +303,7 @@ describe("runMatrix", () => {
       seed: 1,
       client,
       simulator,
-      tasks: [
-        { id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" },
-      ],
+      tasks: [{ id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" }],
     });
     expect(client.countCalls).toBe(1);
     expect(client.sendCalls).toBe(1);
@@ -334,9 +330,7 @@ describe("runMatrix", () => {
       seed: 1,
       client,
       simulator,
-      tasks: [
-        { id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" },
-      ],
+      tasks: [{ id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" }],
     });
     const mcpReq = seenRequests.find((r) => (r.tools?.length ?? 0) > 0);
     const portalReq = seenRequests.find((r) => (r.tools?.length ?? 0) === 0);
@@ -362,9 +356,7 @@ describe("runMatrix", () => {
       seed: 1,
       client,
       simulator,
-      tasks: [
-        { id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" },
-      ],
+      tasks: [{ id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" }],
     });
     expect(report.results).toHaveLength(1);
     const r = report.results[0];
@@ -386,9 +378,7 @@ describe("runMatrix", () => {
       seed: 1,
       client,
       simulator,
-      tasks: [
-        { id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" },
-      ],
+      tasks: [{ id: "alpha", name: "alpha", system: "sys", user: "u", expectedTool: "tool_0" }],
       onProgress: (e) => events.push(e.kind),
     });
     expect(events).toEqual(["cell_start", "cell_done", "cell_start", "cell_done"]);

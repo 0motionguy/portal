@@ -13,104 +13,66 @@
     "handle": "leerob",
     "display_name": "Lee Robinson",
     "bio": "VP of Product at Vercel. React, Next.js, and developer experience.",
-    "repos": [
-      "vercel/next.js",
-      "vercel/ai",
-      "vercel/turborepo"
-    ]
+    "repos": ["vercel/next.js", "vercel/ai", "vercel/turborepo"]
   },
   {
     "handle": "shadcn",
     "display_name": "shadcn",
     "bio": "Designer and engineer. Building open-source UI primitives and Next.js starters.",
-    "repos": [
-      "shadcn-ui/ui",
-      "shadcn-ui/taxonomy"
-    ]
+    "repos": ["shadcn-ui/ui", "shadcn-ui/taxonomy"]
   },
   {
     "handle": "yusukebe",
     "display_name": "Yusuke Wada",
     "bio": "Creator of Hono. Works on ultrafast web frameworks for the edge runtime.",
-    "repos": [
-      "honojs/hono",
-      "honojs/middleware"
-    ]
+    "repos": ["honojs/hono", "honojs/middleware"]
   },
   {
     "handle": "andrew-stern",
     "display_name": "Andrew Stern",
     "bio": "Lead maintainer at Drizzle Team. TypeScript ORMs, migrations, and developer tooling.",
-    "repos": [
-      "drizzle-team/drizzle-orm",
-      "drizzle-team/drizzle-kit"
-    ]
+    "repos": ["drizzle-team/drizzle-orm", "drizzle-team/drizzle-kit"]
   },
   {
     "handle": "hwchase17",
     "display_name": "Harrison Chase",
     "bio": "Co-founder of LangChain. Builds frameworks for LLM-powered applications.",
-    "repos": [
-      "langchain-ai/langchain",
-      "langchain-ai/langgraph",
-      "langchain-ai/langsmith-sdk"
-    ]
+    "repos": ["langchain-ai/langchain", "langchain-ai/langgraph", "langchain-ai/langsmith-sdk"]
   },
   {
     "handle": "charliermarsh",
     "display_name": "Charlie Marsh",
     "bio": "Founder of Astral. Building fast Python tooling in Rust.",
-    "repos": [
-      "astral-sh/uv",
-      "astral-sh/ruff",
-      "astral-sh/rye"
-    ]
+    "repos": ["astral-sh/uv", "astral-sh/ruff", "astral-sh/rye"]
   },
   {
     "handle": "ggerganov",
     "display_name": "Georgi Gerganov",
     "bio": "Open-source developer working on efficient LLM inference in C/C++.",
-    "repos": [
-      "ggerganov/llama.cpp",
-      "ggerganov/whisper.cpp",
-      "ggerganov/ggml"
-    ]
+    "repos": ["ggerganov/llama.cpp", "ggerganov/whisper.cpp", "ggerganov/ggml"]
   },
   {
     "handle": "samuelcolvin",
     "display_name": "Samuel Colvin",
     "bio": "Creator of Pydantic. Founder of Pydantic Services. Python data validation and observability.",
-    "repos": [
-      "pydantic/pydantic",
-      "pydantic/pydantic-ai",
-      "pydantic/logfire"
-    ]
+    "repos": ["pydantic/pydantic", "pydantic/pydantic-ai", "pydantic/logfire"]
   },
   {
     "handle": "mchiang0610",
     "display_name": "Michael Chiang",
     "bio": "Co-founder of Ollama. Making local LLMs easy to run anywhere.",
-    "repos": [
-      "ollama/ollama",
-      "ollama/ollama-python"
-    ]
+    "repos": ["ollama/ollama", "ollama/ollama-python"]
   },
   {
     "handle": "lucasfernog",
     "display_name": "Lucas Nogueira",
     "bio": "Co-founder of Tauri. Building secure, cross-platform desktop apps with Rust.",
-    "repos": [
-      "tauri-apps/tauri",
-      "tauri-apps/plugins-workspace"
-    ]
+    "repos": ["tauri-apps/tauri", "tauri-apps/plugins-workspace"]
   },
   {
     "handle": "andrewrk",
     "display_name": "Andrew Kelley",
     "bio": "Creator of the Zig programming language. Focus on low-level systems software.",
-    "repos": [
-      "ziglang/zig",
-      "oven-sh/bun"
-    ]
+    "repos": ["ziglang/zig", "oven-sh/bun"]
   }
 ]

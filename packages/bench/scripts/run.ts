@@ -1,4 +1,4 @@
-import { runMatrix, type McpToolLike } from "../src/harness/bench.ts";
+import { type McpToolLike, runMatrix } from "../src/harness/bench.ts";
 import {
   writeChartSvg,
   writeJsonReport,
@@ -14,7 +14,10 @@ import type {
 } from "../src/harness/types.ts";
 import { MODEL_IDS } from "../src/harness/types.ts";
 
-const RESULTS_DIR = new URL("../results/", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
+const RESULTS_DIR = new URL("../results/", import.meta.url).pathname.replace(
+  /^\/([A-Za-z]:)/,
+  "$1",
+);
 
 const TOOL_COUNTS = [10, 50, 100, 400] as const;
 const MODELS: readonly ModelId[] = [MODEL_IDS.sonnet, MODEL_IDS.opus];
@@ -23,7 +26,7 @@ const RUNS_PER_CELL = 5;
 const SEED = 42;
 
 async function main(): Promise<void> {
-  const apiKey = process.env["ANTHROPIC_API_KEY"];
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     process.stderr.write(
       "[bench] ANTHROPIC_API_KEY is not set — refusing to run the full matrix with mocks.\n",
@@ -38,7 +41,7 @@ async function main(): Promise<void> {
   const { simulator } = await loadSimulator();
   const client = await loadClient(apiKey);
 
-  const modeEnv = (process.env["BENCH_MODE"] ?? "full").toLowerCase();
+  const modeEnv = (process.env.BENCH_MODE ?? "full").toLowerCase();
   if (modeEnv !== "full" && modeEnv !== "count_tokens_only") {
     process.stderr.write(
       `[bench] BENCH_MODE must be 'full' or 'count_tokens_only' (got '${modeEnv}')\n`,
@@ -166,5 +169,5 @@ main().catch((e: unknown) => {
 });
 
 function describe(e: unknown): string {
-  return e instanceof Error ? e.stack ?? e.message : String(e);
+  return e instanceof Error ? (e.stack ?? e.message) : String(e);
 }

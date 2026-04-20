@@ -123,7 +123,7 @@ export default function LiveVisit(): React.ReactElement {
                 ? `→ ${toolNames.length} tools: ${toolNames.join(", ")}`
                 : "→ manifest declared zero tools",
           },
-          { kind: "info", text: `→ validated against spec lean-validator  ✓` },
+          { kind: "info", text: "→ validated against spec lean-validator  ✓" },
           {
             kind: "info",
             text: `→ context cost: ~${tokens.toLocaleString()} tokens*`,
@@ -136,9 +136,7 @@ export default function LiveVisit(): React.ReactElement {
       // Error branch — narrow on `stage` so messages name the failure
       // honestly.
       const stageLabel = resp.stage.toUpperCase();
-      const errs: Line[] = [
-        { kind: "err", text: `→ ${stageLabel} failed: ${resp.error}` },
-      ];
+      const errs: Line[] = [{ kind: "err", text: `→ ${stageLabel} failed: ${resp.error}` }];
       if (resp.errors && resp.errors.length > 0) {
         for (const e of resp.errors.slice(0, 8)) {
           errs.push({ kind: "warn", text: `    · ${e}` });
@@ -195,12 +193,14 @@ export default function LiveVisit(): React.ReactElement {
         <div className="lv-out" aria-live="polite" aria-atomic="false">
           {lines.length === 0 ? (
             <div className="lv-placeholder">
-              press VISIT to fetch the manifest over the wire. the fetch is
-              proxied through <span className="lv-inline">/api/visit</span> so
-              CORS-free servers work too.
+              press VISIT to fetch the manifest over the wire. the fetch is proxied through{" "}
+              <span className="lv-inline">/api/visit</span> so CORS-free servers work too.
             </div>
           ) : (
             lines.map((line, i) => (
+              // Lines are append-only in render order; index is stable for the
+              // lifetime of a given visit and the list never reorders.
+              // biome-ignore lint/suspicious/noArrayIndexKey: append-only render list
               <div key={i} className={`lv-line lv-${line.kind}`}>
                 {line.text}
               </div>

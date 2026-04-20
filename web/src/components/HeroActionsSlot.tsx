@@ -49,6 +49,7 @@ export default function HeroActionsSlot() {
   return (
     <div className="hero-actions">
       <div className="hero-actions__row">
+        {/* biome-ignore lint/a11y/useSemanticElements: <fieldset> is stylistically heavier than needed for a visual install-command label group */}
         <div className="hero-actions__install" role="group" aria-label="Install command">
           <span className="sig" aria-hidden="true">
             $

@@ -4,8 +4,8 @@
 //    vector — same ok/!ok decision. Strings differ by design; the decision
 //    must not.
 
-import { getVectors, runVectorSuite, validateManifest } from "./runner.ts";
 import { leanValidate } from "./lean-validator.ts";
+import { getVectors, runVectorSuite, validateManifest } from "./runner.ts";
 
 const report = runVectorSuite();
 const vectors = getVectors();
@@ -32,13 +32,13 @@ if (!anyFailures) {
 }
 
 if (report.failures.length > 0) {
-  console.error(`ajv vector failures:`);
+  console.error("ajv vector failures:");
   for (const f of report.failures) {
     console.error(`  - ${f.id} (expected ${f.expected}): ${f.detail}`);
   }
 }
 if (disagreements.length > 0) {
-  console.error(`ajv ↔ lean disagreements (SDK validator drift):`);
+  console.error("ajv ↔ lean disagreements (SDK validator drift):");
   for (const d of disagreements) console.error(`  - ${d}`);
 }
 process.exit(1);

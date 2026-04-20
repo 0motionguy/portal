@@ -44,7 +44,10 @@
         "tools": [
           { "name": "top_gainers", "params": { "limit": { "type": "number" } } },
           { "name": "search_repos", "params": { "query": { "type": "string", "required": true } } },
-          { "name": "maintainer_profile", "params": { "handle": { "type": "string", "required": true } } }
+          {
+            "name": "maintainer_profile",
+            "params": { "handle": { "type": "string", "required": true } }
+          }
         ],
         "call_endpoint": "https://example.com/portal/call"
       }
@@ -335,7 +338,11 @@
       "id": "CP-07-error-invalid-params",
       "kind": "error",
       "request": { "tool": "top_gainers", "params": { "limit": "ten" } },
-      "response": { "ok": false, "error": "param 'limit' must be a number", "code": "INVALID_PARAMS" }
+      "response": {
+        "ok": false,
+        "error": "param 'limit' must be a number",
+        "code": "INVALID_PARAMS"
+      }
     },
     {
       "id": "CP-08-error-unauthorized",
@@ -347,7 +354,11 @@
       "id": "CP-09-error-rate-limited",
       "kind": "error",
       "request": { "tool": "ping", "params": {} },
-      "response": { "ok": false, "error": "too many requests; retry after 30s", "code": "RATE_LIMITED" }
+      "response": {
+        "ok": false,
+        "error": "too many requests; retry after 30s",
+        "code": "RATE_LIMITED"
+      }
     },
     {
       "id": "CP-10-error-internal",

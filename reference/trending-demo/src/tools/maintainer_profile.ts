@@ -1,5 +1,5 @@
-import { NotFoundError, ParamError, type ToolHandler } from "../types.ts";
 import { loadSeed } from "../seed.ts";
+import { NotFoundError, ParamError, type ToolHandler } from "../types.ts";
 
 export const maintainer_profile: ToolHandler = {
   name: "maintainer_profile",

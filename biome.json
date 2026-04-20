@@ -1,7 +1,18 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "files": {
-    "ignore": ["**/node_modules", "**/dist", "**/build", "**/.next", "**/.vercel", "**/coverage"]
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/.next",
+      "**/.vercel",
+      "**/coverage",
+      "**/.claude",
+      "**/pnpm-lock.yaml",
+      "**/packages/bench/results",
+      "**/.turbo"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -15,6 +26,9 @@
       "recommended": true,
       "suspicious": {
         "noExplicitAny": "error"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
       }
     }
   },

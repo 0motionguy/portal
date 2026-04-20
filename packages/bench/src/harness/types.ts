@@ -96,11 +96,7 @@ export interface AnthropicClient {
   sendMessage(req: MessageRequest): Promise<MessageResponse>;
 }
 
-export function computeCostUsd(
-  model: ModelId,
-  inputTokens: number,
-  outputTokens: number,
-): number {
+export function computeCostUsd(model: ModelId, inputTokens: number, outputTokens: number): number {
   const price = MODEL_PRICING[model];
   return (
     (inputTokens * price.inputPerMillion) / 1_000_000 +

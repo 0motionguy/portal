@@ -8,7 +8,9 @@ export function Nav({ active }: { active?: "home" | "docs" | "bench" | "director
         <Link href="/" className="nav-brand">
           PORTAL
         </Link>
-        <span className="nav-status" aria-label="Live">LIVE</span>
+        <span className="nav-status" aria-label="Live">
+          LIVE
+        </span>
         <div className="nav-links">
           <Link href="/docs" className={a("docs")}>
             docs

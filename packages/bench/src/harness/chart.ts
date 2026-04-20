@@ -102,7 +102,7 @@ export function renderChart(report: MatrixReport): string {
     `<title id="title">MCP preloaded schemas vs Portal on-visit — input tokens per turn, by tool count</title>`,
     `<desc id="desc">Grouped bar chart comparing MCP and Portal input-token cost at each tool count in the bench matrix. Numbers are median input tokens per turn across runs, measured via Anthropic's count_tokens API.</desc>`,
     ...rows,
-    `</svg>`,
+    "</svg>",
   ].join("\n");
 }
 
@@ -138,9 +138,9 @@ function median(xs: ReadonlyArray<number>): number {
 
 function niceCeiling(v: number): number {
   if (v <= 0) return 100;
-  const mag = Math.pow(10, Math.floor(Math.log10(v)));
+  const mag = 10 ** Math.floor(Math.log10(v));
   const norm = v / mag;
-  let nice;
+  let nice: number;
   if (norm <= 1) nice = 1;
   else if (norm <= 2) nice = 2;
   else if (norm <= 5) nice = 5;
@@ -165,7 +165,7 @@ function renderEmpty(): string {
     `<desc id="desc">Empty bench matrix — nothing to render.</desc>`,
     `<rect x="0" y="0" width="${WIDTH}" height="${HEIGHT}" fill="${BG}" />`,
     `<text x="${WIDTH / 2}" y="${HEIGHT / 2}" text-anchor="middle" font-size="16" font-family="system-ui, sans-serif" fill="${AXIS_COLOR}">no results</text>`,
-    `</svg>`,
+    "</svg>",
   ].join("\n");
 }
 

@@ -5,9 +5,15 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "owner": { "type": "string", "description": "Repository owner login (user or organization)" },
+        "owner": {
+          "type": "string",
+          "description": "Repository owner login (user or organization)"
+        },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "issue_number": { "type": "number", "description": "Numeric issue identifier within the repository" }
+        "issue_number": {
+          "type": "number",
+          "description": "Numeric issue identifier within the repository"
+        }
       },
       "required": ["owner", "repo", "issue_number"]
     }
@@ -18,9 +24,15 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "owner": { "type": "string", "description": "Repository owner login (user or organization)" },
+        "owner": {
+          "type": "string",
+          "description": "Repository owner login (user or organization)"
+        },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "title": { "type": "string", "description": "Short issue title shown in lists and notifications" },
+        "title": {
+          "type": "string",
+          "description": "Short issue title shown in lists and notifications"
+        },
         "body": { "type": "string", "description": "Full Markdown body of the issue" },
         "labels": {
           "type": "array",
@@ -44,7 +56,10 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "issue_number": { "type": "number", "description": "Numeric issue identifier within the repository" },
+        "issue_number": {
+          "type": "number",
+          "description": "Numeric issue identifier within the repository"
+        },
         "title": { "type": "string", "description": "New issue title, if you want to rename it" },
         "body": { "type": "string", "description": "Replacement Markdown body" },
         "state": {
@@ -64,7 +79,10 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "issue_number": { "type": "number", "description": "Issue or pull request number to comment on" },
+        "issue_number": {
+          "type": "number",
+          "description": "Issue or pull request number to comment on"
+        },
         "body": { "type": "string", "description": "Markdown body of the comment" }
       },
       "required": ["owner", "repo", "issue_number", "body"]
@@ -106,7 +124,10 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "pull_number": { "type": "number", "description": "Pull request number within the repository" }
+        "pull_number": {
+          "type": "number",
+          "description": "Pull request number within the repository"
+        }
       },
       "required": ["owner", "repo", "pull_number"]
     }
@@ -119,8 +140,14 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "title": { "type": "string", "description": "Pull request title; keep it short and descriptive" },
-        "head": { "type": "string", "description": "Branch (or fork:branch) containing the changes" },
+        "title": {
+          "type": "string",
+          "description": "Pull request title; keep it short and descriptive"
+        },
+        "head": {
+          "type": "string",
+          "description": "Branch (or fork:branch) containing the changes"
+        },
         "base": { "type": "string", "description": "Branch the changes should be merged into" },
         "body": { "type": "string", "description": "Markdown body describing the change" },
         "draft": { "type": "boolean", "description": "If true, open the PR as a draft" }
@@ -155,7 +182,10 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "pull_number": { "type": "number", "description": "Pull request number within the repository" },
+        "pull_number": {
+          "type": "number",
+          "description": "Pull request number within the repository"
+        },
         "per_page": { "type": "number", "description": "Number of file entries per page (1-100)" }
       },
       "required": ["owner", "repo", "pull_number"]
@@ -169,8 +199,14 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "sha": { "type": "string", "description": "Branch name or commit SHA to start listing from" },
-        "path": { "type": "string", "description": "Restrict the list to commits touching this path" },
+        "sha": {
+          "type": "string",
+          "description": "Branch name or commit SHA to start listing from"
+        },
+        "path": {
+          "type": "string",
+          "description": "Restrict the list to commits touching this path"
+        },
         "since": { "type": "string", "description": "Only commits after this ISO 8601 timestamp" }
       },
       "required": ["owner", "repo"]
@@ -185,7 +221,10 @@
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
         "branch": { "type": "string", "description": "Name of the new branch to create" },
-        "from_branch": { "type": "string", "description": "Existing branch or SHA to branch off from" }
+        "from_branch": {
+          "type": "string",
+          "description": "Existing branch or SHA to branch off from"
+        }
       },
       "required": ["owner", "repo", "branch"]
     }
@@ -198,8 +237,14 @@
       "properties": {
         "owner": { "type": "string", "description": "Repository owner login" },
         "repo": { "type": "string", "description": "Repository name without the owner prefix" },
-        "path": { "type": "string", "description": "Path to the file or directory within the repository" },
-        "ref": { "type": "string", "description": "Branch name, tag, or commit SHA (defaults to the default branch)" }
+        "path": {
+          "type": "string",
+          "description": "Path to the file or directory within the repository"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Branch name, tag, or commit SHA (defaults to the default branch)"
+        }
       },
       "required": ["owner", "repo", "path"]
     }
@@ -215,8 +260,14 @@
         "path": { "type": "string", "description": "Path within the repository to write" },
         "content": { "type": "string", "description": "File contents encoded as a UTF-8 string" },
         "message": { "type": "string", "description": "Commit message for the change" },
-        "branch": { "type": "string", "description": "Branch to commit onto (defaults to the default branch)" },
-        "sha": { "type": "string", "description": "Current blob SHA of the file; required when updating" }
+        "branch": {
+          "type": "string",
+          "description": "Branch to commit onto (defaults to the default branch)"
+        },
+        "sha": {
+          "type": "string",
+          "description": "Current blob SHA of the file; required when updating"
+        }
       },
       "required": ["owner", "repo", "path", "content", "message"]
     }
@@ -227,7 +278,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "query": { "type": "string", "description": "Code search query using GitHub qualifiers (repo:, path:, language:)" },
+        "query": {
+          "type": "string",
+          "description": "Code search query using GitHub qualifiers (repo:, path:, language:)"
+        },
         "per_page": { "type": "number", "description": "Number of results per page (1-100)" },
         "page": { "type": "number", "description": "Page number of results to return" }
       },
@@ -240,7 +294,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "query": { "type": "string", "description": "Repository search query, e.g. topic:llm language:rust stars:>100" },
+        "query": {
+          "type": "string",
+          "description": "Repository search query, e.g. topic:llm language:rust stars:>100"
+        },
         "sort": {
           "type": "string",
           "enum": ["stars", "forks", "updated"],

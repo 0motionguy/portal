@@ -29,9 +29,7 @@ export interface McpToolLike {
   };
 }
 
-export interface SimulateToolsFn {
-  (count: number, seed: number): McpToolLike[];
-}
+export type SimulateToolsFn = (count: number, seed: number) => McpToolLike[];
 
 export interface RunMatrixOptions {
   protocols: readonly Protocol[];

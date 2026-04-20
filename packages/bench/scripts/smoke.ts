@@ -1,4 +1,4 @@
-import { runMatrix, type McpToolLike } from "../src/harness/bench.ts";
+import { type McpToolLike, runMatrix } from "../src/harness/bench.ts";
 import {
   writeChartSvg,
   writeJsonReport,
@@ -13,10 +13,13 @@ import type {
 } from "../src/harness/types.ts";
 import { MODEL_IDS } from "../src/harness/types.ts";
 
-const RESULTS_DIR = new URL("../results/", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
+const RESULTS_DIR = new URL("../results/", import.meta.url).pathname.replace(
+  /^\/([A-Za-z]:)/,
+  "$1",
+);
 
 async function main(): Promise<void> {
-  const apiKey = process.env["ANTHROPIC_API_KEY"];
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   const client = apiKey ? liveClient(apiKey) : mockClient();
   const mode = apiKey ? "live" : "mock";
   process.stdout.write(`[bench:smoke] using ${mode} client\n`);
@@ -60,9 +63,7 @@ async function main(): Promise<void> {
   );
   const failures = report.results.filter((r) => !r.ok);
   if (failures.length > 0) {
-    process.stdout.write(
-      `[bench:smoke] ${failures.length} cell(s) failed — see ${jsonPath}\n`,
-    );
+    process.stdout.write(`[bench:smoke] ${failures.length} cell(s) failed — see ${jsonPath}\n`);
     process.exit(1);
   }
 }
@@ -162,5 +163,5 @@ main().catch((e: unknown) => {
 });
 
 function describe(e: unknown): string {
-  return e instanceof Error ? e.stack ?? e.message : String(e);
+  return e instanceof Error ? (e.stack ?? e.message) : String(e);
 }

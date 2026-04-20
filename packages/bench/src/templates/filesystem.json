@@ -6,8 +6,14 @@
       "type": "object",
       "properties": {
         "path": { "type": "string", "description": "Absolute path to the file to read" },
-        "head": { "type": "number", "description": "If provided, returns only the first N lines of the file" },
-        "tail": { "type": "number", "description": "If provided, returns only the last N lines of the file" }
+        "head": {
+          "type": "number",
+          "description": "If provided, returns only the first N lines of the file"
+        },
+        "tail": {
+          "type": "number",
+          "description": "If provided, returns only the last N lines of the file"
+        }
       },
       "required": ["path"]
     }
@@ -44,7 +50,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "path": { "type": "string", "description": "Absolute path of the file to create or overwrite" },
+        "path": {
+          "type": "string",
+          "description": "Absolute path of the file to create or overwrite"
+        },
         "content": { "type": "string", "description": "Full text content to write to the file" }
       },
       "required": ["path", "content"]
@@ -62,7 +71,10 @@
           "items": { "type": "object" },
           "description": "Array of { oldText, newText } edits applied in order"
         },
-        "dryRun": { "type": "boolean", "description": "If true, preview changes as a diff without touching the file" }
+        "dryRun": {
+          "type": "boolean",
+          "description": "If true, preview changes as a diff without touching the file"
+        }
       },
       "required": ["path", "edits"]
     }
@@ -127,8 +139,14 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "source": { "type": "string", "description": "Absolute path of the source file or directory" },
-        "destination": { "type": "string", "description": "Absolute path of the new location; must not exist" }
+        "source": {
+          "type": "string",
+          "description": "Absolute path of the source file or directory"
+        },
+        "destination": {
+          "type": "string",
+          "description": "Absolute path of the new location; must not exist"
+        }
       },
       "required": ["source", "destination"]
     }
@@ -156,7 +174,10 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "path": { "type": "string", "description": "Absolute path whose metadata should be returned" }
+        "path": {
+          "type": "string",
+          "description": "Absolute path whose metadata should be returned"
+        }
       },
       "required": ["path"]
     }
@@ -175,8 +196,14 @@
     "input_schema": {
       "type": "object",
       "properties": {
-        "path": { "type": "string", "description": "Absolute path of the file or directory to watch" },
-        "recursive": { "type": "boolean", "description": "If true, watch nested subdirectories as well" }
+        "path": {
+          "type": "string",
+          "description": "Absolute path of the file or directory to watch"
+        },
+        "recursive": {
+          "type": "boolean",
+          "description": "If true, watch nested subdirectories as well"
+        }
       },
       "required": ["path"]
     }
@@ -189,7 +216,10 @@
       "properties": {
         "source": { "type": "string", "description": "Absolute path of the file to copy" },
         "destination": { "type": "string", "description": "Absolute path of the copy target" },
-        "overwrite": { "type": "boolean", "description": "When true, replaces an existing destination file" }
+        "overwrite": {
+          "type": "boolean",
+          "description": "When true, replaces an existing destination file"
+        }
       },
       "required": ["source", "destination"]
     }

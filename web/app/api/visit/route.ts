@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
 // Single source of truth for manifest validation — keeps the web /api/visit
 // proxy byte-for-byte decision-equivalent with the visitor SDK and the spec
 // self-test. Previously a local copy at web/src/lib/lean-validator.ts
 // drifted (accepted any http:// host instead of https-with-loopback-only).
 import { leanValidate } from "@visitportal/spec/lean-validator";
-import { guardUrl } from "./ssrf-guard";
+import { NextResponse } from "next/server";
 import { check as rateLimitCheck } from "./rate-limit";
+import { guardUrl } from "./ssrf-guard";
 
 // GET /api/visit?url=<portal-url>
 //
@@ -174,7 +174,8 @@ async function fetchManifest(url: URL): Promise<FetchOk | FetchBad> {
       // Handle redirects manually so each hop re-enters the SSRF guard.
       if (res.status >= 300 && res.status < 400) {
         const loc = res.headers.get("location");
-        if (!loc) return { ok: false, stage: "fetch", error: `${res.status} without Location header` };
+        if (!loc)
+          return { ok: false, stage: "fetch", error: `${res.status} without Location header` };
         if (hop === MAX_REDIRECTS) {
           return { ok: false, stage: "fetch", error: `too many redirects (> ${MAX_REDIRECTS})` };
         }
@@ -198,7 +199,11 @@ async function fetchManifest(url: URL): Promise<FetchOk | FetchBad> {
 
       const text = await readCapped(res, MAX_BODY_BYTES);
       if (text === null) {
-        return { ok: false, stage: "fetch", error: `response body exceeded ${MAX_BODY_BYTES} bytes` };
+        return {
+          ok: false,
+          stage: "fetch",
+          error: `response body exceeded ${MAX_BODY_BYTES} bytes`,
+        };
       }
       return {
         ok: true,

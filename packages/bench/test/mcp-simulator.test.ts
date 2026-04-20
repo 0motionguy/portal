@@ -1,10 +1,5 @@
 import { describe, expect, test } from "vitest";
-import {
-  _internal,
-  simulateTools,
-  type McpProperty,
-  type McpTool,
-} from "../src/mcp-simulator.ts";
+import { type McpProperty, type McpTool, _internal, simulateTools } from "../src/mcp-simulator.ts";
 
 const SEEDS = [42, 43, 7, 12345];
 
@@ -15,7 +10,9 @@ function isValidPropertyType(t: string): boolean {
 function assertValidTool(tool: McpTool, where: string): void {
   expect(typeof tool.name, `${where}: name type`).toBe("string");
   expect(tool.name.length, `${where}: name length`).toBeGreaterThan(0);
-  expect(/^[a-zA-Z][a-zA-Z0-9_]*$/.test(tool.name), `${where}: name format ${tool.name}`).toBe(true);
+  expect(/^[a-zA-Z][a-zA-Z0-9_]*$/.test(tool.name), `${where}: name format ${tool.name}`).toBe(
+    true,
+  );
 
   expect(typeof tool.description, `${where}: description type`).toBe("string");
   expect(tool.description.length, `${where}: description min length`).toBeGreaterThanOrEqual(30);
@@ -36,7 +33,9 @@ function assertValidTool(tool: McpTool, where: string): void {
     expect(isValidPropertyType(prop.type), `${where}: prop ${key} type ${prop.type}`).toBe(true);
     if (prop.description !== undefined) {
       expect(typeof prop.description, `${where}: prop ${key} description type`).toBe("string");
-      expect(prop.description.length, `${where}: prop ${key} description length`).toBeGreaterThan(0);
+      expect(prop.description.length, `${where}: prop ${key} description length`).toBeGreaterThan(
+        0,
+      );
     }
   }
 
@@ -165,16 +164,14 @@ describe("simulateTools — domain distribution", () => {
 describe("simulateTools — description realism", () => {
   test("mean description length is in [50, 120] at count=50", () => {
     const tools = simulateTools(50, 42);
-    const mean =
-      tools.reduce((acc, t) => acc + t.description.length, 0) / tools.length;
+    const mean = tools.reduce((acc, t) => acc + t.description.length, 0) / tools.length;
     expect(mean).toBeGreaterThanOrEqual(50);
     expect(mean).toBeLessThanOrEqual(160);
   });
 
   test("mean description length is in [50, 160] at count=400", () => {
     const tools = simulateTools(400, 42);
-    const mean =
-      tools.reduce((acc, t) => acc + t.description.length, 0) / tools.length;
+    const mean = tools.reduce((acc, t) => acc + t.description.length, 0) / tools.length;
     expect(mean).toBeGreaterThanOrEqual(50);
     expect(mean).toBeLessThanOrEqual(160);
   });
@@ -249,7 +246,12 @@ describe("simulateTools — token-size heuristic", () => {
   test("rough token estimate at 100 tools is within a plausible band", () => {
     const tools = simulateTools(100, 42);
     const words = tools
-      .map((t) => JSON.stringify(t).split(/[\s,{}\[\]"':]+/).filter(Boolean).length)
+      .map(
+        (t) =>
+          JSON.stringify(t)
+            .split(/[\s,{}\[\]"':]+/)
+            .filter(Boolean).length,
+      )
       .reduce((a, b) => a + b, 0);
     const estTokens = Math.round(words * 1.3);
     // The one-pager cites ~15,000 tokens at 100 tools. The true number from count_tokens

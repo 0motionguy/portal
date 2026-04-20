@@ -1,5 +1,5 @@
-import reposJson from "./repos.json" with { type: "json" };
 import maintainersJson from "./maintainers.json" with { type: "json" };
+import reposJson from "./repos.json" with { type: "json" };
 
 export interface Repo {
   name_with_owner: string;

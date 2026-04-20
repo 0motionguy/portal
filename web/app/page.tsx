@@ -1,7 +1,7 @@
-import { loadOnePager, SLOT_IDS } from "@/lib/one-pager";
-import { SlotMount } from "@/components/SlotMount";
-import LiveVisit from "@/components/LiveVisit";
 import HeroActionsSlot from "@/components/HeroActionsSlot";
+import LiveVisit from "@/components/LiveVisit";
+import { SlotMount } from "@/components/SlotMount";
+import { SLOT_IDS, loadOnePager } from "@/lib/one-pager";
 
 // The index page inlines the one-pager's <style> + <body> byte-for-byte
 // so the terminal-aesthetic design ships unchanged. Interactive widgets

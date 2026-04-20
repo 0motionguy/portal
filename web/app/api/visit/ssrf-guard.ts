@@ -33,9 +33,7 @@ export type UrlGuardResult = UrlGuardOk | UrlGuardBad;
 // Injected dependencies — overridden in tests. Runtime uses Node's dns and
 // process.env directly.
 export interface GuardDeps {
-  dnsLookup: (
-    host: string,
-  ) => Promise<ReadonlyArray<{ address: string; family: number }>>;
+  dnsLookup: (host: string) => Promise<ReadonlyArray<{ address: string; family: number }>>;
   getEnv: () => string | undefined;
 }
 
@@ -74,8 +72,7 @@ export async function guardUrl(
     if (!loopbackName && !isLoopbackIpLiteral(host)) {
       return {
         ok: false,
-        error:
-          "url: plain http:// is only allowed for localhost / 127.0.0.1 / ::1",
+        error: "url: plain http:// is only allowed for localhost / 127.0.0.1 / ::1",
       };
     }
   }

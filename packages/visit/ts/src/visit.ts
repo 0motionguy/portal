@@ -1,4 +1,10 @@
-import { CallFailed, ManifestInvalid, PortalError, PortalNotFound, ToolNotInManifest } from "./errors.ts";
+import {
+  CallFailed,
+  ManifestInvalid,
+  PortalError,
+  PortalNotFound,
+  ToolNotInManifest,
+} from "./errors.ts";
 import type { ErrorCode } from "./errors.ts";
 import type { CallOptions, Manifest, VisitEvent, VisitOptions } from "./types.ts";
 import { assertValidManifest } from "./validate.ts";
@@ -184,11 +190,7 @@ function makePortal(
         if (!res.ok) {
           // Non-2xx without a parseable error envelope. Keep INTERNAL with a
           // short context string for operator debugging.
-          throw new CallFailed(
-            tool,
-            "INTERNAL",
-            `HTTP ${res.status} ${text.slice(0, 400)}`,
-          );
+          throw new CallFailed(tool, "INTERNAL", `HTTP ${res.status} ${text.slice(0, 400)}`);
         }
 
         if (!parsed) {
@@ -221,7 +223,9 @@ function assertHttps(url: string, allowInsecure: boolean): void {
   if (u.protocol === "https:") return;
   if (u.protocol === "http:" && allowInsecure && isLoopback(u.hostname)) return;
   if (u.protocol === "http:") {
-    throw new Error("http:// is not allowed (set allowInsecure: true for http://localhost during development)");
+    throw new Error(
+      "http:// is not allowed (set allowInsecure: true for http://localhost during development)",
+    );
   }
   throw new Error(`unsupported protocol: ${u.protocol}`);
 }

@@ -3,25 +3,10 @@
   "finishedAt": "2026-04-19T08:05:29.466Z",
   "mode": "count_tokens_only",
   "seed": 42,
-  "protocols": [
-    "mcp",
-    "portal"
-  ],
-  "toolCounts": [
-    10,
-    50,
-    100,
-    400
-  ],
-  "taskIds": [
-    "find_trending_ai",
-    "summarize_repo",
-    "search_agent_protocol"
-  ],
-  "modelIds": [
-    "claude-sonnet-4-5",
-    "claude-opus-4-5"
-  ],
+  "protocols": ["mcp", "portal"],
+  "toolCounts": [10, 50, 100, 400],
+  "taskIds": ["find_trending_ai", "summarize_repo", "search_agent_protocol"],
+  "modelIds": ["claude-sonnet-4-5", "claude-opus-4-5"],
   "runsPerCell": 1,
   "portalPreamble": "You have visited a Portal. Before each turn, the visitor SDK gave you a compact manifest describing the service's tools. The manifest itself is not re-sent on every turn — only the tool you want to call and its params. When you call a tool, respond with: portal_call { \"tool\": \"<name>\", \"params\": { ... } }. Keep params minimal. One tool call per turn. The service will reply with { ok, result } or { ok:false, error, code }.",
   "results": [
