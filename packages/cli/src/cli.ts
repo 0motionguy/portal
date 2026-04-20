@@ -23,7 +23,10 @@ if (!url) {
 }
 
 try {
-  const portal = await visit(url, { timeoutMs: flags.timeout ?? 10_000 });
+  // The CLI user types the URL themselves; allow http://localhost without
+  // forcing a --insecure flag. Non-loopback http:// is still rejected by
+  // the SDK even with allowInsecure:true.
+  const portal = await visit(url, { timeoutMs: flags.timeout ?? 10_000, allowInsecure: true });
   const result = await run(command, portal, rest, flags);
   emit(result);
   process.exit(result.exitCode);

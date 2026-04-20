@@ -6,6 +6,7 @@ export type {
   ParamEntry,
   ParamType,
   Tool,
+  VisitEvent,
   VisitOptions,
 } from "./types.ts";
 export {

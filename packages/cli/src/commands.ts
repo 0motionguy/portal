@@ -83,18 +83,29 @@ async function conformance(portal: Portal, flags: CliFlags): Promise<CommandResu
   // to call_endpoint (bypassing @visitportal/visit.call, which would throw
   // ToolNotInManifest client-side before the request ever hits the wire —
   // that would let non-conforming providers falsely PASS).
+  //
+  // Spec (Appendix B wire notes + runner.ts convention): providers SHOULD
+  // return 200 with an error envelope, but 4xx with the envelope is also
+  // acceptable as of v0.1.1 (the reference implementation uses 404 for
+  // NOT_FOUND). We accept both and only require the body shape.
   try {
     const res = await fetch(portal.manifest.call_endpoint, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ tool: PROBE_TOOL_NAME, params: {} }),
     });
-    if (!res.ok) {
+    const accepted = res.ok || (res.status >= 400 && res.status < 500);
+    if (!accepted) {
       failures.push(
-        `NOT_FOUND probe got HTTP ${res.status} — expected 200 with NOT_FOUND envelope`,
+        `NOT_FOUND probe got HTTP ${res.status} — expected 200 or 4xx with NOT_FOUND envelope`,
       );
     } else {
-      const body = (await res.json()) as unknown;
+      let body: unknown = undefined;
+      try {
+        body = await res.json();
+      } catch {
+        /* fall through — isNotFoundEnvelope will reject */
+      }
       if (!isNotFoundEnvelope(body)) {
         failures.push(
           `NOT_FOUND probe returned wrong envelope: ${JSON.stringify(body)}`,

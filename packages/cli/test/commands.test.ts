@@ -72,7 +72,7 @@ afterAll(async () => {
 
 describe("info", () => {
   test("prints a summary including tool names", async () => {
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("info", p, [], { help: false, json: false });
     expect(r.exitCode).toBe(0);
     expect(r.output).toContain("Portal · Test");
@@ -81,7 +81,7 @@ describe("info", () => {
   });
 
   test("json mode emits valid parseable JSON", async () => {
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("info", p, [], { help: false, json: true });
     expect(r.exitCode).toBe(0);
     const parsed = JSON.parse(r.output ?? "") as { name: string };
@@ -91,7 +91,7 @@ describe("info", () => {
 
 describe("call", () => {
   test("invokes a tool and returns stringified result", async () => {
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("call", p, ["echo"], {
       help: false,
       json: false,
@@ -103,14 +103,14 @@ describe("call", () => {
   });
 
   test("errors when tool name is missing", async () => {
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("call", p, [], { help: false, json: false });
     expect(r.exitCode).toBe(2);
     expect(r.output).toContain("requires a tool name");
   });
 
   test("json mode", async () => {
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("call", p, ["echo"], {
       help: false,
       json: true,
@@ -123,7 +123,7 @@ describe("call", () => {
 
 describe("conformance", () => {
   test("passes when manifest valid and NOT_FOUND probe round-trips", async () => {
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("conformance", p, [], { help: false, json: false });
     expect(r.exitCode).toBe(0);
     expect(r.output).toContain("manifest valid");
@@ -135,7 +135,7 @@ describe("conformance", () => {
     // Stand up a provider that faithfully returns a NOT_FOUND envelope for
     // any unknown tool (including the probe). This re-uses the main test
     // server shape but verifies the new raw-fetch probe path end-to-end.
-    const p = await visit(`${baseUrl}/portal`);
+    const p = await visit(`${baseUrl}/portal`, { allowInsecure: true });
     const r = await run("conformance", p, [], { help: false, json: true });
     expect(r.exitCode).toBe(0);
     const parsed = JSON.parse(r.output ?? "") as {
@@ -176,7 +176,7 @@ describe("conformance", () => {
       const addr = badServer.address();
       if (!addr || typeof addr === "string") throw new Error("no address");
       const badUrl = `http://127.0.0.1:${addr.port}/portal`;
-      const p = await visit(badUrl);
+      const p = await visit(badUrl, { allowInsecure: true });
       const r = await run("conformance", p, [], { help: false, json: false });
       expect(r.exitCode).toBe(1);
       expect(r.output).toContain("NOT_FOUND probe returned wrong envelope");
