@@ -18,8 +18,8 @@ $ErrorActionPreference = 'Stop'
 
 $Version           = '0.1.3'
 $RepoUrl           = 'https://github.com/0motionguy/portal'
-$RepoRef           = 'v0.1.1'
-$RepoTarballSha256 = '08165ad6502276b1e193823178550c6201b89401a3437b910b3f8d46f0705f48'
+$RepoRef           = 'v0.1.3'
+$RepoTarballSha256 = '40d45eecc5ecbcdaf5a3448cb877df94ff2ea8fe2fd7e7602d8cf086632bce68'
 $InstallDir = if ($env:VISITPORTAL_HOME) { $env:VISITPORTAL_HOME } else { Join-Path $env:USERPROFILE '.visitportal' }
 $BinDir     = Join-Path $InstallDir 'bin'
 $Shim       = Join-Path $BinDir 'visit-portal.cmd'
