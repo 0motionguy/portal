@@ -2,6 +2,46 @@
 
 All notable changes to Portal are recorded here. The specification is versioned independently in `docs/spec-v*.md`; npm packages track the spec version, except where noted.
 
+## [0.1.3] — 2026-04-20
+
+Second-wave hardening pass — five Sev-level fixes across the stack. No spec change; the normative spec stays at v0.1.1 (`docs/spec-v0.1.1.md`). All five items are additive or defensive; no breaking API.
+
+### Added
+
+- **Rate limit on `/api/visit` (Sev-1)** — sliding-window 10 req/min/IP backed by Upstash Redis (`@upstash/ratelimit` + `@upstash/redis`). Lazy-init: when `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` are unset the module warns once and fails-open so local dev keeps working. Allowed responses carry `X-RateLimit-Limit/Remaining/Reset`; blocked responses return 429 with `Retry-After` and the existing `VisitResponse` error shape. See `web/README.md` for env-var setup.
+- **Rate limit on reference Portal `/portal/call` (Sev-1)** — in-memory 60 req/min/IP fixed window, keyed by `fly-client-ip` → `x-forwarded-for[0]` → `unknown`. Self-cleaning above 10k buckets. The manifest endpoint (`GET /portal`) is deliberately NOT limited at origin — that's CDN / edge territory.
+- **Full defensive security headers on visitportal.dev (Sev-1)** — HSTS (2 years + preload), `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera/microphone/geolocation/interest-cohort denied), and a CSP with `default-src 'self'` plus narrow allowances for Google Fonts + inline styles/scripts that Next.js 15 still emits. Mirrored in `next.config.mjs` (for local `next start`) and `vercel.json` catch-all (edge defense in depth).
+- **Visitor SDK `onEvent` hook (Sev-2)** — four structured events: `visit.start`, `visit.end` (with `ms` + `bytes`), `call.start`, `call.end` (with `ok`). User callbacks wrapped in try/catch — a throwing hook can't break the SDK. New `VisitEvent` type in the public barrel.
+
+### Changed
+
+- **Reference Portal status codes (Sev-1)** — every error envelope now carries the correct HTTP status (`NOT_FOUND:404`, `INVALID_PARAMS:400`, `UNAUTHORIZED:401`, `RATE_LIMITED:429`, `INTERNAL:500`). Body shape unchanged. `@visitportal/spec/runner` and the CLI both now accept 4xx as well as 200 for the NOT_FOUND envelope per the convention.
+- **Reference Portal CORS (Sev-1)** — normative `hono/cors` wired on both `/portal` and `/portal/call` per spec v0.1.1 Appendix C. Replaces the old `TODO: add CORS middleware` placeholder.
+- **Fly.io scaling (Sev-1)** — `min_machines_running: 1` (no cold start for first visitor), `memory_mb: 512` (was 256, headroom for bursty load), and a new `[http_service.concurrency]` block with `soft_limit: 50` / `hard_limit: 100` requests. Secondary-region scaffolding committed as comments; uncomment + `flyctl scale count 2 --region lhr` when traffic justifies the cost.
+- **Visitor SDK hardening (Sev-2)** — `@visitportal/visit` now enforces `https://` on both the fetched URL and `manifest.call_endpoint`. Plain `http://` is rejected unless `allowInsecure:true` AND the hostname is loopback (`localhost` / `127.0.0.1` / `::1`). Cross-origin `call_endpoint` triggers a one-shot `console.warn`; `strictSameOrigin:true` upgrades to a thrown `ManifestInvalid`. Response body capped at 1 MB by default (streaming reader), configurable via `maxBytes`. Automatic retry (once, with 100ms + 0–200ms jitter) on transport errors and 5xx responses — 4xx and successful parses are never retried. Real `AbortController`-based timeout replaces the old race-based one (which leaked the fetch on expiry). Bundle size: 2.25 kB → 3.14 kB gzipped (+890 bytes; 15 kB ceiling unchanged).
+
+### Fixed
+
+- **CLI conformance probe accepts 4xx (Sev-2 follow-up)** — the reference's switch to HTTP 404 for NOT_FOUND broke the CLI's probe, which required HTTP 200. Now matches `@visitportal/spec/runner`'s convention: 200 OR 4xx, gated on envelope shape.
+- **CLI `visit-portal <cmd> http://localhost:...` keeps working** — CLI passes `allowInsecure:true` so the user doesn't have to remember a flag for local development. Non-loopback `http://` URLs are still rejected by the SDK guard even with the flag set.
+
+### Packages
+
+- `@visitportal/spec`: 0.1.2 → 0.1.3 (republished to npm; spec content unchanged, version bump tracks the release)
+- `@visitportal/visit`: 0.1.1 → 0.1.3 (private, hardening changes)
+- `@visitportal/cli`: 0.1.1 → 0.1.3 (private, probe + HTTPS flag)
+- Install scripts `VERSION`: 0.1.1 → 0.1.3
+
+### Tests
+
+- Spec: 32 vectors (unchanged)
+- Visit SDK: 14 → **28** (+14 hardening cases: size cap, HTTPS enforcement, same-origin, retry-on-5xx-not-4xx, onEvent order, throwing-hook isolation)
+- CLI: 6 → **8** (+2 regression cases for probe false-pass)
+- Reference Portal: 6 → **10** (+4: malformed JSON 400, OPTIONS preflight on both endpoints, 70-request rate-limit burst)
+- Web app (`/api/visit`): 16 → **19** (+3: rate-limit no-env fallback, single-warn, partial-env-not-throw)
+- Bench: 65 (unchanged)
+- **Total: 162** (up from 141)
+
 ## [0.1.2] — 2026-04-20
 
 ### Fixed

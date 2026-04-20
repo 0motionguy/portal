@@ -16,7 +16,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$Version           = '0.1.1'
+$Version           = '0.1.3'
 $RepoUrl           = 'https://github.com/0motionguy/portal'
 $RepoRef           = 'v0.1.1'
 $RepoTarballSha256 = '08165ad6502276b1e193823178550c6201b89401a3437b910b3f8d46f0705f48'
