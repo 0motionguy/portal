@@ -82,10 +82,19 @@ if [ "$MODE" = "uninstall" ]; then
   exit 0
 fi
 
-# Preflight deps.
-have git  || die "git is required but not installed."
+# Preflight deps. The install path downloads a tarball and verifies its SHA256
+# against REPO_TARBALL_SHA256 before extracting — so we need curl + tar + a
+# sha256 tool but NOT git.
+have curl || die "curl is required but not installed."
+have tar  || die "tar is required but not installed."
 have pnpm || die "pnpm is required (npm install -g pnpm@10)."
 have node || die "node >=22 is required."
+
+# Pick a sha256 tool: GNU/Linux has sha256sum, macOS has shasum -a 256.
+if   have sha256sum; then SHA256="sha256sum"
+elif have shasum;    then SHA256="shasum -a 256"
+else die "sha256sum or shasum is required for tarball verification."
+fi
 
 [ "$DRY_RUN" -eq 1 ] && { say "dry-run: would create $INSTALL_DIR and write shim to $SHIM"; exit 0; }
 
@@ -98,20 +107,30 @@ if [ -n "$FROM_LOCAL" ]; then
   ( cd "$FROM_LOCAL" && tar --exclude='node_modules' --exclude='.git' -cf - . ) \
     | ( cd "$INSTALL_DIR/repo" && tar -xf - )
 else
-  say "will fetch: $REPO_URL (ref: $REPO_REF)"
-  if [ -d "$INSTALL_DIR/repo/.git" ]; then
-    say "existing checkout found; updating."
-    run git -C "$INSTALL_DIR/repo" fetch --depth 1 origin "$REPO_REF"
-    run git -C "$INSTALL_DIR/repo" checkout -q "$REPO_REF"
-    run git -C "$INSTALL_DIR/repo" reset --hard "origin/$REPO_REF"
-  else
-    run git clone --depth 1 --branch "$REPO_REF" "$REPO_URL" "$INSTALL_DIR/repo"
+  # Download the pinned tarball, verify SHA256, then extract. Never fall back
+  # to git — the whole point of the pin is to make the installed source
+  # auditable against a fixed hash.
+  tarball_url="${REPO_URL}/archive/refs/tags/${REPO_REF}.tar.gz"
+  tarball_file="$INSTALL_DIR/repo.tar.gz"
+  say "will fetch: $tarball_url"
+  run curl -fsSL "$tarball_url" -o "$tarball_file"
+  actual_sha="$($SHA256 "$tarball_file" | awk '{print $1}')"
+  if [ -z "$REPO_TARBALL_SHA256" ]; then
+    die "REPO_TARBALL_SHA256 is empty — refusing to install unverified tarball. Check $REPO_URL/releases/tag/$REPO_REF."
   fi
+  if [ "$actual_sha" != "$REPO_TARBALL_SHA256" ]; then
+    die "tarball SHA256 mismatch. Expected $REPO_TARBALL_SHA256, got $actual_sha."
+  fi
+  say "tarball SHA256 verified: $actual_sha"
+  # Extract to a fresh repo dir so a previously-installed version can't leak.
+  run rm -rf "$INSTALL_DIR/repo"
+  run mkdir -p "$INSTALL_DIR/repo"
+  run tar -xzf "$tarball_file" -C "$INSTALL_DIR/repo" --strip-components=1
+  run rm -f "$tarball_file"
 fi
 
-say "installing dependencies (pnpm install --frozen-lockfile || pnpm install)"
-( cd "$INSTALL_DIR/repo" && pnpm install --frozen-lockfile >/dev/null 2>&1 \
-    || pnpm install >/dev/null )
+say "installing dependencies (pnpm install --frozen-lockfile)"
+( cd "$INSTALL_DIR/repo" && pnpm install --frozen-lockfile >/dev/null )
 
 cat > "$SHIM" <<'SHIM_EOF'
 #!/usr/bin/env sh

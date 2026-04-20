@@ -97,8 +97,8 @@ if ($Uninstall) {
   exit 0
 }
 
-# Preflight deps
-if (-not (Have 'git'))  { Die 'git is required but not installed.' }
+# Preflight deps. Install path downloads a tarball and verifies its SHA256
+# against $RepoTarballSha256 before extracting — so git is NOT required.
 if (-not (Have 'pnpm')) { Die 'pnpm is required (npm install -g pnpm@10).' }
 if (-not (Have 'node')) { Die 'node >=22 is required.' }
 
@@ -123,25 +123,34 @@ if ($FromLocal -ne '') {
     -NoNewWindow -Wait -PassThru
   if ($rc.ExitCode -ge 8) { Die "robocopy failed with exit code $($rc.ExitCode)" }
 } else {
-  Say "will fetch: $RepoUrl (ref: $RepoRef)"
-  if (Test-Path (Join-Path $RepoDir '.git')) {
-    Say 'existing checkout found; updating.'
-    Run @('git', '-C', $RepoDir, 'fetch', '--depth', '1', 'origin', $RepoRef)
-    Run @('git', '-C', $RepoDir, 'checkout', '-q', $RepoRef)
-    Run @('git', '-C', $RepoDir, 'reset', '--hard', "origin/$RepoRef")
-  } else {
-    Run @('git', 'clone', '--depth', '1', '--branch', $RepoRef, $RepoUrl, $RepoDir)
+  # Download the pinned tarball, verify SHA256, then extract. No git fallback —
+  # the pin is the security boundary.
+  if ([string]::IsNullOrEmpty($RepoTarballSha256)) {
+    Die "`$RepoTarballSha256 is empty -- refusing to install unverified tarball. Check $RepoUrl/releases/tag/$RepoRef."
   }
+  $tarballUrl  = "$RepoUrl/archive/refs/tags/$RepoRef.tar.gz"
+  $tarballFile = Join-Path $InstallDir 'repo.tar.gz'
+  Say "will fetch: $tarballUrl"
+  Invoke-WebRequest -Uri $tarballUrl -OutFile $tarballFile -UseBasicParsing
+  $actualSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $tarballFile).Hash.ToLower()
+  if ($actualSha -ne $RepoTarballSha256.ToLower()) {
+    Die "tarball SHA256 mismatch. Expected $RepoTarballSha256, got $actualSha."
+  }
+  Say "tarball SHA256 verified: $actualSha"
+  # Fresh repo dir so a previously-installed version can't leak.
+  if (Test-Path $RepoDir) { Remove-Item -Recurse -Force -LiteralPath $RepoDir }
+  New-Item -ItemType Directory -Force -Path $RepoDir | Out-Null
+  # tar is built into Windows 10+ (bsdtar). Use --strip-components=1 to drop
+  # the top-level 'portal-<sha>' directory the GitHub tarball wraps around.
+  Run @('tar', '-xzf', $tarballFile, '-C', $RepoDir, '--strip-components=1')
+  Remove-Item -Force -LiteralPath $tarballFile
 }
 
-Say 'installing dependencies (pnpm install --frozen-lockfile || pnpm install)'
+Say 'installing dependencies (pnpm install --frozen-lockfile)'
 Push-Location $RepoDir
 try {
   & pnpm install --frozen-lockfile 2>&1 | Out-Null
-  if ($LASTEXITCODE -ne 0) {
-    & pnpm install 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) { Die 'pnpm install failed.' }
-  }
+  if ($LASTEXITCODE -ne 0) { Die 'pnpm install --frozen-lockfile failed.' }
 } finally { Pop-Location }
 
 # Shim: .cmd wrapper that forwards to pnpm+tsx
