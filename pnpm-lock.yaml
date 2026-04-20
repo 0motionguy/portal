@@ -104,8 +104,8 @@ importers:
         specifier: ^1.34.3
         version: 1.37.0
       '@visitportal/spec':
-        specifier: workspace:*
-        version: link:../packages/spec
+        specifier: ^0.1.3
+        version: 0.1.3
       ipaddr.js:
         specifier: ^2.2.0
         version: 2.3.0
@@ -935,6 +935,9 @@ packages:
   '@upstash/redis@1.37.0':
     resolution: {integrity: sha512-LqOJ3+XWPLSZ2rGSed5DYG3ixybxb8EhZu3yQqF7MdZX1wLBG/FRcI6xcUZXHy/SS7mmXWyadrud0HJHkOc+uw==}
 
+  '@visitportal/spec@0.1.3':
+    resolution: {integrity: sha512-bVEL71v3R29NWbZimOsLutRdRpa7TZVkrqVmcMwcMuW3gyTdhwwS9FqKsMDeFitZvQXkxMgi814jnQBZvnpJnw==}
+
   '@vitest/expect@2.1.9':
     resolution: {integrity: sha512-UJCIkTBenHeKT1TTlKMJWy1laZewsRIzYighyYiJKZreqtdxSos/S1t+ktRMQWu2CKqaarrkeszJx1cgC5tGZw==}
 
@@ -1745,6 +1748,11 @@ snapshots:
   '@upstash/redis@1.37.0':
     dependencies:
       uncrypto: 0.1.3
+
+  '@visitportal/spec@0.1.3':
+    dependencies:
+      ajv: 8.18.0
+      ajv-formats: 3.0.1(ajv@8.18.0)
 
   '@vitest/expect@2.1.9':
     dependencies:
