@@ -43,7 +43,7 @@ pnpm install
 bash scripts/demo.sh          # ~6 s end-to-end: boots Portal, visits it, leaves
 ```
 
-> Requires **Node 22+**, **pnpm 10+**, and a Unix-like shell (`scripts/demo.sh` uses bash idioms — WSL2, Git Bash, macOS, or Linux). A PowerShell equivalent is deferred to v0.1.2.
+> Requires **Node 22+**, **pnpm 10+**, and a Unix-like shell (`scripts/demo.sh` uses bash idioms — WSL2, Git Bash, macOS, or Linux). A PowerShell equivalent is queued for v0.1.4.
 
 ### Visit any Portal from TypeScript
 
@@ -105,9 +105,9 @@ Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page 
 
 | Package | Version | Purpose |
 |---|---|---|
-| [`@visitportal/spec`](packages/spec) | `0.1.1` · published on npm | JSON Schema, 30 conformance vectors, ajv + zero-dep lean validator, smoke runner |
-| [`@visitportal/visit`](packages/visit/ts) | `0.1.1` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
-| [`@visitportal/cli`](packages/cli) | `0.1.1` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
+| [`@visitportal/spec`](packages/spec) | `0.1.3` · published on npm | JSON Schema, 30 conformance vectors, ajv + zero-dep lean validator, smoke runner |
+| [`@visitportal/visit`](packages/visit/ts) | `0.1.3` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
+| [`@visitportal/cli`](packages/cli) | `0.1.3` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
 | [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
 | [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
 | [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
@@ -191,6 +191,14 @@ Verification standard: every claim on [visitportal.dev](https://visitportal.dev)
 
 ## Roadmap
 
+### v0.1.3 — shipped (current)
+
+Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate limit + CORS + status codes, full defensive security headers, Fly scaling, visitor-SDK hardening (size cap, HTTPS, retry, `onEvent`), installer tarball SHA verification, Biome lint, dev-dep CVE patches.
+
+### v0.1.2 — shipped (same day)
+
+- [x] Every `package.json` declares `"license": "Apache-2.0"`
+
 ### v0.1.1 — shipped
 
 - [x] `@visitportal/spec` published on npm (Apache 2.0 + CC0)
@@ -201,7 +209,7 @@ Verification standard: every claim on [visitportal.dev](https://visitportal.dev)
 - [x] First-adopter debrief published
 - [x] Windows shell requirement documented for `scripts/demo.sh`
 
-### v0.1.2 — next
+### v0.1.4 — next
 
 - [ ] Relative `call_endpoint` resolution (kills a class of copy-paste bugs)
 - [ ] `paramsSchema` (JSON Schema 2020-12) alongside sugar `params`

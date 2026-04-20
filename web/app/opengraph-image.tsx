@@ -23,7 +23,7 @@ export default function OpengraphImage() {
           visitportal.dev
         </div>
         <div style={{ fontSize: "20px", color: "#8A7F6E", fontFamily: "Geist Mono, monospace" }}>
-          · v0.1.1
+          · v0.1.3
         </div>
       </div>
 

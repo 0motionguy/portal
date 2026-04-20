@@ -12,10 +12,10 @@ cd visitportal.dev && pnpm install
 # From a package inside the monorepo, depend on "@visitportal/visit": "workspace:*".
 ```
 
-After v0.1.1 publishes:
+`@visitportal/spec` is published on npm (see below); `@visitportal/visit` will follow once v0.2 lands. For now, use the workspace via the cloned monorepo.
 
 ```sh
-pnpm add @visitportal/visit
+pnpm add @visitportal/spec
 ```
 
 ## The ten-line example

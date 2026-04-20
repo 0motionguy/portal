@@ -3,7 +3,7 @@
 # Non-interactive host requires $env:VISITPORTAL_ASSUME_YES = '1'.
 #
 # Release pinning: $RepoRef and $RepoTarballSha256 must be updated each release.
-# Helper: scripts/compute-install-sha.sh v0.1.1 prints both values to paste here.
+# Helper: scripts/compute-install-sha.sh v0.1.3 prints both values to paste here.
 
 [CmdletBinding()]
 param(

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Docs",
-  description: "Portal v0.1.1 — adopter quickstart. Conformance in 30 seconds.",
+  description: "Portal v0.1.3 — adopter quickstart. Conformance in 30 seconds.",
 };
 
 export default function DocsPage() {
@@ -11,7 +11,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.1</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.3</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
@@ -149,7 +149,7 @@ if (!report.ok) {
         <h2 id="nextjs">Framework snippet — Next.js App Router</h2>
         <p>
           A minimal Portal in Next.js 15 App Router is two route handlers. Other framework
-          quickstarts (Hono, FastAPI, Express) are queued for v0.1.2.
+          quickstarts (Hono, FastAPI, Express) are queued for v0.1.4.
         </p>
         <pre>
           <code>{`// app/portal/route.ts
