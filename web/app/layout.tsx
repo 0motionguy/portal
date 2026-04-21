@@ -4,9 +4,9 @@ import { ExtensionNoiseSilencer } from "@/components/ExtensionNoiseSilencer";
 
 const SITE_URL = "https://visitportal.dev";
 const SITE_NAME = "Portal";
-const TITLE = "Portal — The drop-in visit layer for LLM clients";
+const TITLE = "Portal — HTTP-native handshake for agent-accessible services";
 const DESCRIPTION =
-  "Portal is an open HTTP standard for drive-by LLM tool use. Two endpoints, one manifest, zero install on the visitor side. 81× less schema overhead than preloaded MCP at 100 tools (measured on Anthropic count_tokens).";
+  "Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -108,7 +108,7 @@ const JSON_LD = {
       description:
         "Portal specification artifacts — JSON Schema, conformance vectors, and a zero-dependency lean validator for any LLM visitor SDK.",
       url: "https://www.npmjs.com/package/@visitportal/spec",
-      softwareVersion: "0.1.3",
+      softwareVersion: "0.1.4",
       license: "https://www.apache.org/licenses/LICENSE-2.0",
       author: {
         "@type": "Person",
@@ -120,7 +120,7 @@ const JSON_LD = {
     {
       "@type": "TechArticle",
       "@id": `${SITE_URL}/docs/#article`,
-      headline: "Portal v0.1.3 — adopter quickstart",
+      headline: "Portal v0.1.4 — adopter quickstart",
       description:
         "Two endpoints, one manifest. 30-second conformance check via runSmokeConformance. Ship a Portal in 10 minutes.",
       url: `${SITE_URL}/docs`,
