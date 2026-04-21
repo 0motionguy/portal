@@ -11,7 +11,7 @@ set -eu
 VERSION="0.1.4"
 REPO_URL="https://github.com/0motionguy/portal"
 REPO_REF="v0.1.4"
-REPO_TARBALL_SHA256="40d45eecc5ecbcdaf5a3448cb877df94ff2ea8fe2fd7e7602d8cf086632bce68"
+REPO_TARBALL_SHA256="3b0441657d5a4bdfb25b607b110c8de5a0f35fabc65432c484ff85cd221c61ef"
 INSTALL_DIR="${VISITPORTAL_HOME:-$HOME/.visitportal}"
 BIN_DIR="$INSTALL_DIR/bin"
 SHIM="$BIN_DIR/visit-portal"
