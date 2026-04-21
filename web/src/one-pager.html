@@ -1429,27 +1429,45 @@
   <!-- 07 POSITIONING -->
   <section>
     <div class="sec-tag"><span class="num">07</span><span>POSITIONING</span></div>
-    <h2>Portal is not a <em>competitor.</em> It's a subset.</h2>
+    <h2>Portal for drive-by visits. <em>MCP for installed tools.</em> A2A for agent coordination.</h2>
     <p class="wide">
-      The agent-interop space is consolidating. Portal slots in as the lightweight entry point — everything else upgrades from here.
+      Three layers, one stack. Portal is not a competitor to MCP or A2A — it's the stateless, zero-install entry point. They compose.
     </p>
 
-    <div class="posmap">
-      <div class="pos-row">
-        <div class="who">MCP</div>
-        <div class="what">Trusted, installed tools your agent uses daily. The foundation. Portal wraps MCP servers in a one-line adapter for drive-by visits.</div>
-      </div>
-      <div class="pos-row">
-        <div class="who">A2A</div>
-        <div class="what">Long-running multi-agent task coordination with lifecycles, artifacts, state. Portal is a strict subset — visits upgrade to A2A when they need tasks.</div>
-      </div>
-      <div class="pos-row">
-        <div class="who">SKILLS</div>
-        <div class="what">Procedural knowledge preloaded into an agent. Portal is the opposite: capability loaded only for the visit, then released.</div>
-      </div>
-      <div class="pos-row us">
-        <div class="who">› PORTAL</div>
-        <div class="what">Two endpoints. No install. Any LLM client, any service, any time. The visitor-side half of the open agent web.</div>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th class="h-portal">Protocol</th>
+            <th>Use case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="portal-col"><strong>Portal</strong></td>
+            <td class="mcp-col">Drive-by HTTP visits. Stateless. No install.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="portal-col">MCP</td>
+            <td class="mcp-col">Installed stateful tools.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="portal-col">A2A</td>
+            <td class="mcp-col">Multi-agent coordination.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quote-card" style="margin-top: 32px;">
+      <div style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); font-style: normal; margin-bottom: 14px;">The one-liner</div>
+      If your service has a URL, an agent can visit it.
+      <div style="font-family: 'Geist Mono', monospace; font-size: 13px; font-style: normal; color: var(--dim); margin-top: 14px; letter-spacing: 0.02em;">
+        No install. No SDK. No lock-in.
       </div>
     </div>
   </section>
