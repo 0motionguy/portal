@@ -75,6 +75,22 @@ describe("trending-demo smoke", () => {
     const body = (await res.json()) as { ok: boolean };
     expect(body.ok).toBe(true);
   });
+
+  it("GET /.well-known/portal.json returns byte-identical manifest to /portal", async () => {
+    const [a, b] = await Promise.all([
+      app.request("/portal"),
+      app.request("/.well-known/portal.json"),
+    ]);
+    expect(a.status).toBe(200);
+    expect(b.status).toBe(200);
+    const aText = await a.text();
+    const bText = await b.text();
+    // Byte-for-byte parity — spec Appendix E is explicit about this.
+    expect(bText).toBe(aText);
+    // And the content is a valid manifest either way.
+    const parsed = JSON.parse(bText) as { call_endpoint: string };
+    expect(parsed.call_endpoint).toMatch(/^https?:\/\/.+\/portal\/call$/);
+  });
 });
 
 describe("trending-demo CORS (spec v0.1.1 Appendix C)", () => {
@@ -95,6 +111,20 @@ describe("trending-demo CORS (spec v0.1.1 Appendix C)", () => {
 
   it("OPTIONS /portal returns 204 with Allow-Origin:* and allowed methods include GET", async () => {
     const res = await app.request("/portal", {
+      method: "OPTIONS",
+      headers: {
+        Origin: "https://example.com",
+        "Access-Control-Request-Method": "GET",
+      },
+    });
+    expect(res.status).toBe(204);
+    expect(res.headers.get("access-control-allow-origin")).toBe("*");
+    const methods = (res.headers.get("access-control-allow-methods") ?? "").toUpperCase();
+    expect(methods).toContain("GET");
+  });
+
+  it("OPTIONS /.well-known/portal.json returns 204 with Allow-Origin:* and GET in Allow-Methods", async () => {
+    const res = await app.request("/.well-known/portal.json", {
       method: "OPTIONS",
       headers: {
         Origin: "https://example.com",

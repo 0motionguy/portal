@@ -53,6 +53,10 @@ export function createApp(): Hono {
   // CORS per spec v0.1.1 Appendix C (normative for browser-resident visitors).
   app.use("/portal", cors({ origin: "*", allowMethods: ["GET", "OPTIONS"], maxAge: 86400 }));
   app.use(
+    "/.well-known/portal.json",
+    cors({ origin: "*", allowMethods: ["GET", "OPTIONS"], maxAge: 86400 }),
+  );
+  app.use(
     "/portal/call",
     cors({
       origin: "*",
@@ -70,6 +74,22 @@ export function createApp(): Hono {
   app.get("/healthz", (c) => c.json({ ok: true }));
 
   app.get("/portal", (c) => {
+    const manifest = buildManifest();
+    const result = validateManifest(manifest);
+    if (!result.ok) {
+      const detail = result.errors
+        .map((e) => `${e.instancePath || "/"} ${e.message ?? ""}`)
+        .join("; ");
+      return c.text(`manifest failed internal validation: ${detail}`, 500);
+    }
+    return c.json(manifest);
+  });
+
+  // Alternate discovery per spec v0.1.1 Appendix E (draft). Providers MAY
+  // serve the manifest at /.well-known/portal.json in addition to /portal;
+  // if both are served they MUST return byte-identical manifests. This
+  // handler delegates to the same buildManifest() + validator path.
+  app.get("/.well-known/portal.json", (c) => {
     const manifest = buildManifest();
     const result = validateManifest(manifest);
     if (!result.ok) {
