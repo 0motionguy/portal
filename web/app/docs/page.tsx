@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Docs",
-  description: "Portal v0.1.3 — adopter quickstart. Conformance in 30 seconds.",
+  description:
+    "Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.",
 };
 
 export default function DocsPage() {
@@ -11,65 +12,87 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.3</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.4</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
         <p className="lede">
-          You have a service with some HTTP endpoints. You want any LLM client to be able to visit
-          it cold and call a tool. Portal is that, in two endpoints and one manifest. The fastest
-          way to know you're conformant is to run <code>runSmokeConformance</code> against your live
-          Portal and read the report. That's the first thing on this page.
+          If your service has a URL, an agent can visit it. This page shows both sides of the
+          contract: how to <em>visit</em> a Portal (two curl commands) and how to <em>serve</em>{" "}
+          one (two routes and one manifest). Everything below is optional detail.
         </p>
 
-        <h2 id="conformance-30s">30-second conformance check</h2>
+        <h2 id="what">What is it?</h2>
         <p>
-          If your service is already exposing <code>GET /portal</code> and{" "}
-          <code>POST /portal/call</code>, here is the shortest path from zero to a pass/fail answer:
+          Portal is the minimal HTTP contract for agent-accessible services.{" "}
+          <strong>Two endpoints. That's the whole protocol.</strong> Use Portal when MCP is too
+          heavy and REST is too dumb — stateless drive-by tool calls that any LLM client can make
+          without installing anything on the visitor side.
+        </p>
+
+        <h2 id="visit">How to visit a service</h2>
+        <p>
+          A visitor is any process that speaks HTTP. Two requests get you from zero to a tool
+          result:
         </p>
         <pre>
-          <code>{`npm i @visitportal/spec
+          <code>{`# 1. Discover — read the manifest
+curl https://demo.visitportal.dev/portal
 
-import { runSmokeConformance } from '@visitportal/spec';
-const report = await runSmokeConformance('https://my-service.com/portal');
-console.log(report);`}</code>
+# 2. Call — execute a tool
+curl -X POST https://demo.visitportal.dev/portal/call \\
+  -H 'content-type: application/json' \\
+  -d '{"tool":"top_gainers","params":{"limit":3}}'`}</code>
         </pre>
         <p>
-          <code>runSmokeConformance</code> is a <em>smoke</em> check — it validates the manifest
-          against the JSON Schema and verifies a <code>NOT_FOUND</code> round-trip on{" "}
-          <code>POST /portal/call</code>. It runs in under a second and is safe to hit a live
-          service with. If it returns <code>{"{ ok: true }"}</code>, the basics are right; adopters
-          typically run this in CI against a staging URL.
-        </p>
-        <p>
-          The package is Apache 2.0 + CC0 dual-licensed and has zero runtime dependencies outside of{" "}
-          <code>ajv</code>.
+          No client library required. Works from bash, Python <code>urllib</code>, any{" "}
+          <code>fetch</code>. A convenience TypeScript SDK (<code>@visitportal/visit</code>) exists
+          and is covered below, but it is strictly optional.
         </p>
 
-        <h2 id="conformance-full">Full offline conformance</h2>
+        <h2 id="serve">How to make your service visitable</h2>
         <p>
-          When you want the full suite — all 30+ vectors against a manifest literal, no network,
-          deterministic — use <code>validateAgainstVectors</code>:
+          Two route handlers and one manifest. Framework-agnostic pseudocode; every web framework
+          with a request/response API can host a Portal in under twenty lines.
         </p>
         <pre>
-          <code>{`import { validateAgainstVectors } from '@visitportal/spec';
-import manifest from './portal.json' assert { type: 'json' };
+          <code>{`// GET /portal  — serve the manifest
+app.get('/portal', (req, res) => {
+  res.json({
+    portal_version: '0.1',
+    name: 'My Service',
+    brief: 'What this service does, in plain English.',
+    tools: [
+      { name: 'ping', description: 'returns pong',
+        params: { msg: { type: 'string' } } },
+    ],
+    call_endpoint: 'https://my-service.com/portal/call',
+    auth: 'none',
+    pricing: { model: 'free' },
+  });
+});
 
-const report = validateAgainstVectors(manifest);
-if (!report.ok) {
-  console.error(report.failures);
-  process.exit(1);
-}`}</code>
+// POST /portal/call  — execute a tool
+app.post('/portal/call', async (req, res) => {
+  const { tool, params } = req.body;
+  if (tool === 'ping') {
+    return res.json({ ok: true, result: { pong: true, msg: params?.msg } });
+  }
+  res.json({
+    ok: false,
+    error: \`tool '\${tool}' not in manifest\`,
+    code: 'NOT_FOUND',
+  });
+});`}</code>
         </pre>
         <p>
-          This is the flow we recommend for a pre-commit hook or CI check that runs on every
-          manifest edit. Every failure entry cites the exact vector id and the schema rule it tests,
-          so you can jump straight to the fix.
+          This shape works identically in Hono, Express, Fastify, Bun.serve, Cloudflare Workers,
+          Next.js App Router, and FastAPI. The wire contract is the same.
         </p>
 
-        <h2 id="manifest">Manifest shape</h2>
+        <h2 id="manifest">The manifest</h2>
         <p>
-          A v0.1.1-conformant manifest is compact. Required keys: <code>portal_version</code>,{" "}
+          A v0.1-conformant manifest is compact. Required keys: <code>portal_version</code>,{" "}
           <code>name</code>, <code>brief</code>, <code>tools[]</code>, <code>call_endpoint</code>.
           Optional: <code>auth</code>, <code>pricing</code>.
         </p>
@@ -98,28 +121,41 @@ if (!report.ok) {
           <code>http://127.0.0.1</code> during development.
         </p>
 
-        <h2 id="error-envelope">Error envelope — five codes</h2>
+        <h2 id="envelope">The envelope</h2>
         <p>
-          Every <code>POST /portal/call</code> response is either{" "}
-          <code>{"{ ok: true, result }"}</code> or <code>{"{ ok: false, error, code }"}</code>. The
-          code is one of five values; this is the entire surface your visitor needs to understand:
+          Every <code>POST /portal/call</code> takes{" "}
+          <code>{'{ "tool": string, "params": object }'}</code> and returns one of two
+          discriminated-union shapes:
+        </p>
+        <pre>
+          <code>{`// success
+{ "ok": true, "result": { /* tool-defined */ } }
+
+// failure
+{ "ok": false, "error": "human-readable message", "code": "NOT_FOUND" }`}</code>
+        </pre>
+
+        <h2 id="errors">Error codes</h2>
+        <p>
+          The <code>code</code> field is one of five values; this is the entire surface your
+          visitor needs to understand. HTTP status mapping is normative:
         </p>
         <ul>
           <li>
-            <code>NOT_FOUND</code> — tool name isn't in the manifest
+            <code>NOT_FOUND</code> — tool name isn't in the manifest · <strong>HTTP 404</strong>
           </li>
           <li>
-            <code>INVALID_PARAMS</code> — params failed validation
+            <code>INVALID_PARAMS</code> — params failed validation · <strong>HTTP 400</strong>
           </li>
           <li>
-            <code>UNAUTHORIZED</code> — caller lacks credentials
+            <code>UNAUTHORIZED</code> — caller lacks credentials · <strong>HTTP 401</strong>
           </li>
           <li>
             <code>RATE_LIMITED</code> — transient; visitors SHOULD retry after{" "}
-            <code>Retry-After</code>
+            <code>Retry-After</code> · <strong>HTTP 429</strong>
           </li>
           <li>
-            <code>INTERNAL</code> — anything else
+            <code>INTERNAL</code> — anything else · <strong>HTTP 500</strong>
           </li>
         </ul>
 
@@ -135,7 +171,7 @@ if (!report.ok) {
           for the full table.
         </p>
 
-        <h2 id="rate-limits">Rate limits (Appendix D)</h2>
+        <h2 id="rate-limits">Rate limiting (Appendix D)</h2>
         <p>
           Portal SHOULDs a per-auth-mode default for rate limits. Visitor SDKs MUST treat{" "}
           <code>RATE_LIMITED</code> as recoverable and SHOULD honor <code>Retry-After</code>.
@@ -146,53 +182,15 @@ if (!report.ok) {
           .
         </p>
 
-        <h2 id="nextjs">Framework snippet — Next.js App Router</h2>
-        <p>
-          A minimal Portal in Next.js 15 App Router is two route handlers. Other framework
-          quickstarts (Hono, FastAPI, Express) are queued for v0.1.4.
-        </p>
-        <pre>
-          <code>{`// app/portal/route.ts
-import { NextResponse } from 'next/server';
-
-export async function GET() {
-  return NextResponse.json({
-    portal_version: '0.1',
-    name: 'My Service',
-    brief: 'What this service does, in plain English.',
-    tools: [
-      { name: 'ping', description: 'returns pong',
-        params: { msg: { type: 'string' } } },
-    ],
-    call_endpoint: \`\${process.env.PORTAL_PUBLIC_URL}/portal/call\`,
-    auth: 'none',
-    pricing: { model: 'free' },
-  });
-}
-
-// app/portal/call/route.ts
-import { NextResponse } from 'next/server';
-
-export async function POST(req: Request) {
-  const { tool, params } = await req.json();
-  if (tool === 'ping') {
-    return NextResponse.json({
-      ok: true,
-      result: { pong: true, msg: params?.msg },
-    });
-  }
-  return NextResponse.json({
-    ok: false,
-    error: \`tool '\${tool}' not in manifest\`,
-    code: 'NOT_FOUND',
-  });
-}`}</code>
-        </pre>
-
-        <h2 id="visitor-sdk">
-          Visitor SDK — <em>@visitportal/visit</em>
+        <h2 id="sdk">
+          SDK <em>(optional)</em>
         </h2>
-        <p>On the calling side, the visitor SDK is three lines:</p>
+        <p>
+          <strong>The SDK is a convenience, not a requirement.</strong> Any HTTP client works; the
+          spec is the wire contract. For TypeScript adopters who want typed errors and a one-liner
+          handshake, <code>@visitportal/visit</code> ships a 2.25 kB gzipped, zero-dependency
+          client:
+        </p>
         <pre>
           <code>{`import { visit, CallFailed } from '@visitportal/visit';
 
@@ -202,80 +200,91 @@ const result = await portal.call('top_gainers', { limit: 3 });`}</code>
         <p>
           Error taxonomy: <code>PortalNotFound</code>, <code>ManifestInvalid</code>,{" "}
           <code>ToolNotInManifest</code>, <code>CallFailed</code>. <code>CallFailed.code</code> is
-          typed as the five-code enum above. SDK bundle is 2.25 kB gzipped with zero runtime
-          dependencies.
+          typed as the five-code enum above. Python and other-language SDKs follow; the wire
+          contract is the constant.
         </p>
 
-        <h2 id="spec-glance">
-          Spec — <em>at a glance</em>
-        </h2>
+        <h2 id="conformance">Conformance</h2>
         <p>
-          Full text:{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.1.md">
-            docs/spec-v0.1.1.md
-          </a>{" "}
-          (public domain). One page of core plus four appendices — the A/B appendices from v0.1.0
-          and the new normative CORS (C) and SHOULD-level rate-limit (D) appendices added in v0.1.1.
+          If your service is already exposing <code>GET /portal</code> and{" "}
+          <code>POST /portal/call</code>, the shortest path from zero to a pass/fail answer is{" "}
+          <code>runSmokeConformance</code>:
+        </p>
+        <pre>
+          <code>{`npm i @visitportal/spec
+
+import { runSmokeConformance } from '@visitportal/spec';
+const report = await runSmokeConformance('https://my-service.com/portal');
+console.log(report);`}</code>
+        </pre>
+        <p>
+          It validates the manifest against the JSON Schema and verifies a <code>NOT_FOUND</code>{" "}
+          round-trip on <code>POST /portal/call</code>. Runs in under a second; safe against a live
+          service. For the full offline suite — all 30+ vectors, deterministic, no network — use{" "}
+          <code>validateAgainstVectors</code>:
+        </p>
+        <pre>
+          <code>{`import { validateAgainstVectors } from '@visitportal/spec';
+import manifest from './portal.json' assert { type: 'json' };
+
+const report = validateAgainstVectors(manifest);
+if (!report.ok) {
+  console.error(report.failures);
+  process.exit(1);
+}`}</code>
+        </pre>
+
+        <h2 id="extensions">Extensions</h2>
+        <p>
+          Base Portal stays minimal on purpose. Additional capabilities ship as explicitly-versioned
+          Portal Extensions (PE-###), none of which are required for base conformance:
+        </p>
+        <ul>
+          <li>
+            <strong>PE-001</strong> — streaming responses (draft)
+          </li>
+          <li>
+            <strong>PE-002</strong> — paid tools via <code>x402</code> micropayments (draft · see{" "}
+            <a href="https://github.com/0motionguy/portal/blob/main/docs/pe-002-paid-tools-draft.md">
+              docs/pe-002-paid-tools-draft.md
+            </a>
+            )
+          </li>
+        </ul>
+
+        <h2 id="layers">Three-layer model</h2>
+        <p>
+          Portal for drive-by visits. MCP for installed tools. A2A for agent coordination.{" "}
+          <strong>They compose.</strong>
         </p>
         <table>
           <thead>
             <tr>
-              <th>Section</th>
-              <th>What it pins</th>
+              <th>Tier</th>
+              <th>Protocol</th>
+              <th>Use case</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>§3 Endpoints</td>
+              <td>1</td>
               <td>
-                <code>GET /portal</code> returns a manifest; <code>POST /portal/call</code> takes{" "}
-                <code>{"{ tool, params }"}</code>, returns <code>{"{ ok, result }"}</code> or{" "}
-                <code>{"{ ok: false, error, code }"}</code>.
+                <strong>Portal</strong>
               </td>
+              <td>Drive-by HTTP visits. Stateless. No install.</td>
             </tr>
             <tr>
-              <td>§4 Manifest</td>
-              <td>
-                Required: <code>portal_version</code>, <code>name</code>, <code>brief</code>,{" "}
-                <code>tools[]</code>, <code>call_endpoint</code>. Optional: <code>auth</code>,{" "}
-                <code>pricing</code>.
-              </td>
+              <td>2</td>
+              <td>MCP</td>
+              <td>Installed stateful tools.</td>
             </tr>
             <tr>
-              <td>§6 Error codes</td>
-              <td>
-                <code>NOT_FOUND · INVALID_PARAMS · UNAUTHORIZED · RATE_LIMITED · INTERNAL</code>.
-              </td>
-            </tr>
-            <tr>
-              <td>§7 Non-goals</td>
-              <td>
-                No task lifecycles (use A2A). No stateful sessions. No server-push, no streaming, no
-                multi-agent. Those arrive as Portal Extensions.
-              </td>
-            </tr>
-            <tr>
-              <td>Appendix C</td>
-              <td>Normative CORS contract for browser-resident visitors.</td>
-            </tr>
-            <tr>
-              <td>Appendix D</td>
-              <td>
-                SHOULD-level rate-limit defaults + <code>Retry-After</code> guidance.
-              </td>
+              <td>3</td>
+              <td>A2A</td>
+              <td>Multi-agent coordination.</td>
             </tr>
           </tbody>
         </table>
-
-        <h2 id="monorepo-tools">Developer tools in the monorepo</h2>
-        <p>
-          <em>These are not adopter-facing.</em> If you cloned the Portal monorepo to hack on Portal
-          itself, you'll find <code>packages/visit/ts/scripts/reference-demo.ts</code> — a driver
-          script that starts <code>reference/trending-demo</code>, visits it, and exercises the
-          visitor SDK end-to-end. It's useful for <em>developing the SDK</em>; it's not needed to
-          adopt Portal in your own service. Adopters should use <code>runSmokeConformance</code> and{" "}
-          <code>validateAgainstVectors</code> above.
-        </p>
       </main>
       <Foot />
     </>
