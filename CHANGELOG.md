@@ -2,6 +2,31 @@
 
 All notable changes to Portal are recorded here. The specification is versioned independently in `docs/spec-v*.md`; npm packages track the spec version, except where noted.
 
+## [0.1.4] — 2026-04-21
+
+### Changed
+
+- **Positioning reframed to HTTP-native.** Portal is now explicitly positioned as "the minimal HTTP contract for agent-accessible services," not "an LLM client visit layer." Landing page, docs, READMEs, OG images, and all web copy updated. **No spec or code changes.**
+- **Docs restructured to flow-first.** Curl examples lead every adopter page; the SDK is positioned as optional convenience, not prerequisite.
+
+### Added
+
+- **Spec Appendix E — alternate discovery (draft).** Providers MAY serve the manifest at `/.well-known/portal.json` in addition to `/portal`. Both MUST return byte-identical manifests. Aligns Portal with the `.well-known/` convention used by x402, security.txt, and OpenID Connect. Status: v0.1 draft; will promote to normative in v0.2 after ecosystem feedback.
+- **PE-002 Paid Tools draft.** HTTP 402 payment handoff for paid tools, x402-compatible. Opt-in extension, declared via manifest `extensions` array. Non-normative in base v0.1 spec. See `docs/pe-002-paid-tools-draft.md`.
+- **Three-layer positioning documented** across landing, docs, and READMEs: Portal for drive-by HTTP visits (tier 1), MCP for installed stateful tools (tier 2), A2A for multi-agent coordination (tier 3). They compose.
+- **Reference Portal serves `/.well-known/portal.json`** alongside `/portal`. Both paths return byte-identical JSON; smoke test asserts parity.
+
+### Version
+
+- All monorepo packages bumped 0.1.3 → 0.1.4.
+- Install scripts pinned to `v0.1.4` tag.
+
+### Not changed
+
+- **Normative spec** remains v0.1.1 (`docs/spec-v0.1.1.md`). No schema changes. No endpoint changes. No envelope changes.
+- **Sev-1 hardening from v0.1.3** (Upstash rate limit, reference Portal rate limit + CORS + status codes, defensive security headers, Fly scaling, SSRF guard, visitor-SDK hardening) unchanged.
+- **All 164 tests still green.**
+
 ## [0.1.3] — 2026-04-20
 
 Second-wave hardening pass — five Sev-level fixes across the stack. No spec change; the normative spec stays at v0.1.1 (`docs/spec-v0.1.1.md`). All five items are additive or defensive; no breaking API.

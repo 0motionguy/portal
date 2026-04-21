@@ -1,6 +1,17 @@
 # Portal Roadmap
 
-## Shipped in v0.1.3 (current)
+## Shipped in v0.1.4 (current)
+
+HTTP-native positioning reframe. No normative spec change — core spec stays at v0.1.1.
+
+- **Positioning reframed** — Portal is now explicitly "the minimal HTTP contract for agent-accessible services," not "an LLM client visit layer." Landing page, docs, READMEs, and OG images rewritten; curl-first flow throughout. No spec or code changes.
+- **Three-layer positioning** documented across landing + docs + READMEs — Portal (drive-by HTTP visits) / MCP (installed stateful tools) / A2A (multi-agent coordination). They compose.
+- **Spec Appendix E — alternate discovery (draft)** — providers MAY also serve the manifest at `/.well-known/portal.json`. If both paths are served, they MUST return byte-identical manifests. Aligns Portal with the `.well-known/` convention (x402, security.txt, OpenID Connect). Will promote to normative in v0.2 after ecosystem feedback.
+- **PE-002 Paid Tools (draft)** — HTTP 402 payment handoff for paid tools, x402-compatible. Opt-in extension, non-normative in base v0.1 spec. See [`docs/pe-002-paid-tools-draft.md`](pe-002-paid-tools-draft.md).
+- **Reference Portal serves `/.well-known/portal.json`** alongside `/portal` — byte-identical JSON, smoke test asserts parity.
+- **All monorepo packages** bumped 0.1.3 → 0.1.4; install scripts pinned to `v0.1.4`.
+
+## Shipped in v0.1.3
 
 Second-wave hardening pass, all Sev-level fixes. No normative spec change (spec stays at v0.1.1).
 
@@ -34,20 +45,23 @@ Second-wave hardening pass, all Sev-level fixes. No normative spec change (spec 
 - README: First Adopter Debrief section (social proof)
 - Windows shell requirement documented for `scripts/demo.sh` (audit low-sev)
 
-## Planned for v0.1.4 (next week)
+## Planned for v0.1.5 (next week)
 
 - **Relative `call_endpoint`** — let manifests declare `"call_endpoint": "/portal/call"` and have visitor SDKs resolve against the manifest URL (removes a class of copy-paste bugs)
-- **`paramsSchema`** (JSON Schema draft-07/2020-12) accepted alongside the sugar `params` form, with `paramsSchema` taking precedence when both are present
+- **`paramsSchema`** (JSON Schema 2020-12) accepted alongside the sugar `params` form, with `paramsSchema` taking precedence when both are present
 - **Framework quickstarts** — Next.js App Router, Hono, FastAPI, Express
 - **PowerShell twin for `scripts/demo.sh`** — native Windows demo path without WSL2 / Git Bash dependency
 
 ## Planned for v0.2
 
-- `@visitportal/cli` GA — `validate` / `call` / `conformance` subcommands published to npm as a global binary
-- Pagination / cursor envelope for large responses (`{ ok: true, result, next_cursor }`)
-- Deprecation path for `params` sugar (paramsSchema-only in v0.2)
-- Python visitor SDK (`@visitportal/visit-py`) reaching parity with the TypeScript SDK
-- MCP → Portal adapter reference implementation
+- **PE-002 paid tools** — implementation (draft exists in [`docs/pe-002-paid-tools-draft.md`](pe-002-paid-tools-draft.md))
+- **`@visitportal/provider`** — one-line provider helper
+- **`@visitportal/x402-adapter`** — make any x402 provider Portal-discoverable in 50 LOC
+- **MCP → Portal adapter** — implementation of the stub at `packages/mcp-adapter`
+- **Python visitor SDK** (`@visitportal/visit-py`) reaching parity with the TypeScript SDK
+- **`@visitportal/cli` GA** — `validate` / `call` / `conformance` subcommands published to npm as a global binary
+- **Pagination / cursor envelope** for large responses (`{ ok: true, result, next_cursor }`)
+- **Deprecation path for `params` sugar** (paramsSchema-only in v0.2)
 
 ## Explicitly out of scope
 
