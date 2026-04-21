@@ -1,7 +1,7 @@
 {
   "name": "@visitportal/spec",
   "license": "Apache-2.0",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": false,
   "description": "Portal spec artifacts — JSON Schema + conformance test vectors + runner.",
   "type": "module",
@@ -23,7 +23,13 @@
       "default": "./dist/conformance/lean-validator.js"
     }
   },
-  "files": ["dist/", "manifest.schema.json", "conformance/vectors.json", "README.md", "LICENSE"],
+  "files": [
+    "dist/",
+    "manifest.schema.json",
+    "conformance/vectors.json",
+    "README.md",
+    "LICENSE"
+  ],
   "publishConfig": {
     "access": "public"
   },
