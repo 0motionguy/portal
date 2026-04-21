@@ -11,7 +11,10 @@ import { guardUrl } from "./ssrf-guard";
 //
 // Same-origin proxy for the LiveVisit widget. The browser cannot fetch
 // arbitrary Portal URLs (CORS) — this route does it server-side and
-// returns a strict discriminated-union JSON response.
+// returns a strict discriminated-union JSON response. Callers can paste
+// either a `/portal` or a `/.well-known/portal.json` URL — both are valid
+// manifest-discovery endpoints per spec Appendix E (draft in v0.1,
+// normative in v0.2).
 //
 // Security posture:
 //   1. In production only https:// is permitted. In dev, plain http:// is
