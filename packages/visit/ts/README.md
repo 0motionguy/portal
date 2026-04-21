@@ -1,6 +1,17 @@
 # @visitportal/visit
 
-TypeScript visitor SDK for Portal — visit any Portal in ten lines, no install on the server side.
+Optional TypeScript SDK for visiting Portal-enabled services. **The protocol is plain HTTP; this SDK is a convenience wrapper around `fetch` with validation and typed errors.**
+
+You don't need this SDK. Any HTTP client works — here's the same flow without it:
+
+```bash
+curl https://demo.visitportal.dev/portal
+curl -X POST https://demo.visitportal.dev/portal/call \
+  -H 'content-type: application/json' \
+  -d '{"tool":"top_gainers","params":{"limit":3}}'
+```
+
+If you want types, one-line validation, and structured errors, read on.
 
 ```ts
 import { visit } from "@visitportal/visit";
@@ -94,4 +105,5 @@ parity assertion in the spec self-test.
 
 This SDK conforms to [Portal v0.1.1](../../../docs/spec-v0.1.1.md). Every
 `manifest_valid` vector from `@visitportal/spec/vectors` is accepted; every
-`manifest_invalid` vector is rejected as `ManifestInvalid`.
+`manifest_invalid` vector is rejected as `ManifestInvalid`. Tracks monorepo
+release v0.1.4.

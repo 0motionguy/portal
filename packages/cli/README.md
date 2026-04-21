@@ -1,8 +1,10 @@
 # @visitportal/cli
 
+The CLI is optional — Portal is HTTP-native, so `curl` works too. This CLI is a convenience for operators who want `visit-portal info|call|conformance` as a quick wrapper.
+
 `visit-portal` — drive-by tool invocation against any Portal, from any shell. Fetches the manifest, validates against v0.1.1, and either prints it (`info`), calls a tool (`call`), or runs the live conformance probe (`conformance`).
 
-Built on top of [`@visitportal/visit`](../visit/ts/README.md); no extra dependencies.
+Built on top of [`@visitportal/visit`](../visit/ts/README.md); no extra dependencies. Tracks monorepo release **v0.1.4**.
 
 ## Install
 

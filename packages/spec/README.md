@@ -1,8 +1,10 @@
 # @visitportal/spec
 
-Portal v0.1.1 specification artifacts: JSON Schema, conformance vectors,
-ajv-backed validator, and a zero-dependency lean validator for visitor
-SDKs that want to stay tiny.
+The Portal spec. **Two endpoints, one manifest, five error codes. Implementable from scratch in any language in under 200 lines.**
+
+This package ships: the JSON Schema (`manifest.schema.json`), 30 conformance vectors (`conformance/vectors.json`), an ajv-backed validator (`runner.ts`), and a zero-dependency lean validator (`lean-validator.ts`) kept in byte-for-byte parity with the ajv one via the self-test.
+
+Tracks monorepo release **v0.1.4**. Normative spec document: [`docs/spec-v0.1.1.md`](../../docs/spec-v0.1.1.md).
 
 ## 30-second adopter check
 
@@ -52,7 +54,8 @@ import { ERROR_CODES } from '@visitportal/spec';
 
 ## Full spec
 
-See https://visitportal.dev/docs for the one-page Portal v0.1.1 spec.
+Frozen normative document: [`docs/spec-v0.1.1.md`](../../docs/spec-v0.1.1.md).
+Also rendered at https://visitportal.dev/docs.
 Repo: https://github.com/0motionguy/portal
 
 ## License

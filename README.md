@@ -4,8 +4,8 @@
 
 # Portal
 
-**The drop-in visit layer for Claude Code and any LLM client.**
-Two HTTP endpoints. One JSON manifest. Zero install on the visitor side.
+**If your service has a URL, an agent can visit it.**
+Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.
 
 [![npm · @visitportal/spec](https://img.shields.io/npm/v/@visitportal/spec?color=DA7756&label=%40visitportal%2Fspec&labelColor=181818)](https://www.npmjs.com/package/@visitportal/spec)
 [![CI](https://img.shields.io/github/actions/workflow/status/0motionguy/portal/ci.yml?label=tests&color=181818&labelColor=181818)](https://github.com/0motionguy/portal/actions)
@@ -13,24 +13,50 @@ Two HTTP endpoints. One JSON manifest. Zero install on the visitor side.
 [![license · Apache 2.0 / CC0](https://img.shields.io/badge/license-Apache--2.0%20%2F%20CC0-181818.svg)](LICENSE)
 [![Built with Opus 4.7](https://img.shields.io/badge/Built%20with-Opus%204.7-DA7756.svg?labelColor=181818)](https://cerebralvalley.ai/e/built-with-4-7-hackathon)
 
-[Quickstart](#quickstart) · [Spec v0.1.1](docs/spec-v0.1.1.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
+[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.1](docs/spec-v0.1.1.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
 
 </div>
 
 ---
 
+## See it work
+
+```sh
+# 1. Discover — read the manifest
+curl https://demo.visitportal.dev/portal
+```
+
+```sh
+# 2. Call — invoke a tool
+curl -X POST https://demo.visitportal.dev/portal/call \
+  -H 'content-type: application/json' \
+  -d '{"tool":"top_gainers","params":{"limit":3}}'
+```
+
+No client library required. Works from bash, Python urllib, any fetch.
+
+---
+
 ## Why Portal
 
-> **MCP solved integration. Portal solves scale.**
-> Portal is not a competitor — it is the visitor-side half of the open agent web.
+> **If your service has a URL, an agent can visit it.**
+> Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.
 
-Every tool you wire into an agent via preloaded schemas pays a per-turn tax. In the MCP path every tool description is re-sent on every turn, forever. At 100 tools that is ~14,000 input tokens *per message*. At 400 tools, ~55,000.
-
-Portal flips the load model. The visiting agent opens the Portal, reads a single compact manifest **once per visit**, calls a tool, and leaves. No preloaded schemas, no ongoing residue, no install on the visitor side.
+Use Portal when MCP is too heavy and REST is too dumb. A visiting agent opens the Portal, reads a single compact manifest **once per visit**, calls a tool, and leaves. No preloaded schemas, no ongoing residue, no install on the visitor side.
 
 <img src="docs/assets/portal-vs-mcp.svg" alt="MCP preloaded schemas vs Portal on-visit — measured input tokens" width="100%" />
 
-**81× less schema overhead at 100 tools. 317.9× at 400. A flat 172-token ceiling, regardless of catalog size** — numbers come from `pnpm bench` against Anthropic's `count_tokens` API (Sonnet 4.5 and Opus 4.5, same tokenizer, seed 42). See [`packages/bench/results/tokens-matrix-v1.md`](packages/bench/results/tokens-matrix-v1.md) for the raw matrix.
+---
+
+## Three layers of the open agent web
+
+| Tier | Protocol | Use case |
+|---|---|---|
+| 1 | **Portal** | Drive-by HTTP visits. Stateless. No install. |
+| 2 | MCP | Installed stateful tools. |
+| 3 | A2A | Multi-agent coordination. |
+
+**Portal for drive-by visits. MCP for installed tools. A2A for agent coordination. They compose.** An MCP server can be wrapped as a Portal in a thin adapter (planned — `packages/mcp-adapter`). A Portal visit can upgrade to an A2A task when a job needs lifecycles. The base is neutral and unowned.
 
 ---
 
@@ -43,9 +69,18 @@ pnpm install
 bash scripts/demo.sh          # ~6 s end-to-end: boots Portal, visits it, leaves
 ```
 
-> Requires **Node 22+**, **pnpm 10+**, and a Unix-like shell (`scripts/demo.sh` uses bash idioms — WSL2, Git Bash, macOS, or Linux). A PowerShell equivalent is queued for v0.1.4.
+> Requires **Node 22+**, **pnpm 10+**, and a Unix-like shell (`scripts/demo.sh` uses bash idioms — WSL2, Git Bash, macOS, or Linux). A PowerShell equivalent is queued for v0.1.5.
 
-### Visit any Portal from TypeScript
+### Visit any Portal — plain HTTP, no SDK
+
+```sh
+curl https://demo.visitportal.dev/portal
+curl -X POST https://demo.visitportal.dev/portal/call \
+  -H 'content-type: application/json' \
+  -d '{"tool":"top_gainers","params":{"limit":3}}'
+```
+
+### Visit from TypeScript (optional convenience)
 
 ```ts
 import { visit } from "@visitportal/visit";
@@ -105,9 +140,9 @@ Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page 
 
 | Package | Version | Purpose |
 |---|---|---|
-| [`@visitportal/spec`](packages/spec) | `0.1.3` · published on npm | JSON Schema, 30 conformance vectors, ajv + zero-dep lean validator, smoke runner |
-| [`@visitportal/visit`](packages/visit/ts) | `0.1.3` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
-| [`@visitportal/cli`](packages/cli) | `0.1.3` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
+| [`@visitportal/spec`](packages/spec) | `0.1.4` · published on npm | JSON Schema, 30 conformance vectors, ajv + zero-dep lean validator, smoke runner |
+| [`@visitportal/visit`](packages/visit/ts) | `0.1.4` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
+| [`@visitportal/cli`](packages/cli) | `0.1.4` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
 | [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
 | [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
 | [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
@@ -125,21 +160,6 @@ Portal was independently adopted by a production service (Star Screener) in **~2
 > *"The core spec is solid. The adopter onramp is what needs work."* — first production adopter, April 2026
 
 Full debrief: [`docs/ADOPTER-DEBRIEF.md`](docs/ADOPTER-DEBRIEF.md).
-
----
-
-## Positioning — not a competitor
-
-Portal is a strict subset designed for drive-by visits. It composes with MCP, A2A, and Skills; it does not replace any of them.
-
-| | **Purpose** | **Use when…** |
-|---|---|---|
-| **MCP** | Installed tools your agent uses daily | You want long-running, trusted tool usage |
-| **A2A** | Multi-agent task coordination with lifecycles | You need state, artifacts, or streaming |
-| **Skills** | Procedural knowledge preloaded into an agent | You need playbooks and recipes |
-| **Portal** | Drop-in visits — no install, zero residue | You want the open web of agents |
-
-Portal wraps an MCP server in a thin adapter (planned — `packages/mcp-adapter`). Portal visits can upgrade to A2A when a job needs tasks. Portal composes with Skills: Skills teach the agent what to do, Portal gives it the live capability on arrival.
 
 ---
 
@@ -168,7 +188,7 @@ Methodology: [`packages/bench/METHODOLOGY.md`](packages/bench/METHODOLOGY.md).
 
 ## Spec — v0.1.1
 
-Two endpoints (`GET /portal`, `POST /portal/call`). One manifest. A five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`). Dual params form — simple sugar plus an escape hatch for full JSON Schema. One printed page of core + appendices A–D (examples, versioning, CORS, rate-limit defaults).
+Two endpoints (`GET /portal`, `POST /portal/call`). One manifest. A five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`). Dual params form — simple sugar plus an escape hatch for full JSON Schema. One printed page of core + appendices A–E (examples, versioning, CORS, rate-limit defaults, alternate discovery draft).
 
 Explicit non-goals for v0.1: task lifecycles, stateful sessions, server-initiated messages, streaming, multi-agent choreography. Those live in MCP / A2A, or arrive as Portal Extensions (PE-001 verified identity, PE-002 x402 micropayments, …).
 
@@ -191,11 +211,15 @@ Verification standard: every claim on [visitportal.dev](https://visitportal.dev)
 
 ## Roadmap
 
-### v0.1.3 — shipped (current)
+### v0.1.4 — shipped (current)
+
+HTTP-native reframe, `.well-known/portal.json` alternate discovery, PE-002 paid-tools draft.
+
+### v0.1.3 — shipped
 
 Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate limit + CORS + status codes, full defensive security headers, Fly scaling, visitor-SDK hardening (size cap, HTTPS, retry, `onEvent`), installer tarball SHA verification, Biome lint, dev-dep CVE patches.
 
-### v0.1.2 — shipped (same day)
+### v0.1.2 — shipped (same day as 0.1.3)
 
 - [x] Every `package.json` declares `"license": "Apache-2.0"`
 
@@ -209,7 +233,7 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 - [x] First-adopter debrief published
 - [x] Windows shell requirement documented for `scripts/demo.sh`
 
-### v0.1.4 — next
+### v0.1.5 — next
 
 - [ ] Relative `call_endpoint` resolution (kills a class of copy-paste bugs)
 - [ ] `paramsSchema` (JSON Schema 2020-12) alongside sugar `params`
@@ -218,11 +242,13 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 
 ### v0.2
 
+- [ ] PE-002 paid tools — implementation (draft in `docs/pe-002-paid-tools-draft.md`)
+- [ ] `@visitportal/provider` — one-line provider helper
+- [ ] `@visitportal/x402-adapter` — make any x402 provider Portal-discoverable in 50 LOC
+- [ ] MCP → Portal adapter (implementation of the `packages/mcp-adapter` stub)
 - [ ] Python visitor SDK
-- [ ] MCP → Portal adapter
 - [ ] `@visitportal/cli` published to npm as global binary
 - [ ] Pagination envelope (`{ ok, result, next_cursor }`)
-- [ ] Deprecation path for `params` sugar (paramsSchema-only in v0.2)
 
 Full roadmap: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
