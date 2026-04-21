@@ -9,10 +9,7 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": [
-    "src",
-    "README.md"
-  ],
+  "files": ["src", "README.md"],
   "scripts": {
     "build": "tsc --noEmit",
     "test": "vitest run",

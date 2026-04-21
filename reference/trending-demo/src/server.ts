@@ -173,6 +173,7 @@ if (isMain) {
   serve({ fetch: createApp().fetch, port }, (info) => {
     console.log(`trending-demo (Star Screener) listening on http://localhost:${info.port}`);
     console.log("  GET  /portal");
+    console.log("  GET  /.well-known/portal.json  (byte-identical alias; spec Appendix E draft)");
     console.log("  POST /portal/call");
   });
 }

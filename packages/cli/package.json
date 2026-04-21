@@ -9,10 +9,7 @@
     "visit-portal": "./src/cli.ts"
   },
   "main": "./src/cli.ts",
-  "files": [
-    "src",
-    "README.md"
-  ],
+  "files": ["src", "README.md"],
   "scripts": {
     "build": "tsc --noEmit",
     "test": "vitest run"
