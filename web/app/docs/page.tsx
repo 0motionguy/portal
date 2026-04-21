@@ -18,8 +18,8 @@ export default function DocsPage() {
         </h1>
         <p className="lede">
           If your service has a URL, an agent can visit it. This page shows both sides of the
-          contract: how to <em>visit</em> a Portal (two curl commands) and how to <em>serve</em>{" "}
-          one (two routes and one manifest). Everything below is optional detail.
+          contract: how to <em>visit</em> a Portal (two curl commands) and how to <em>serve</em> one
+          (two routes and one manifest). Everything below is optional detail.
         </p>
 
         <h2 id="what">What is it?</h2>
@@ -137,8 +137,8 @@ app.post('/portal/call', async (req, res) => {
 
         <h2 id="errors">Error codes</h2>
         <p>
-          The <code>code</code> field is one of five values; this is the entire surface your
-          visitor needs to understand. HTTP status mapping is normative:
+          The <code>code</code> field is one of five values; this is the entire surface your visitor
+          needs to understand. HTTP status mapping is normative:
         </p>
         <ul>
           <li>
