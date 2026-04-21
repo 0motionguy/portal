@@ -239,6 +239,14 @@ and SHOULD include a `Retry-After` header — either a non-negative integer (sec
 
 The `RATE_LIMITED` code is already in the v0.1.0 error enum (see §6); this appendix formalises when to emit it and what headers to include.
 
+## Appendix E — Alternate discovery (draft)
+
+Providers MAY also serve the manifest at `/.well-known/portal.json`. If both `/portal` and `/.well-known/portal.json` are served, they MUST return byte-identical manifests. This aligns Portal with the `.well-known/` convention used by x402 (`.well-known/x402`), security.txt, and OpenID Connect.
+
+Visitors SHOULD try `/portal` first. Falling back to `/.well-known/portal.json` is optional.
+
+**Status:** Appendix E is a v0.1 draft and will be promoted to normative in v0.2 after ecosystem feedback. Both paths are acceptable today; neither is required.
+
 ## Changelog
 
 ### v0.1.1 (2026-04-19) — additive clarifications
