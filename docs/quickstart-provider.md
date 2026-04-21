@@ -13,7 +13,7 @@ There is nothing published on npm yet (hackathon week). Build a Portal directly 
 
 ### 1. Write the manifest
 
-`portal.json` is served verbatim from `GET /portal`. Required fields: `portal_version`, `name`, `brief`, `tools`, `call_endpoint`. See [spec v0.1.1 §4](./spec-v0.1.1.md) for the full schema.
+`portal.json` is served verbatim from `GET /portal`. Required fields: `portal_version`, `name`, `brief`, `tools`, `call_endpoint`. See [spec v0.1.4 §4](./spec-v0.1.4.md) for the full schema.
 
 ```json
 {
@@ -59,7 +59,7 @@ app.post("/portal/call", async (c) => {
 });
 ```
 
-Application errors always return HTTP 200 with `{ ok: false, error, code }`. The `code` is one of `NOT_FOUND | INVALID_PARAMS | UNAUTHORIZED | RATE_LIMITED | INTERNAL` ([spec §6](./spec-v0.1.1.md#6-error-codes-normative)). Transport-level failures (4xx/5xx) are fine too — visitors surface them as `CallFailed`.
+Application errors always return HTTP 200 with `{ ok: false, error, code }`. The `code` is one of `NOT_FOUND | INVALID_PARAMS | UNAUTHORIZED | RATE_LIMITED | INTERNAL` ([spec §6](./spec-v0.1.4.md#6-error-codes-normative)). Transport-level failures (4xx/5xx) are fine too — visitors surface them as `CallFailed`.
 
 ### 3. Validate locally against the spec schema
 
@@ -105,4 +105,4 @@ Set `PORTAL_PUBLIC_URL` in production so the served manifest advertises the publ
 
 ## Extensions
 
-v0.1 is deliberately small. For verified-agent identity, per-call micropayments, stateful sessions, or registry discovery, see [`docs/spec-v0.1.1.md` §8](./spec-v0.1.1.md#8-optional-extensions-non-normative). Extensions (PE-001 ERC-8004, PE-002 x402, PE-003 AGP, PE-004 ClawPulse) layer on top of the base — a Portal that uses them MUST still be valid under v0.1.1.
+v0.1 is deliberately small. For verified-agent identity, per-call micropayments, stateful sessions, or registry discovery, see [`docs/spec-v0.1.4.md` §8](./spec-v0.1.4.md#8-optional-extensions-non-normative). Extensions (PE-001 ERC-8004, PE-002 x402, PE-003 AGP, PE-004 ClawPulse) layer on top of the base — a Portal that uses them MUST still be valid under v0.1.4.

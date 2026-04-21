@@ -1,10 +1,10 @@
-# Portal v0.1.1 — Specification
+# Portal v0.1.4 — Specification
 
-**Status:** CURRENT. Published 2026-04-19 as `v0.1.1`. Supersedes v0.1.0 (additive clarifications only; every v0.1.0 conformant portal remains v0.1.1 conformant).
+**Status:** CURRENT. Published 2026-04-21 as `v0.1.4`. Supersedes v0.1.1 (additive clarifications only; every v0.1.1 conformant portal remains v0.1.4 conformant).
 **License:** Public domain. No copyright is asserted over this specification.
 **Normative schema:** [`packages/spec/manifest.schema.json`](../packages/spec/manifest.schema.json).
 **Conformance suite:** [`packages/spec/conformance/`](../packages/spec/conformance/).
-**Changelog vs v0.1.0:** see "Changelog" at end of document.
+**Changelog vs v0.1.1:** see "Changelog" at end of document.
 
 ---
 
@@ -163,9 +163,9 @@ Base Portal implementations (visitor SDKs, provider helpers, MCP adapter, benchm
 
 ## 9. Conformance
 
-A provider is **v0.1.1-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
+A provider is **v0.1.4-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
 
-A visitor SDK is **v0.1.1-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
+A visitor SDK is **v0.1.4-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
 
 `pnpm conformance <url>` runs the suite against a live URL and emits a pass/fail report.
 
@@ -248,6 +248,16 @@ Visitors SHOULD try `/portal` first. Falling back to `/.well-known/portal.json` 
 **Status:** Appendix E is a v0.1 draft and will be promoted to normative in v0.2 after ecosystem feedback. Both paths are acceptable today; neither is required.
 
 ## Changelog
+
+### v0.1.4 (2026-04-21) — Appendix E + editorial
+
+All v0.1.1-conformant providers remain v0.1.4-conformant. No wire-protocol change, no schema field change, no enum change. Additions:
+
+- **Appendix E (NEW, draft).** Alternate discovery at `/.well-known/portal.json`. Providers MAY serve the manifest at both paths; when they do, the two responses MUST be byte-identical. Visitors SHOULD try `/portal` first.
+- **§8 Extensions.** PE-002 paid tools draft (x402-compatible HTTP 402) referenced; full draft in [`pe-002-paid-tools-draft.md`](./pe-002-paid-tools-draft.md).
+- **Editorial.** Header date + status bumped to track release cadence (v0.1.2 license fix, v0.1.3 Sev-level hardening, v0.1.4 HTTP-native reframe). Normative wire protocol unchanged since v0.1.1.
+
+No breaking changes.
 
 ### v0.1.1 (2026-04-19) — additive clarifications
 

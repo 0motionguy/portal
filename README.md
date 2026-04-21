@@ -9,11 +9,11 @@ Portal is the minimal HTTP contract for agent-accessible services. Two endpoints
 
 [![npm · @visitportal/spec](https://img.shields.io/npm/v/@visitportal/spec?color=DA7756&label=%40visitportal%2Fspec&labelColor=181818)](https://www.npmjs.com/package/@visitportal/spec)
 [![CI](https://img.shields.io/github/actions/workflow/status/0motionguy/portal/ci.yml?label=tests&color=181818&labelColor=181818)](https://github.com/0motionguy/portal/actions)
-[![spec v0.1.1](https://img.shields.io/badge/spec-v0.1.1-DA7756.svg?labelColor=181818)](docs/spec-v0.1.1.md)
+[![spec v0.1.4](https://img.shields.io/badge/spec-v0.1.4-DA7756.svg?labelColor=181818)](docs/spec-v0.1.4.md)
 [![license · Apache 2.0 / CC0](https://img.shields.io/badge/license-Apache--2.0%20%2F%20CC0-181818.svg)](LICENSE)
 [![Built with Opus 4.7](https://img.shields.io/badge/Built%20with-Opus%204.7-DA7756.svg?labelColor=181818)](https://cerebralvalley.ai/e/built-with-4-7-hackathon)
 
-[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.1](docs/spec-v0.1.1.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
+[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.4](docs/spec-v0.1.4.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
 
 </div>
 
@@ -132,7 +132,7 @@ Full adopter guide: [`docs/quickstart-provider.md`](docs/quickstart-provider.md)
 
 A Portal visit is five steps: **arrive, read, call, use, leave.** The manifest enters the LLM's context only for the duration of the visit; the session end is a clean drop. No per-connection state on the server, no residue on the client.
 
-Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page spec in [`docs/spec-v0.1.1.md`](docs/spec-v0.1.1.md).
+Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page spec in [`docs/spec-v0.1.4.md`](docs/spec-v0.1.4.md).
 
 ---
 
@@ -186,13 +186,13 @@ Methodology: [`packages/bench/METHODOLOGY.md`](packages/bench/METHODOLOGY.md).
 
 ---
 
-## Spec — v0.1.1
+## Spec — v0.1.4
 
 Two endpoints (`GET /portal`, `POST /portal/call`). One manifest. A five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`). Dual params form — simple sugar plus an escape hatch for full JSON Schema. One printed page of core + appendices A–E (examples, versioning, CORS, rate-limit defaults, alternate discovery draft).
 
 Explicit non-goals for v0.1: task lifecycles, stateful sessions, server-initiated messages, streaming, multi-agent choreography. Those live in MCP / A2A, or arrive as Portal Extensions (PE-001 verified identity, PE-002 x402 micropayments, …).
 
-Full spec: [`docs/spec-v0.1.1.md`](docs/spec-v0.1.1.md).
+Full spec: [`docs/spec-v0.1.4.md`](docs/spec-v0.1.4.md).
 
 ---
 

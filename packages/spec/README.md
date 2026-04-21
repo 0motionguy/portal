@@ -4,7 +4,7 @@ The Portal spec. **Two endpoints, one manifest, five error codes. Implementable 
 
 This package ships: the JSON Schema (`manifest.schema.json`), 30 conformance vectors (`conformance/vectors.json`), an ajv-backed validator (`runner.ts`), and a zero-dependency lean validator (`lean-validator.ts`) kept in byte-for-byte parity with the ajv one via the self-test.
 
-Tracks monorepo release **v0.1.4**. Normative spec document: [`docs/spec-v0.1.1.md`](../../docs/spec-v0.1.1.md).
+Tracks monorepo release **v0.1.4**. Normative spec document: [`docs/spec-v0.1.4.md`](../../docs/spec-v0.1.4.md).
 
 ## 30-second adopter check
 
@@ -15,7 +15,7 @@ console.log(report);
 // { target, manifestOk, manifestErrors, notFoundOk, notFoundDetail }
 ```
 
-If `manifestOk && notFoundOk`, your service passes the v0.1.1 smoke test.
+If `manifestOk && notFoundOk`, your service passes the v0.1.4 smoke test.
 
 ## Full offline validation
 
@@ -54,7 +54,7 @@ import { ERROR_CODES } from '@visitportal/spec';
 
 ## Full spec
 
-Frozen normative document: [`docs/spec-v0.1.1.md`](../../docs/spec-v0.1.1.md).
+Frozen normative document: [`docs/spec-v0.1.4.md`](../../docs/spec-v0.1.4.md).
 Also rendered at https://visitportal.dev/docs.
 Repo: https://github.com/0motionguy/portal
 

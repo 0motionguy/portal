@@ -67,7 +67,7 @@ tool.
 
 ## Touching the spec
 
-Don't, unless you mean it. `docs/spec-v0.1.1.md` is the **current** spec
+Don't, unless you mean it. `docs/spec-v0.1.4.md` is the **current** spec
 (v0.1.0 was superseded the same day by v0.1.1; both are preserved in git
 history). A spec change requires:
 

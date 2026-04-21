@@ -93,7 +93,7 @@ describe("trending-demo smoke", () => {
   });
 });
 
-describe("trending-demo CORS (spec v0.1.1 Appendix C)", () => {
+describe("trending-demo CORS (spec v0.1.4 Appendix C)", () => {
   it("OPTIONS /portal/call returns 204 with Allow-Origin:* and allowed methods include POST", async () => {
     const res = await app.request("/portal/call", {
       method: "OPTIONS",

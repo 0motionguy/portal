@@ -165,7 +165,7 @@ app.post('/portal/call', async (req, res) => {
           endpoints MUST handle <code>OPTIONS</code> preflight and MUST set{" "}
           <code>Access-Control-Allow-Origin</code>. Credentialed requests have per-auth-mode
           semantics. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.1.md#appendix-c--cors">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.4.md#appendix-c--cors">
             spec Appendix C
           </a>{" "}
           for the full table.
@@ -176,7 +176,7 @@ app.post('/portal/call', async (req, res) => {
           Portal SHOULDs a per-auth-mode default for rate limits. Visitor SDKs MUST treat{" "}
           <code>RATE_LIMITED</code> as recoverable and SHOULD honor <code>Retry-After</code>.
           Providers without a rate-limit strategy of their own can adopt the defaults verbatim. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.1.md#appendix-d--rate-limits">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.4.md#appendix-d--rate-limits">
             spec Appendix D
           </a>
           .

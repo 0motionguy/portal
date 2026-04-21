@@ -23,13 +23,13 @@ All notable changes to Portal are recorded here. The specification is versioned 
 
 ### Not changed
 
-- **Normative spec** remains v0.1.1 (`docs/spec-v0.1.1.md`). No schema changes. No endpoint changes. No envelope changes.
+- **Wire protocol** unchanged since v0.1.1. No schema field changes. No endpoint changes. No envelope changes. The spec *document* bumps v0.1.1 → v0.1.4 editorially (Appendix E draft + PE-002 reference + release-cadence header); every v0.1.1-conformant portal remains v0.1.4-conformant.
 - **Sev-1 hardening from v0.1.3** (Upstash rate limit, reference Portal rate limit + CORS + status codes, defensive security headers, Fly scaling, SSRF guard, visitor-SDK hardening) unchanged.
 - **All 164 tests still green.**
 
 ## [0.1.3] — 2026-04-20
 
-Second-wave hardening pass — five Sev-level fixes across the stack. No spec change; the normative spec stays at v0.1.1 (`docs/spec-v0.1.1.md`). All five items are additive or defensive; no breaking API.
+Second-wave hardening pass — five Sev-level fixes across the stack. No spec change; the normative spec stays at v0.1.1 (`docs/spec-v0.1.4.md`). All five items are additive or defensive; no breaking API.
 
 ### Added
 
@@ -75,7 +75,7 @@ Second-wave hardening pass — five Sev-level fixes across the stack. No spec ch
 
 ### Notes
 
-- **Package-metadata-only release.** No normative spec change — the spec document remains at v0.1.1 (`docs/spec-v0.1.1.md`). The `manifest.schema.json` `$id`, the `conformance/vectors.json` `spec_version`, and all runtime behaviour are identical to 0.1.1.
+- **Package-metadata-only release.** No normative spec change — the spec document remains at v0.1.1 (`docs/spec-v0.1.4.md`). The `manifest.schema.json` `$id`, the `conformance/vectors.json` `spec_version`, and all runtime behaviour are identical to 0.1.1.
 - Decision captured: Portal stays **Apache 2.0** (code) + **CC0 1.0** (spec documents + `conformance/vectors.json`). Apache's explicit patent grant is load-bearing for a protocol aiming at multi-party adoption; the spec itself is public domain under CC0. See the rationale in `README.md` "License" section.
 
 ## [0.1.1] — 2026-04-19

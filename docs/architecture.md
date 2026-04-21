@@ -33,7 +33,7 @@ not** import AGP, ClawPulse, AGNT, or ERC-8004 code. Those are Portal
 Extensions — `docs/extensions/` — and ship separately.
 
 **Rule 3 — the spec is the contract.** If the code disagrees with
-`docs/spec-v0.1.1.md`, one of them is wrong. We fix the mismatch
+`docs/spec-v0.1.4.md`, one of them is wrong. We fix the mismatch
 intentionally and bump `portal_version` if the spec moves.
 
 ## Package responsibilities

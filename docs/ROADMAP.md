@@ -2,7 +2,7 @@
 
 ## Shipped in v0.1.4 (current)
 
-HTTP-native positioning reframe. No normative spec change — core spec stays at v0.1.1.
+HTTP-native positioning reframe. Spec bumped v0.1.1 → v0.1.4 (editorial; Appendix E draft + PE-002 reference added). No wire protocol change.
 
 - **Positioning reframed** — Portal is now explicitly "the minimal HTTP contract for agent-accessible services," not "an LLM client visit layer." Landing page, docs, READMEs, and OG images rewritten; curl-first flow throughout. No spec or code changes.
 - **Three-layer positioning** documented across landing + docs + READMEs — Portal (drive-by HTTP visits) / MCP (installed stateful tools) / A2A (multi-agent coordination). They compose.
