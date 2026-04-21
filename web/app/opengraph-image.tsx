@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Portal — the drop-in visit layer for LLM clients";
+export const alt = "Portal — if your service has a URL, an agent can visit it";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -23,46 +23,35 @@ export default function OpengraphImage() {
           visitportal.dev
         </div>
         <div style={{ fontSize: "20px", color: "#8A7F6E", fontFamily: "Geist Mono, monospace" }}>
-          · v0.1.3
+          · v0.1.4
         </div>
       </div>
 
       <div
         style={{
-          fontSize: "108px",
+          fontSize: "92px",
           fontWeight: 700,
-          lineHeight: 1.02,
+          lineHeight: 1.04,
           color: "#181818",
           letterSpacing: "-0.03em",
           display: "flex",
         }}
       >
-        Two endpoints.
+        If your service has a URL,
       </div>
       <div
         style={{
-          fontSize: "108px",
+          fontSize: "92px",
           fontWeight: 700,
-          lineHeight: 1.02,
-          color: "#181818",
-          letterSpacing: "-0.03em",
-          display: "flex",
-          marginBottom: "40px",
-        }}
-      >
-        One manifest.
-      </div>
-      <div
-        style={{
-          fontSize: "40px",
-          lineHeight: 1.2,
+          lineHeight: 1.04,
           color: "#DA7756",
+          letterSpacing: "-0.03em",
           display: "flex",
           marginBottom: "auto",
           fontStyle: "italic",
         }}
       >
-        Any LLM client can visit cold.
+        an agent can visit it.
       </div>
 
       <div
@@ -77,12 +66,13 @@ export default function OpengraphImage() {
           color: "#2A2724",
         }}
       >
-        <div style={{ display: "flex", gap: "24px" }}>
-          <span>81× less schema overhead at 100 tools</span>
+        <div style={{ display: "flex", gap: "16px" }}>
+          <span>visitportal.dev</span>
           <span style={{ color: "#8A7F6E" }}>·</span>
-          <span>317.9× at 400</span>
+          <span>v0.1.4</span>
+          <span style={{ color: "#8A7F6E" }}>·</span>
+          <span>HTTP-native agent contract</span>
         </div>
-        <div style={{ color: "#8A7F6E" }}>Built with Claude Code · Opus 4.7</div>
       </div>
     </div>,
     { ...size },
