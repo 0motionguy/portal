@@ -2,45 +2,20 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
-import { validateManifest } from "@visitportal/spec/runner";
+import { serve as servePortal, type Manifest } from "@visitportal/provider";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { rateLimit } from "./rate-limit.ts";
 import { registry } from "./tools/index.ts";
-import { NotFoundError, ParamError } from "./types.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const manifestPath = resolve(here, "..", "portal.json");
 
-interface ManifestFile {
-  portal_version: string;
-  name: string;
-  brief: string;
-  tools: unknown[];
-  call_endpoint: string;
-  auth?: string;
-  pricing?: { model: string; rate?: string };
-}
-
-const staticManifest = JSON.parse(readFileSync(manifestPath, "utf8")) as ManifestFile;
-
-function buildManifest(): ManifestFile {
-  return staticManifest;
-}
-
-type ErrorCode = "NOT_FOUND" | "INVALID_PARAMS" | "UNAUTHORIZED" | "RATE_LIMITED" | "INTERNAL";
-
-const STATUS: Record<ErrorCode, 400 | 401 | 404 | 429 | 500> = {
-  NOT_FOUND: 404,
-  INVALID_PARAMS: 400,
-  UNAUTHORIZED: 401,
-  RATE_LIMITED: 429,
-  INTERNAL: 500,
-};
-
-function errorEnvelope(message: string, code: ErrorCode) {
-  return { ok: false as const, error: message, code };
-}
+const staticManifest = JSON.parse(readFileSync(manifestPath, "utf8")) as Manifest;
+const portal = servePortal({
+  manifest: staticManifest,
+  handlers: Object.fromEntries([...registry].map(([name, tool]) => [name, tool.handler])),
+});
 
 export function createApp(): Hono {
   const app = new Hono();
@@ -68,33 +43,12 @@ export function createApp(): Hono {
 
   app.get("/healthz", (c) => c.json({ ok: true }));
 
-  app.get("/portal", (c) => {
-    const manifest = buildManifest();
-    const result = validateManifest(manifest);
-    if (!result.ok) {
-      const detail = result.errors
-        .map((e) => `${e.instancePath || "/"} ${e.message ?? ""}`)
-        .join("; ");
-      return c.text(`manifest failed internal validation: ${detail}`, 500);
-    }
-    return c.json(manifest);
-  });
+  app.get("/portal", (c) => c.json(portal.manifest));
 
   // Alternate discovery per spec v0.1.5 Appendix E (draft). Providers MAY
   // serve the manifest at /.well-known/portal.json in addition to /portal;
-  // if both are served they MUST return byte-identical manifests. This
-  // handler delegates to the same buildManifest() + validator path.
-  app.get("/.well-known/portal.json", (c) => {
-    const manifest = buildManifest();
-    const result = validateManifest(manifest);
-    if (!result.ok) {
-      const detail = result.errors
-        .map((e) => `${e.instancePath || "/"} ${e.message ?? ""}`)
-        .join("; ");
-      return c.text(`manifest failed internal validation: ${detail}`, 500);
-    }
-    return c.json(manifest);
-  });
+  // if both are served they MUST return byte-identical manifests.
+  app.get("/.well-known/portal.json", (c) => c.json(portal.manifest));
 
   app.post("/portal/call", async (c) => {
     let body: unknown;
@@ -102,62 +56,21 @@ export function createApp(): Hono {
       body = await c.req.json();
     } catch {
       return c.json(
-        errorEnvelope("request body is not valid JSON", "INVALID_PARAMS"),
-        STATUS.INVALID_PARAMS,
+        { ok: false as const, error: "request body is not valid JSON", code: "INVALID_PARAMS" },
+        400,
       );
     }
 
-    if (!isRecord(body)) {
-      return c.json(
-        errorEnvelope("request body must be a JSON object", "INVALID_PARAMS"),
-        STATUS.INVALID_PARAMS,
-      );
+    const result = await portal.dispatch(body, { request: c.req.raw, signal: c.req.raw.signal });
+    const headers = result.headers ?? {};
+    for (const name of Object.keys(headers)) {
+      const value = headers[name];
+      if (value !== undefined) c.header(name, value);
     }
-
-    const toolName = body.tool;
-    if (typeof toolName !== "string" || toolName.length === 0) {
-      return c.json(
-        errorEnvelope("'tool' must be a non-empty string", "INVALID_PARAMS"),
-        STATUS.INVALID_PARAMS,
-      );
-    }
-
-    const rawParams = body.params ?? {};
-    if (!isRecord(rawParams)) {
-      return c.json(
-        errorEnvelope("'params' must be an object", "INVALID_PARAMS"),
-        STATUS.INVALID_PARAMS,
-      );
-    }
-
-    const tool = registry.get(toolName);
-    if (!tool) {
-      return c.json(
-        errorEnvelope(`tool '${toolName}' not in manifest`, "NOT_FOUND"),
-        STATUS.NOT_FOUND,
-      );
-    }
-
-    try {
-      const result = await tool.handler(rawParams);
-      return c.json({ ok: true as const, result });
-    } catch (err) {
-      if (err instanceof ParamError) {
-        return c.json(errorEnvelope(err.message, "INVALID_PARAMS"), STATUS.INVALID_PARAMS);
-      }
-      if (err instanceof NotFoundError) {
-        return c.json(errorEnvelope(err.message, "NOT_FOUND"), STATUS.NOT_FOUND);
-      }
-      const msg = err instanceof Error ? err.message : String(err);
-      return c.json(errorEnvelope(msg, "INTERNAL"), STATUS.INTERNAL);
-    }
+    return c.json(result.body, result.status);
   });
 
   return app;
-}
-
-function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === "object" && x !== null && !Array.isArray(x);
 }
 
 const entry = process.argv[1];

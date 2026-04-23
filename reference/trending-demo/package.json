@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
+    "@visitportal/provider": "workspace:*",
     "@visitportal/spec": "workspace:*",
     "hono": "^4.6.14"
   },

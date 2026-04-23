@@ -9,6 +9,8 @@ You are building a Portal: one manifest at `GET /portal`, one dispatcher at `POS
 
 ## The 10-minute path
 
+If you are working inside this monorepo, there is now also an unpublished workspace helper at [`packages/provider/ts`](../packages/provider/ts/) (`@visitportal/provider`) that builds a validated manifest and dispatches calls for you. The reference implementation in [`reference/trending-demo/src/server.ts`](../reference/trending-demo/src/server.ts) now uses that helper; the raw HTTP shape below is still the baseline contract.
+
 There is nothing published on npm yet (hackathon week). Build a Portal directly against the raw HTTP shape — it is three fields of JSON and one POST handler. The reference implementation in [`reference/trending-demo/src/server.ts`](../reference/trending-demo/src/server.ts) is under 100 lines of Hono and is the canonical pattern.
 
 ### 1. Write the manifest
@@ -62,6 +64,35 @@ app.post("/portal/call", async (c) => {
 Application errors always return HTTP 200 with `{ ok: false, error, code }`. The `code` is one of `NOT_FOUND | INVALID_PARAMS | UNAUTHORIZED | RATE_LIMITED | INTERNAL` ([spec §6](./spec-v0.1.5.md#6-error-codes-normative)). Transport-level failures (4xx/5xx) are fine too — visitors surface them as `CallFailed`.
 
 ### 3. Validate locally against the spec schema
+
+Optional workspace helper:
+
+```ts
+import { serve } from "@visitportal/provider";
+
+const portal = serve({
+  name: "My Service",
+  brief: "One sentence describing what the visiting LLM can do here.",
+  call_endpoint: "/portal/call",
+  tools: [
+    {
+      name: "top_items",
+      params: {
+        limit: { type: "number", required: true, description: "1-50" },
+      },
+      async handler(params) {
+        return topItems(params.limit);
+      },
+    },
+  ],
+});
+
+app.get("/portal", (c) => c.json(portal.manifest));
+app.post("/portal/call", async (c) => {
+  const result = await portal.dispatch(await c.req.json(), { request: c.req.raw });
+  return c.json(result.body, result.status);
+});
+```
 
 Clone this repo, then run the conformance suite against your running Portal:
 

@@ -3,9 +3,22 @@
   "license": "Apache-2.0",
   "version": "0.0.0",
   "private": true,
-  "description": "Optional helper library for Portal providers. Stub — planned for v0.2. Raw HTTP (see quickstart-provider.md + reference/trending-demo) works without this.",
+  "description": "Optional helper library for Portal providers. Build a validated manifest and serve it over raw fetch-compatible HTTP.",
   "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": ["src", "README.md"],
   "scripts": {
-    "test": "echo \"(provider/ts) no tests yet\" && exit 0"
+    "build": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@visitportal/spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "vitest": "^2.1.8"
   }
 }

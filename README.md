@@ -142,6 +142,8 @@ Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page 
 
 ## What's in this repo
 
+Workspace note: [`@visitportal/provider`](packages/provider/ts) now exists as an in-repo helper for providers. It builds a validated manifest, dispatches `{ tool, params }` calls, and exposes a fetch-native handler.
+
 | Package | Version | Purpose |
 |---|---|---|
 | [`@visitportal/spec`](packages/spec) | `0.1.5` · published on npm | JSON Schema, 36 conformance vectors, ajv + zero-dep lean validator, smoke runner |
@@ -245,6 +247,8 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 - [x] Windows shell requirement documented for `scripts/demo.sh`
 
 ### v0.2
+
+Workspace note: `@visitportal/provider` has landed on `main` as a workspace package. The remaining items below are still pending for the broader v0.2 release.
 
 - [ ] PE-002 paid tools — implementation (draft in `docs/pe-002-paid-tools-draft.md`)
 - [ ] `@visitportal/provider` — one-line provider helper

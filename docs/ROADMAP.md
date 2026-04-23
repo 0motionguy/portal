@@ -56,6 +56,8 @@ Second-wave hardening pass, all Sev-level fixes. No normative spec change (spec 
 
 ## Planned for v0.2
 
+`@visitportal/provider` has already landed on `main` as a workspace package. The list below reflects the remaining release work unless noted otherwise.
+
 - **PE-002 paid tools** — implementation (draft exists in [`docs/pe-002-paid-tools-draft.md`](pe-002-paid-tools-draft.md))
 - **`@visitportal/provider`** — one-line provider helper
 - **`@visitportal/x402-adapter`** — make any x402 provider Portal-discoverable in 50 LOC

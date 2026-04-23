@@ -1,7 +1,41 @@
 # @visitportal/provider
 
-Optional helper library for Portal providers. Nothing here you can't do with raw HTTP — this is ergonomic sugar.
+Optional helper library for Portal providers. Nothing here you cannot do with raw HTTP; this package exists to kill boilerplate.
 
-**Status:** stub — Phase 2 (Apr 21–22) may land `serve()` + `manifest()` helpers alongside the Star Screener reference.
+## What it does
 
-The real provider recipe lives at [reference/trending-demo](../../../reference/trending-demo/).
+- Builds a manifest from typed tool definitions
+- Validates the manifest against `@visitportal/spec`
+- Dispatches `{ tool, params }` requests into your handlers
+- Exposes a fetch-native `portal.fetch(request)` helper for Edge / Workers / route handlers
+
+## Example
+
+```ts
+import { serve } from "@visitportal/provider";
+
+const portal = serve({
+  name: "My Service",
+  brief: "One sentence describing what a visiting LLM can do here.",
+  call_endpoint: "/portal/call",
+  tools: [
+    {
+      name: "ping",
+      description: "returns pong",
+      async handler(params) {
+        return { pong: true, msg: params.msg ?? null };
+      },
+    },
+  ],
+});
+
+export default {
+  fetch(request: Request) {
+    return portal.fetch(request);
+  },
+};
+```
+
+If you already have a static `portal.json`, `serve()` also accepts `{ manifest, handlers }`.
+
+The reference implementation in [reference/trending-demo](../../../reference/trending-demo/) now uses this package for manifest validation and call dispatch.

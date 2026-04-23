@@ -1,6 +1,17 @@
 # Changelog
 
+
 All notable changes to Portal are recorded here. The specification is versioned independently in `docs/spec-v*.md`; npm packages track the spec version, except where noted.
+
+## [Unreleased]
+
+### Added
+
+- **`@visitportal/provider` helper landed in-repo.** New workspace package with `manifest()` and `serve()` helpers for TypeScript providers. It validates manifests against `@visitportal/spec`, dispatches `{ tool, params }` calls, exposes a fetch-native handler, and supports wrapping an existing static `portal.json` plus handler map.
+
+### Changed
+
+- **Reference Portal now uses `@visitportal/provider`.** `reference/trending-demo` delegates manifest validation and call dispatch to the helper instead of hand-rolling that boilerplate in `src/server.ts`.
 
 ## [0.1.5] — 2026-04-23
 
