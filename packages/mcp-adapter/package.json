@@ -3,9 +3,26 @@
   "license": "Apache-2.0",
   "version": "0.0.0",
   "private": true,
-  "description": "Wrap any MCP server as a Portal. Stub — planned for v0.2. See docs/ROADMAP.md.",
+  "description": "Wrap an MCP stdio server as a Portal. Minimal client, manifest translation, and local HTTP bridge.",
   "type": "module",
+  "bin": {
+    "visitportal-mcp-adapter": "./src/cli.ts"
+  },
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": ["src", "README.md"],
   "scripts": {
-    "test": "echo \"(mcp-adapter) no tests yet\" && exit 0"
+    "build": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@visitportal/provider": "workspace:*",
+    "tsx": "^4.20.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "vitest": "^2.1.8"
   }
 }

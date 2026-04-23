@@ -56,7 +56,7 @@ Use Portal when MCP is too heavy and REST is too dumb. A visiting agent opens th
 | 2 | MCP | Installed stateful tools. |
 | 3 | A2A | Multi-agent coordination. |
 
-**Portal for drive-by visits. MCP for installed tools. A2A for agent coordination. They compose.** An MCP server can be wrapped as a Portal in a thin adapter (planned — `packages/mcp-adapter`). A Portal visit can upgrade to an A2A task when a job needs lifecycles. The base is neutral and unowned.
+**Portal for drive-by visits. MCP for installed tools. A2A for agent coordination. They compose.** An MCP server can be wrapped as a Portal in a thin adapter (`@visitportal/mcp-adapter`). A Portal visit can upgrade to an A2A task when a job needs lifecycles. The base is neutral and unowned.
 
 ---
 
@@ -142,7 +142,7 @@ Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page 
 
 ## What's in this repo
 
-Workspace note: [`@visitportal/provider`](packages/provider/ts) now exists as an in-repo helper for providers. It builds a validated manifest, dispatches `{ tool, params }` calls, and exposes a fetch-native handler.
+Workspace note: [`@visitportal/provider`](packages/provider/ts) and [`@visitportal/mcp-adapter`](packages/mcp-adapter) now exist as in-repo helpers. Providers can expose a validated Portal surface directly, and MCP stdio servers can be wrapped into that same surface without rewriting tool manifests by hand.
 
 | Package | Version | Purpose |
 |---|---|---|
@@ -150,9 +150,10 @@ Workspace note: [`@visitportal/provider`](packages/provider/ts) now exists as an
 | [`@visitportal/visit`](packages/visit/ts) | `0.1.5` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
 | [`@visitportal/cli`](packages/cli) | `0.1.5` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
 | [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
+| [`@visitportal/provider`](packages/provider/ts) | workspace | TypeScript provider helper - `manifest()` + `serve()` |
+| [`@visitportal/mcp-adapter`](packages/mcp-adapter) | workspace | Wrap MCP stdio servers as Portals, with a local HTTP bridge |
 | [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
 | [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
-| [`packages/mcp-adapter`](packages/mcp-adapter) | stub | Wrap MCP servers as Portals (v0.2) |
 | [`web/`](web) | — | [visitportal.dev](https://visitportal.dev) landing + docs |
 
 Import direction is strictly downhill — upper layers import from lower, never the reverse. Base Portal packages never pull AGP / ClawPulse / AGNT / ERC-8004; those are optional Portal Extensions documented in [`docs/extensions/`](docs/extensions/).
@@ -248,12 +249,12 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 
 ### v0.2
 
-Workspace note: `@visitportal/provider` has landed on `main` as a workspace package. The remaining items below are still pending for the broader v0.2 release.
+Workspace note: `@visitportal/provider` and `@visitportal/mcp-adapter` have landed on `main` as workspace packages. The remaining items below are still pending for the broader v0.2 release.
 
 - [ ] PE-002 paid tools — implementation (draft in `docs/pe-002-paid-tools-draft.md`)
-- [ ] `@visitportal/provider` — one-line provider helper
+- [x] `@visitportal/provider` — one-line provider helper
 - [ ] `@visitportal/x402-adapter` — make any x402 provider Portal-discoverable in 50 LOC
-- [ ] MCP → Portal adapter (implementation of the `packages/mcp-adapter` stub)
+- [x] MCP → Portal adapter (`@visitportal/mcp-adapter`)
 - [ ] Python visitor SDK
 - [ ] `@visitportal/cli` published to npm as global binary
 - [ ] Pagination envelope (`{ ok, result, next_cursor }`)

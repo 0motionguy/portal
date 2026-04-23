@@ -8,10 +8,12 @@ All notable changes to Portal are recorded here. The specification is versioned 
 ### Added
 
 - **`@visitportal/provider` helper landed in-repo.** New workspace package with `manifest()` and `serve()` helpers for TypeScript providers. It validates manifests against `@visitportal/spec`, dispatches `{ tool, params }` calls, exposes a fetch-native handler, and supports wrapping an existing static `portal.json` plus handler map.
+- **`@visitportal/mcp-adapter` landed in-repo.** New workspace package that launches an MCP stdio server, performs the MCP initialize handshake, translates `tools/list` into a Portal manifest, and forwards Portal tool calls into MCP `tools/call`. Includes both a small library API and a `visitportal-mcp-adapter` local HTTP bridge CLI.
 
 ### Changed
 
 - **Reference Portal now uses `@visitportal/provider`.** `reference/trending-demo` delegates manifest validation and call dispatch to the helper instead of hand-rolling that boilerplate in `src/server.ts`.
+- **v0.2 roadmap status updated.** The provider helper and MCP adapter are now tracked as landed workspace packages rather than pending stubs.
 
 ## [0.1.5] — 2026-04-23
 
