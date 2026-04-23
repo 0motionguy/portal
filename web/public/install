@@ -4,14 +4,14 @@
 # Non-TTY stdin (e.g. curl|sh) requires VISITPORTAL_ASSUME_YES=1.
 #
 # Release pinning: REPO_REF and REPO_TARBALL_SHA256 must be updated each release.
-# Helper: scripts/compute-install-sha.sh v0.1.4 prints both values to paste here.
+# Helper: scripts/compute-install-sha.sh v0.1.5 prints both values to paste here.
 
 set -eu
 
-VERSION="0.1.4"
+VERSION="0.1.5"
 REPO_URL="https://github.com/0motionguy/portal"
-REPO_REF="v0.1.4"
-REPO_TARBALL_SHA256="3b0441657d5a4bdfb25b607b110c8de5a0f35fabc65432c484ff85cd221c61ef"
+REPO_REF="v0.1.5"
+REPO_TARBALL_SHA256="5298c2c80d688ac45ce4835b9fb295113ba9597601369b952c582f7e6d89df2d"
 INSTALL_DIR="${VISITPORTAL_HOME:-$HOME/.visitportal}"
 BIN_DIR="$INSTALL_DIR/bin"
 SHIM="$BIN_DIR/visit-portal"
