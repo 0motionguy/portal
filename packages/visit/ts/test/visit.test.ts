@@ -98,6 +98,23 @@ describe("visit()", () => {
     expect(p.url).toBe(`${baseUrl}/portal`);
   });
 
+  test("resolves a root-relative call_endpoint against the manifest URL", async () => {
+    route(({ method, path, body }) => {
+      if (method === "GET" && path === "/portal") {
+        return { status: 200, body: validManifest("/portal/call") };
+      }
+      if (method === "POST" && path === "/portal/call") {
+        const { tool } = body as { tool: string };
+        return { status: 200, body: { ok: true, result: { tool, via: "relative" } } };
+      }
+      return { status: 404, body: "" };
+    });
+
+    const p = await visit(`${baseUrl}/portal`, DEV);
+    expect(p.manifest.call_endpoint).toBe(`${baseUrl}/portal/call`);
+    await expect(p.call("ping", {})).resolves.toEqual({ tool: "ping", via: "relative" });
+  });
+
   test("throws PortalNotFound on HTTP 404", async () => {
     route(() => ({ status: 404, body: { error: "nope" } }));
     await expect(visit(`${baseUrl}/portal`, DEV)).rejects.toBeInstanceOf(PortalNotFound);
@@ -336,6 +353,17 @@ describe("hardening · HTTPS enforcement", () => {
     // Visit URL is loopback http:// (allowed), but call_endpoint is http://<public>
     // which the manifest.schema.json now rejects at parse time; the SDK catches
     // it either at schema validation OR at the post-validate HTTPS re-check.
+    await expect(visit(`${baseUrl}/portal`, DEV)).rejects.toBeInstanceOf(ManifestInvalid);
+  });
+
+  test("manifest.call_endpoint with network-path reference rejected as ManifestInvalid", async () => {
+    route(() => ({
+      status: 200,
+      body: {
+        ...validManifest(`${baseUrl}/portal/call`),
+        call_endpoint: "//evil.example.com/portal/call",
+      },
+    }));
     await expect(visit(`${baseUrl}/portal`, DEV)).rejects.toBeInstanceOf(ManifestInvalid);
   });
 });

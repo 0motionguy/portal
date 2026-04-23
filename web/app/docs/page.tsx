@@ -12,7 +12,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.4</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.5</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
@@ -66,7 +66,7 @@ app.get('/portal', (req, res) => {
       { name: 'ping', description: 'returns pong',
         params: { msg: { type: 'string' } } },
     ],
-    call_endpoint: 'https://my-service.com/portal/call',
+    call_endpoint: '/portal/call',
     auth: 'none',
     pricing: { model: 'free' },
   });
@@ -89,6 +89,22 @@ app.post('/portal/call', async (req, res) => {
           This shape works identically in Hono, Express, Fastify, Bun.serve, Cloudflare Workers,
           Next.js App Router, and FastAPI. The wire contract is the same.
         </p>
+        <p>
+          Copyable framework guides:{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-nextjs-app-router.md">
+            Next.js App Router
+          </a>
+          ,{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-hono.md">Hono</a>,{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-fastapi.md">
+            FastAPI
+          </a>
+          , and{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-express.md">
+            Express
+          </a>
+          .
+        </p>
 
         <h2 id="manifest">The manifest</h2>
         <p>
@@ -108,17 +124,19 @@ app.post('/portal/call', async (req, res) => {
       "params": { "msg": { "type": "string" } }
     }
   ],
-  "call_endpoint": "https://my-service.com/portal/call",
+  "call_endpoint": "/portal/call",
   "auth": "none",
   "pricing": { "model": "free" }
 }`}</code>
         </pre>
         <p>
           Tool params accept the sugar form <code>{"{ type, required?, description? }"}</code> for
-          the 95% case, or a full JSON Schema via <code>paramsSchema</code> for the rest. The two
-          forms are mutually exclusive per-tool. <code>call_endpoint</code> must be{" "}
-          <code>https://</code> with a loopback escape hatch for <code>http://localhost</code> and{" "}
-          <code>http://127.0.0.1</code> during development.
+          the 95% case, or a full JSON Schema 2020-12 object via <code>paramsSchema</code> for the
+          rest. If both are present, <code>paramsSchema</code> wins. <code>call_endpoint</code> can
+          be a root-relative path such as <code>/portal/call</code>, or an absolute{" "}
+          <code>https://</code> URL when the call route is hosted elsewhere. Local development keeps
+          the loopback escape hatch for <code>http://localhost</code> and{" "}
+          <code>http://127.0.0.1</code>.
         </p>
 
         <h2 id="envelope">The envelope</h2>
@@ -165,7 +183,7 @@ app.post('/portal/call', async (req, res) => {
           endpoints MUST handle <code>OPTIONS</code> preflight and MUST set{" "}
           <code>Access-Control-Allow-Origin</code>. Credentialed requests have per-auth-mode
           semantics. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.4.md#appendix-c--cors">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.5.md#appendix-c--cors">
             spec Appendix C
           </a>{" "}
           for the full table.
@@ -176,7 +194,7 @@ app.post('/portal/call', async (req, res) => {
           Portal SHOULDs a per-auth-mode default for rate limits. Visitor SDKs MUST treat{" "}
           <code>RATE_LIMITED</code> as recoverable and SHOULD honor <code>Retry-After</code>.
           Providers without a rate-limit strategy of their own can adopt the defaults verbatim. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.4.md#appendix-d--rate-limits">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.5.md#appendix-d--rate-limits">
             spec Appendix D
           </a>
           .

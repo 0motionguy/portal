@@ -1,6 +1,15 @@
 # Portal Roadmap
 
-## Shipped in v0.1.4 (current)
+## Shipped in v0.1.5 (current)
+
+Small adopter-ergonomics release. Spec bumped v0.1.4 → v0.1.5 with additive manifest relaxations; no endpoint or envelope changes.
+
+- **Relative `call_endpoint`** — manifests can declare `"call_endpoint": "/portal/call"` and visitor SDKs resolve against the manifest URL.
+- **`paramsSchema` precedence** — JSON Schema 2020-12 accepted alongside the sugar `params` form, with `paramsSchema` taking precedence when both are present.
+- **Framework quickstarts** — Next.js App Router, Hono, FastAPI, Express.
+- **PowerShell demo script** — native Windows twin for `scripts/demo.sh`.
+
+## Shipped in v0.1.4
 
 HTTP-native positioning reframe. Spec bumped v0.1.1 → v0.1.4 (editorial; Appendix E draft + PE-002 reference added). No wire protocol change.
 
@@ -44,13 +53,6 @@ Second-wave hardening pass, all Sev-level fixes. No normative spec change (spec 
 - Web `/docs` rewritten to lead with `runSmokeConformance` (adopter-debrief fix)
 - README: First Adopter Debrief section (social proof)
 - Windows shell requirement documented for `scripts/demo.sh` (audit low-sev)
-
-## Planned for v0.1.5 (next week)
-
-- **Relative `call_endpoint`** — let manifests declare `"call_endpoint": "/portal/call"` and have visitor SDKs resolve against the manifest URL (removes a class of copy-paste bugs)
-- **`paramsSchema`** (JSON Schema 2020-12) accepted alongside the sugar `params` form, with `paramsSchema` taking precedence when both are present
-- **Framework quickstarts** — Next.js App Router, Hono, FastAPI, Express
-- **PowerShell twin for `scripts/demo.sh`** — native Windows demo path without WSL2 / Git Bash dependency
 
 ## Planned for v0.2
 

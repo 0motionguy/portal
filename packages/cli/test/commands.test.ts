@@ -19,6 +19,16 @@ const manifest = (callEndpoint: string) => ({
       description: "returns the params back",
       params: { msg: { type: "string", required: true } },
     },
+    {
+      name: "search",
+      description: "uses full JSON Schema params",
+      params: { query: { type: "string", required: true } },
+      paramsSchema: {
+        type: "object",
+        required: ["query"],
+        properties: { query: { type: "string", minLength: 1 } },
+      },
+    },
   ],
   call_endpoint: callEndpoint,
   auth: "none" as const,
@@ -78,6 +88,7 @@ describe("info", () => {
     expect(r.output).toContain("Portal · Test");
     expect(r.output).toContain("echo");
     expect(r.output).toContain("msg");
+    expect(r.output).toContain("search (JSON Schema)");
   });
 
   test("json mode emits valid parseable JSON", async () => {

@@ -33,8 +33,7 @@ fail()    { printf "  \033[31mFAIL\033[0m %s\n" "$1"; exit 1; }
 START_TS=$(date +%s)
 
 section "1. Start trending-demo on port $PORT"
-PORT="$PORT" PORTAL_PUBLIC_URL="$BASE" \
-  pnpm --filter trending-demo start > /tmp/trending-demo.log 2>&1 &
+PORT="$PORT" pnpm --filter trending-demo start > /tmp/trending-demo.log 2>&1 &
 SERVER_PID=$!
 ok "pid=$SERVER_PID log=/tmp/trending-demo.log"
 

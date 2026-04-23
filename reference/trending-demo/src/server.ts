@@ -24,13 +24,8 @@ interface ManifestFile {
 
 const staticManifest = JSON.parse(readFileSync(manifestPath, "utf8")) as ManifestFile;
 
-function publicUrl(): string {
-  const raw = process.env.PORTAL_PUBLIC_URL ?? "http://localhost:3000";
-  return raw.replace(/\/+$/, "");
-}
-
 function buildManifest(): ManifestFile {
-  return { ...staticManifest, call_endpoint: `${publicUrl()}/portal/call` };
+  return staticManifest;
 }
 
 type ErrorCode = "NOT_FOUND" | "INVALID_PARAMS" | "UNAUTHORIZED" | "RATE_LIMITED" | "INTERNAL";
@@ -50,7 +45,7 @@ function errorEnvelope(message: string, code: ErrorCode) {
 export function createApp(): Hono {
   const app = new Hono();
 
-  // CORS per spec v0.1.4 Appendix C (normative for browser-resident visitors).
+  // CORS per spec v0.1.5 Appendix C (normative for browser-resident visitors).
   app.use("/portal", cors({ origin: "*", allowMethods: ["GET", "OPTIONS"], maxAge: 86400 }));
   app.use(
     "/.well-known/portal.json",
@@ -85,7 +80,7 @@ export function createApp(): Hono {
     return c.json(manifest);
   });
 
-  // Alternate discovery per spec v0.1.4 Appendix E (draft). Providers MAY
+  // Alternate discovery per spec v0.1.5 Appendix E (draft). Providers MAY
   // serve the manifest at /.well-known/portal.json in addition to /portal;
   // if both are served they MUST return byte-identical manifests. This
   // handler delegates to the same buildManifest() + validator path.

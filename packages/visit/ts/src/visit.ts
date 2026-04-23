@@ -46,6 +46,7 @@ export async function visit(url: string, opts: VisitOptions = {}): Promise<Porta
   const t0 = Date.now();
 
   let bodyText: string;
+  let manifestUrl = url;
   try {
     const res = await fetchWithRetry(
       fetchImpl,
@@ -55,6 +56,7 @@ export async function visit(url: string, opts: VisitOptions = {}): Promise<Porta
       retries,
     );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    manifestUrl = res.url || url;
     bodyText = await readCapped(res, maxBytes);
   } catch (e) {
     if (e instanceof PortalError) throw e;
@@ -69,17 +71,21 @@ export async function visit(url: string, opts: VisitOptions = {}): Promise<Porta
   }
 
   assertValidManifest(url, parsed);
+  const manifest = {
+    ...parsed,
+    call_endpoint: resolveCallEndpoint(parsed.call_endpoint, manifestUrl),
+  };
 
-  // https on the advertised call_endpoint
+  // https on the advertised or resolved call_endpoint
   try {
-    assertHttps(parsed.call_endpoint, allowInsecure);
+    assertHttps(manifest.call_endpoint, allowInsecure);
   } catch (e) {
     throw new ManifestInvalid(url, [describe(e)]);
   }
 
   // Cross-origin call_endpoint: warn by default, throw under strictSameOrigin
-  const manifestOrigin = new URL(url).origin;
-  const callOrigin = new URL(parsed.call_endpoint).origin;
+  const manifestOrigin = new URL(manifestUrl).origin;
+  const callOrigin = new URL(manifest.call_endpoint).origin;
   if (manifestOrigin !== callOrigin) {
     const msg = `call_endpoint origin (${callOrigin}) differs from manifest origin (${manifestOrigin})`;
     if (opts.strictSameOrigin) throw new ManifestInvalid(url, [msg]);
@@ -93,7 +99,7 @@ export async function visit(url: string, opts: VisitOptions = {}): Promise<Porta
     bytes: byteLen(bodyText),
   });
 
-  return makePortal(url, parsed, fetchImpl, {
+  return makePortal(url, manifest, fetchImpl, {
     timeoutMs,
     maxBytes,
     retries,
@@ -228,6 +234,17 @@ function assertHttps(url: string, allowInsecure: boolean): void {
     );
   }
   throw new Error(`unsupported protocol: ${u.protocol}`);
+}
+
+function resolveCallEndpoint(callEndpoint: string, manifestUrl: string): string {
+  try {
+    if (callEndpoint.startsWith("/") && !callEndpoint.startsWith("//")) {
+      return new URL(callEndpoint, manifestUrl).toString();
+    }
+    return new URL(callEndpoint).toString();
+  } catch {
+    throw new ManifestInvalid(manifestUrl, [`invalid call_endpoint: ${callEndpoint}`]);
+  }
 }
 
 function isLoopback(host: string): boolean {

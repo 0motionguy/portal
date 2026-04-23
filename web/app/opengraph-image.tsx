@@ -23,7 +23,7 @@ export default function OpengraphImage() {
           visitportal.dev
         </div>
         <div style={{ fontSize: "20px", color: "#8A7F6E", fontFamily: "Geist Mono, monospace" }}>
-          · v0.1.4
+          · v0.1.5
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", gap: "16px" }}>
           <span>visitportal.dev</span>
           <span style={{ color: "#8A7F6E" }}>·</span>
-          <span>v0.1.4</span>
+          <span>v0.1.5</span>
           <span style={{ color: "#8A7F6E" }}>·</span>
           <span>HTTP-native agent contract</span>
         </div>

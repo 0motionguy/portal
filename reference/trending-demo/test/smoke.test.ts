@@ -18,13 +18,13 @@ async function call(
 }
 
 describe("trending-demo smoke", () => {
-  it("GET /portal returns a valid manifest with an absolute call_endpoint", async () => {
+  it("GET /portal returns a valid manifest with a root-relative call_endpoint", async () => {
     const res = await app.request("/portal");
     expect(res.status).toBe(200);
     const body = (await res.json()) as { call_endpoint: string };
     const check = validateManifest(body);
     expect(check.ok).toBe(true);
-    expect(body.call_endpoint).toMatch(/^https?:\/\/.+\/portal\/call$/);
+    expect(body.call_endpoint).toBe("/portal/call");
   });
 
   it("top_gainers returns N repos with HTTP 200", async () => {
@@ -89,11 +89,11 @@ describe("trending-demo smoke", () => {
     expect(bText).toBe(aText);
     // And the content is a valid manifest either way.
     const parsed = JSON.parse(bText) as { call_endpoint: string };
-    expect(parsed.call_endpoint).toMatch(/^https?:\/\/.+\/portal\/call$/);
+    expect(parsed.call_endpoint).toBe("/portal/call");
   });
 });
 
-describe("trending-demo CORS (spec v0.1.4 Appendix C)", () => {
+describe("trending-demo CORS (spec v0.1.5 Appendix C)", () => {
   it("OPTIONS /portal/call returns 204 with Allow-Origin:* and allowed methods include POST", async () => {
     const res = await app.request("/portal/call", {
       method: "OPTIONS",

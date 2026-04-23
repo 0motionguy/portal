@@ -40,7 +40,7 @@ export function Foot() {
     <footer className="foot">
       <div className="left">
         <span>
-          <strong style={{ color: "var(--ink)" }}>portal</strong> · v0.1.4
+          <strong style={{ color: "var(--ink)" }}>portal</strong> · v0.1.5
         </span>
         <span>·</span>
         <span>built with Opus 4.7</span>

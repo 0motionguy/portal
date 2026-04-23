@@ -2,6 +2,15 @@
 
 All notable changes to Portal are recorded here. The specification is versioned independently in `docs/spec-v*.md`; npm packages track the spec version, except where noted.
 
+## [0.1.5] — 2026-04-23
+
+### Added
+
+- **Relative `call_endpoint` support.** Manifests may now declare root-relative endpoints such as `"/portal/call"`. Visitor SDKs and the conformance smoke runner resolve them against the manifest URL before POSTing, while unsafe network-path references such as `"//example.com/portal/call"` remain invalid.
+- **`paramsSchema` precedence.** Tool definitions may now include both `params` sugar and a JSON Schema 2020-12 `paramsSchema`; `paramsSchema` is authoritative when both are present.
+- **Framework quickstarts.** Added copyable provider guides for Next.js App Router, Hono, FastAPI, and Express.
+- **PowerShell demo script.** Added `scripts/demo.ps1`, a native Windows twin of `scripts/demo.sh`.
+
 ## [0.1.4] — 2026-04-21
 
 ### Changed

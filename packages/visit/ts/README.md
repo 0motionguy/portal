@@ -45,7 +45,8 @@ import {
 ### `visit(url, options?) → Promise<Portal>`
 
 Fetches `GET <url>`, validates the response against the Portal v0.1 manifest
-schema, and returns a `Portal` handle. Throws:
+schema, resolves root-relative `call_endpoint` values against the manifest URL,
+and returns a `Portal` handle. Throws:
 - `PortalNotFound` — network failure, non-2xx response, or timeout fetching the manifest.
 - `ManifestInvalid` — manifest didn't match the v0.1 schema.
 
@@ -103,7 +104,6 @@ parity assertion in the spec self-test.
 
 ## Spec
 
-This SDK conforms to [Portal v0.1.4](../../../docs/spec-v0.1.4.md). Every
+This SDK conforms to [Portal v0.1.5](../../../docs/spec-v0.1.5.md). Every
 `manifest_valid` vector from `@visitportal/spec/vectors` is accepted; every
-`manifest_invalid` vector is rejected as `ManifestInvalid`. Tracks monorepo
-release v0.1.4.
+`manifest_invalid` vector is rejected as `ManifestInvalid`.

@@ -33,15 +33,7 @@ flyctl deploy --config reference/trending-demo/fly.toml --dockerfile reference/t
 
 ### Fly.io — env vars
 
-Set once per app:
-
-```sh
-flyctl secrets set PORTAL_PUBLIC_URL=https://trending-demo.fly.dev --config reference/trending-demo/fly.toml
-# ...or the custom demo domain once DNS is live:
-flyctl secrets set PORTAL_PUBLIC_URL=https://demo.visitportal.dev --config reference/trending-demo/fly.toml
-```
-
-`PORT=3000` and `NODE_ENV=production` are baked into `fly.toml`.
+`PORT=3000` and `NODE_ENV=production` are baked into `fly.toml`. No public URL env var is required because the manifest uses a root-relative `call_endpoint`.
 
 ### Health check & manifest smoke test
 
@@ -61,7 +53,7 @@ flyctl certs add demo.visitportal.dev --config reference/trending-demo/fly.toml
 flyctl certs show demo.visitportal.dev --config reference/trending-demo/fly.toml
 ```
 
-Then update `portal.json`'s `call_endpoint` and redeploy so the manifest advertises the custom domain.
+No manifest change is needed when the custom domain goes live; `call_endpoint` is root-relative.
 
 ### Rebuilding the Docker image locally
 

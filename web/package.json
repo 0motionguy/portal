@@ -15,7 +15,7 @@
   "dependencies": {
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.34.3",
-    "@visitportal/spec": "^0.1.4",
+    "@visitportal/spec": "^0.1.5",
     "ipaddr.js": "^2.2.0",
     "next": "^15.1.4",
     "react": "^19.0.0",

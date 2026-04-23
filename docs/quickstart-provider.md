@@ -13,7 +13,7 @@ There is nothing published on npm yet (hackathon week). Build a Portal directly 
 
 ### 1. Write the manifest
 
-`portal.json` is served verbatim from `GET /portal`. Required fields: `portal_version`, `name`, `brief`, `tools`, `call_endpoint`. See [spec v0.1.4 §4](./spec-v0.1.4.md) for the full schema.
+`portal.json` is served verbatim from `GET /portal`. Required fields: `portal_version`, `name`, `brief`, `tools`, `call_endpoint`. See [spec v0.1.5 §4](./spec-v0.1.5.md) for the full schema.
 
 ```json
 {
@@ -29,21 +29,21 @@ There is nothing published on npm yet (hackathon week). Build a Portal directly 
       }
     }
   ],
-  "call_endpoint": "https://my-service.example/portal/call",
+  "call_endpoint": "/portal/call",
   "auth": "none",
   "pricing": { "model": "free" }
 }
 ```
 
-Rules: tool `name` matches `^[a-z][a-z0-9_]*$`. Use `params` (sugar) for 95% of cases; drop down to `paramsSchema` (JSON Schema draft-07) only when you need enums or nested shapes. Unknown top-level fields are rejected.
+Rules: tool `name` matches `^[a-z][a-z0-9_]*$`. Use `params` (sugar) for 95% of cases; drop down to `paramsSchema` (JSON Schema 2020-12) when you need enums or nested shapes. If both are present during migration, `paramsSchema` takes precedence. Unknown top-level fields are rejected.
 
 ### 2. Serve the two endpoints
 
 Pseudocode — drop this into Hono, Express, FastAPI, Go's `net/http`, anything:
 
 ```ts
-// GET /portal — return the manifest, swapping call_endpoint for the live URL.
-app.get("/portal", (c) => c.json({ ...manifest, call_endpoint: `${PUBLIC_URL}/portal/call` }));
+// GET /portal — return the manifest.
+app.get("/portal", (c) => c.json(manifest));
 
 // POST /portal/call — dispatch { tool, params } to your handlers.
 app.post("/portal/call", async (c) => {
@@ -59,7 +59,7 @@ app.post("/portal/call", async (c) => {
 });
 ```
 
-Application errors always return HTTP 200 with `{ ok: false, error, code }`. The `code` is one of `NOT_FOUND | INVALID_PARAMS | UNAUTHORIZED | RATE_LIMITED | INTERNAL` ([spec §6](./spec-v0.1.4.md#6-error-codes-normative)). Transport-level failures (4xx/5xx) are fine too — visitors surface them as `CallFailed`.
+Application errors always return HTTP 200 with `{ ok: false, error, code }`. The `code` is one of `NOT_FOUND | INVALID_PARAMS | UNAUTHORIZED | RATE_LIMITED | INTERNAL` ([spec §6](./spec-v0.1.5.md#6-error-codes-normative)). Transport-level failures (4xx/5xx) are fine too — visitors surface them as `CallFailed`.
 
 ### 3. Validate locally against the spec schema
 
@@ -95,14 +95,21 @@ pnpm --filter @visitportal/cli exec tsx src/cli.ts conformance http://localhost:
 
 See [`packages/cli/README.md`](../packages/cli/README.md) for the full CLI reference.
 
+## Framework quickstarts
+
+- [Next.js App Router](./quickstart-nextjs-app-router.md)
+- [Hono](./quickstart-hono.md)
+- [FastAPI](./quickstart-fastapi.md)
+- [Express](./quickstart-express.md)
+
 ## Deploying
 
 - **Fly.io** — the reference Portal ships on Fly with `reference/trending-demo/fly.toml` + `Dockerfile`. Run `flyctl launch --no-deploy --copy-config --config fly.toml` then `flyctl deploy`. Full walkthrough in [`reference/trending-demo/README.md`](../reference/trending-demo/README.md).
-- **Vercel** — Portal is just two HTTP handlers; any serverless runtime works. Expose `GET /portal` and `POST /portal/call` as two Edge functions and set `PORTAL_PUBLIC_URL` to the deployment URL so the manifest rewrites `call_endpoint` correctly.
+- **Vercel** — Portal is just two HTTP handlers; any serverless runtime works. Expose `GET /portal` and `POST /portal/call` as two Edge functions.
 - **Cloudflare Workers** — identical shape to Vercel. One Worker, two routes. Return the manifest as JSON, dispatch by `tool` field.
 
-Set `PORTAL_PUBLIC_URL` in production so the served manifest advertises the public `call_endpoint`, not `http://localhost`.
+Use a root-relative `call_endpoint` such as `"/portal/call"` when both routes live on the same origin. Use an absolute `https://` URL only when the call endpoint is hosted elsewhere.
 
 ## Extensions
 
-v0.1 is deliberately small. For verified-agent identity, per-call micropayments, stateful sessions, or registry discovery, see [`docs/spec-v0.1.4.md` §8](./spec-v0.1.4.md#8-optional-extensions-non-normative). Extensions (PE-001 ERC-8004, PE-002 x402, PE-003 AGP, PE-004 ClawPulse) layer on top of the base — a Portal that uses them MUST still be valid under v0.1.4.
+v0.1 is deliberately small. For verified-agent identity, per-call micropayments, stateful sessions, or registry discovery, see [`docs/spec-v0.1.5.md` §8](./spec-v0.1.5.md#8-optional-extensions-non-normative). Extensions (PE-001 ERC-8004, PE-002 x402, PE-003 AGP, PE-004 ClawPulse) layer on top of the base — a Portal that uses them MUST still be valid under v0.1.5.

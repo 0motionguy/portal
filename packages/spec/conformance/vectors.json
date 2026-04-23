@@ -1,6 +1,6 @@
 {
-  "$comment": "Portal v0.1.4 conformance vectors. Every provider MUST pass every vector; every visitor SDK MUST handle every response shape. Categories: manifest_valid, manifest_invalid, call_pair. See docs/spec-v0.1.4.md §9.",
-  "spec_version": "0.1.4",
+  "$comment": "Portal v0.1.5 conformance vectors. Every provider MUST pass every vector; every visitor SDK MUST handle every response shape. Categories: manifest_valid, manifest_invalid, call_pair. See docs/spec-v0.1.5.md §9.",
+  "spec_version": "0.1.5",
   "generated": "2026-04-19",
   "manifest_valid": [
     {
@@ -155,6 +155,45 @@
         "tools": [{ "name": "ping" }],
         "call_endpoint": "http://localhost:3075/portal/call"
       }
+    },
+    {
+      "id": "MV-12-relative-call-endpoint",
+      "note": "Root-relative call_endpoint resolves against the manifest URL.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Relative",
+        "brief": "Uses a root-relative call endpoint.",
+        "tools": [{ "name": "ping" }],
+        "call_endpoint": "/portal/call"
+      }
+    },
+    {
+      "id": "MV-13-params-schema-precedence",
+      "note": "paramsSchema may appear alongside params; paramsSchema takes precedence.",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "Precedence",
+        "brief": "Declares both parameter forms for migration compatibility.",
+        "tools": [
+          {
+            "name": "search",
+            "params": {
+              "query": { "type": "string", "required": true }
+            },
+            "paramsSchema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "required": ["query"],
+              "properties": {
+                "query": { "type": "string", "minLength": 1 },
+                "limit": { "type": "integer", "minimum": 1, "maximum": 50 }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "call_endpoint": "/portal/call"
+      }
     }
   ],
   "manifest_invalid": [
@@ -214,17 +253,16 @@
       }
     },
     {
-      "id": "MI-06-params-and-schema",
-      "violates": "tool cannot declare both 'params' and 'paramsSchema'",
+      "id": "MI-06-bad-params-schema",
+      "violates": "paramsSchema must be an object",
       "manifest": {
         "portal_version": "0.1",
-        "name": "Conflict",
-        "brief": "Both params forms.",
+        "name": "BadSchema",
+        "brief": "paramsSchema is not an object.",
         "tools": [
           {
             "name": "x",
-            "params": { "a": { "type": "string" } },
-            "paramsSchema": { "type": "object" }
+            "paramsSchema": "not an object"
           }
         ],
         "call_endpoint": "https://example.com/portal/call"
@@ -285,6 +323,28 @@
         "brief": "http:// is only permitted on loopback hosts.",
         "tools": [{ "name": "x" }],
         "call_endpoint": "http://example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-12-network-path-call-endpoint",
+      "violates": "call_endpoint may be root-relative but must not be a network-path reference",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "NetworkPath",
+        "brief": "Network-path references are cross-origin relative URLs.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "//example.com/portal/call"
+      }
+    },
+    {
+      "id": "MI-13-path-relative-call-endpoint",
+      "violates": "call_endpoint relative form must start with '/'",
+      "manifest": {
+        "portal_version": "0.1",
+        "name": "PathRelative",
+        "brief": "Path-relative references are ambiguous when the manifest path moves.",
+        "tools": [{ "name": "x" }],
+        "call_endpoint": "portal/call"
       }
     }
   ],

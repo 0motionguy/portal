@@ -43,10 +43,10 @@ function info(portal: Portal, flags: CliFlags): CommandResult {
   for (const t of m.tools) {
     const params = t.params ? Object.keys(t.params) : [];
     const paramSummary =
-      t.params !== undefined
-        ? `(${params.length ? params.join(", ") : "no params"})`
-        : t.paramsSchema
-          ? "(JSON Schema)"
+      t.paramsSchema !== undefined
+        ? "(JSON Schema)"
+        : t.params !== undefined
+          ? `(${params.length ? params.join(", ") : "no params"})`
           : "(free-form)";
     lines.push(`    · ${t.name} ${paramSummary}`);
     if (t.description) lines.push(`        ${t.description}`);

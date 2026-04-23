@@ -2,17 +2,27 @@
 
 Human-runnable reproduction of the [visitportal.dev](https://visitportal.dev) one-pager terminal flow. This script is what substitutes for a recorded video — a judge can paste it line-by-line and see the same output.
 
-For a single-command reproduction, use [`scripts/demo.sh`](../scripts/demo.sh) instead — it wraps these same commands with timing + cleanup.
+For a single-command reproduction, use [`scripts/demo.sh`](../scripts/demo.sh) on POSIX shells or [`scripts/demo.ps1`](../scripts/demo.ps1) on PowerShell. Both wrap these same commands with timing and cleanup.
 
 ## Setup
 
 - Terminal size: 80×24 is the reference; anything wider is fine.
 - Recording tool: [asciinema](https://asciinema.org) if you want to share a cast (`asciinema rec docs/asciinema/demo.cast`). Plain terminal is fine for live demos.
-- Requirements: Node 22+, pnpm 10+, curl. Git Bash on Windows works.
+- Requirements: Node 22+, pnpm 10+, curl. PowerShell users can run the native `scripts/demo.ps1`; Git Bash still works with `scripts/demo.sh`.
 
 ## The flow
 
 Two terminals. Terminal 1 runs the server. Terminal 2 runs the visits.
+
+Native one-command paths:
+
+```sh
+bash scripts/demo.sh
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
+```
 
 ### 1. Install once
 
@@ -24,7 +34,7 @@ pnpm install
 ### 2. Terminal 1 — start the reference Portal
 
 ```sh
-PORT=3075 PORTAL_PUBLIC_URL=http://localhost:3075 pnpm --filter trending-demo start
+PORT=3075 pnpm --filter trending-demo start
 ```
 
 Expected first line:
@@ -73,7 +83,7 @@ Expected output:
 
 ```
   ✓ manifest valid (tools: 3)
-  ✓ NOT_FOUND probe caught client-side (ToolNotInManifest)
+  ✓ NOT_FOUND probe round-tripped with correct envelope
 ```
 
 **Talking point:** the SDK validates both directions — the manifest against the v0.1 schema, and the error envelope against the normative code list.

@@ -1,11 +1,11 @@
-// Portal v0.1.4 conformance runner.
+// Portal v0.1.5 conformance runner.
 //
 // Three modes of use:
 //   1. `validateManifest(obj)` — pure function. Given a parsed manifest, returns
 //      `{ ok: true }` or `{ ok: false, errors }`. Used by visitor SDKs after
 //      fetching GET /portal.
 //   2. `validateAgainstVectors(manifest)` — offline full-suite check. Validates
-//      a candidate manifest AND runs the 30-vector canonical suite, returning
+//      a candidate manifest AND runs the canonical vector suite, returning
 //      both reports. Adopter-facing: proves the manifest passes and the
 //      validator itself is behaving as expected, without any network calls.
 //   3. `runSmokeConformance(baseUrl)` — integration smoke test. Fetches
@@ -17,7 +17,7 @@
 // No dependencies on any visitor SDK — this package is the authority and must
 // not pull in @visitportal/visit. `fetch` is the only IO primitive.
 //
-// Spec: docs/spec-v0.1.4.md · Schema: ../manifest.schema.json
+// Spec: docs/spec-v0.1.5.md · Schema: ../manifest.schema.json
 
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -247,7 +247,10 @@ export async function runSmokeConformance(
     };
   }
 
-  const callEndpoint = (manifest as { call_endpoint: string }).call_endpoint;
+  const callEndpoint = resolveCallEndpoint(
+    (manifest as { call_endpoint: string }).call_endpoint,
+    manifestUrl,
+  );
 
   // 2) NOT_FOUND round-trip. A call to a tool that cannot exist must produce
   //    { ok: false, code: "NOT_FOUND" }.
@@ -327,4 +330,11 @@ function isObject(x: unknown): x is Record<string, unknown> {
 
 function errMsg(e: unknown): string {
   return e instanceof Error ? e.message : String(e);
+}
+
+function resolveCallEndpoint(callEndpoint: string, manifestUrl: string): string {
+  if (callEndpoint.startsWith("/") && !callEndpoint.startsWith("//")) {
+    return new URL(callEndpoint, manifestUrl).toString();
+  }
+  return new URL(callEndpoint).toString();
 }

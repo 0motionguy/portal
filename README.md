@@ -9,11 +9,11 @@ Portal is the minimal HTTP contract for agent-accessible services. Two endpoints
 
 [![npm · @visitportal/spec](https://img.shields.io/npm/v/@visitportal/spec?color=DA7756&label=%40visitportal%2Fspec&labelColor=181818)](https://www.npmjs.com/package/@visitportal/spec)
 [![CI](https://img.shields.io/github/actions/workflow/status/0motionguy/portal/ci.yml?label=tests&color=181818&labelColor=181818)](https://github.com/0motionguy/portal/actions)
-[![spec v0.1.4](https://img.shields.io/badge/spec-v0.1.4-DA7756.svg?labelColor=181818)](docs/spec-v0.1.4.md)
+[![spec v0.1.5](https://img.shields.io/badge/spec-v0.1.5-DA7756.svg?labelColor=181818)](docs/spec-v0.1.5.md)
 [![license · Apache 2.0 / CC0](https://img.shields.io/badge/license-Apache--2.0%20%2F%20CC0-181818.svg)](LICENSE)
 [![Built with Opus 4.7](https://img.shields.io/badge/Built%20with-Opus%204.7-DA7756.svg?labelColor=181818)](https://cerebralvalley.ai/e/built-with-4-7-hackathon)
 
-[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.4](docs/spec-v0.1.4.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
+[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.5](docs/spec-v0.1.5.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
 
 </div>
 
@@ -69,7 +69,11 @@ pnpm install
 bash scripts/demo.sh          # ~6 s end-to-end: boots Portal, visits it, leaves
 ```
 
-> Requires **Node 22+**, **pnpm 10+**, and a Unix-like shell (`scripts/demo.sh` uses bash idioms — WSL2, Git Bash, macOS, or Linux). A PowerShell equivalent is queued for v0.1.5.
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
+```
+
+> Requires **Node 22+** and **pnpm 10+**. Use `demo.sh` from bash-compatible shells or `demo.ps1` from native PowerShell.
 
 ### Visit any Portal — plain HTTP, no SDK
 
@@ -132,7 +136,7 @@ Full adopter guide: [`docs/quickstart-provider.md`](docs/quickstart-provider.md)
 
 A Portal visit is five steps: **arrive, read, call, use, leave.** The manifest enters the LLM's context only for the duration of the visit; the session end is a clean drop. No per-connection state on the server, no residue on the client.
 
-Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page spec in [`docs/spec-v0.1.4.md`](docs/spec-v0.1.4.md).
+Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page spec in [`docs/spec-v0.1.5.md`](docs/spec-v0.1.5.md).
 
 ---
 
@@ -140,9 +144,9 @@ Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page 
 
 | Package | Version | Purpose |
 |---|---|---|
-| [`@visitportal/spec`](packages/spec) | `0.1.4` · published on npm | JSON Schema, 30 conformance vectors, ajv + zero-dep lean validator, smoke runner |
-| [`@visitportal/visit`](packages/visit/ts) | `0.1.4` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
-| [`@visitportal/cli`](packages/cli) | `0.1.4` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
+| [`@visitportal/spec`](packages/spec) | `0.1.5` · published on npm | JSON Schema, 36 conformance vectors, ajv + zero-dep lean validator, smoke runner |
+| [`@visitportal/visit`](packages/visit/ts) | `0.1.5` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
+| [`@visitportal/cli`](packages/cli) | `0.1.5` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
 | [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
 | [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
 | [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
@@ -186,13 +190,13 @@ Methodology: [`packages/bench/METHODOLOGY.md`](packages/bench/METHODOLOGY.md).
 
 ---
 
-## Spec — v0.1.4
+## Spec — v0.1.5
 
 Two endpoints (`GET /portal`, `POST /portal/call`). One manifest. A five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`). Dual params form — simple sugar plus an escape hatch for full JSON Schema. One printed page of core + appendices A–E (examples, versioning, CORS, rate-limit defaults, alternate discovery draft).
 
 Explicit non-goals for v0.1: task lifecycles, stateful sessions, server-initiated messages, streaming, multi-agent choreography. Those live in MCP / A2A, or arrive as Portal Extensions (PE-001 verified identity, PE-002 x402 micropayments, …).
 
-Full spec: [`docs/spec-v0.1.4.md`](docs/spec-v0.1.4.md).
+Full spec: [`docs/spec-v0.1.5.md`](docs/spec-v0.1.5.md).
 
 ---
 
@@ -200,7 +204,7 @@ Full spec: [`docs/spec-v0.1.4.md`](docs/spec-v0.1.4.md).
 
 ```sh
 pnpm -r build                 # strict tsc across every package
-pnpm -r test                  # spec 30 + bench 65 + visit 14 + cli 6 + ref 6 = 121 tests
+pnpm -r test                  # 172 checks: spec vectors + package tests
 pnpm --filter @visitportal/visit size     # enforce SDK bundle size (limit 15 kB gzipped)
 pnpm conformance <url>        # live-validate any v0.1 Portal
 ```
@@ -211,7 +215,14 @@ Verification standard: every claim on [visitportal.dev](https://visitportal.dev)
 
 ## Roadmap
 
-### v0.1.4 — shipped (current)
+### v0.1.5 — shipped (current)
+
+- [x] Relative `call_endpoint` resolution (kills a class of copy-paste bugs)
+- [x] `paramsSchema` (JSON Schema 2020-12) alongside sugar `params`
+- [x] Framework quickstarts: Next.js App Router, Hono, FastAPI, Express
+- [x] PowerShell `demo.ps1`
+
+### v0.1.4 — shipped
 
 HTTP-native reframe, `.well-known/portal.json` alternate discovery, PE-002 paid-tools draft.
 
@@ -232,13 +243,6 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 - [x] SSRF hardening on `/api/visit` (`ipaddr.js` + DNS resolution)
 - [x] First-adopter debrief published
 - [x] Windows shell requirement documented for `scripts/demo.sh`
-
-### v0.1.5 — next
-
-- [ ] Relative `call_endpoint` resolution (kills a class of copy-paste bugs)
-- [ ] `paramsSchema` (JSON Schema 2020-12) alongside sugar `params`
-- [ ] Framework quickstarts: Next.js App Router, Hono, FastAPI, Express
-- [ ] PowerShell `demo.ps1`
 
 ### v0.2
 

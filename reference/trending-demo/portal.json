@@ -27,7 +27,7 @@
       }
     }
   ],
-  "call_endpoint": "https://demo.visitportal.dev/portal/call",
+  "call_endpoint": "/portal/call",
   "auth": "none",
   "pricing": { "model": "free" }
 }

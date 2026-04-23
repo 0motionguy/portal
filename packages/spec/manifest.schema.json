@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://visitportal.dev/schema/manifest-v0.1.4.json",
-  "title": "Portal manifest (v0.1.4)",
+  "$id": "https://visitportal.dev/schema/manifest-v0.1.5.json",
+  "title": "Portal manifest (v0.1.5)",
   "description": "The JSON document returned from GET /portal. Describes the service, its tools, and optional auth/pricing metadata.",
   "type": "object",
   "required": ["portal_version", "name", "brief", "tools", "call_endpoint"],
@@ -32,9 +32,9 @@
     },
     "call_endpoint": {
       "type": "string",
-      "description": "Absolute HTTPS URL that accepts POST /portal/call-style requests. Plain http:// is allowed only for the loopback hosts 'localhost' and '127.0.0.1' (local development); in production the endpoint MUST be https://.",
-      "format": "uri",
-      "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?(/|$))"
+      "description": "Target that accepts POST /portal/call-style requests. May be a root-relative path like '/portal/call', resolved against the manifest URL, or an absolute HTTPS URL. Plain http:// is allowed only for the loopback hosts 'localhost' and '127.0.0.1' (local development); in production the endpoint MUST be https://.",
+      "format": "uri-reference",
+      "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?(/|$)|/(?!/))"
     },
     "auth": {
       "type": "string",
@@ -84,16 +84,13 @@
         },
         "params": {
           "type": "object",
-          "description": "Sugar form. Each entry is { type, required?, description? }. Compiles internally to JSON Schema.",
+          "description": "Sugar form. Each entry is { type, required?, description? }. If paramsSchema is also present, paramsSchema takes precedence.",
           "additionalProperties": { "$ref": "#/definitions/paramEntry" }
         },
         "paramsSchema": {
           "type": "object",
-          "description": "Escape hatch: a JSON Schema draft-07 object. Use when 'params' sugar isn't expressive enough. Mutually exclusive with 'params'."
+          "description": "Escape hatch: a JSON Schema 2020-12 object. Use when 'params' sugar isn't expressive enough. Takes precedence when both params and paramsSchema are present."
         }
-      },
-      "not": {
-        "required": ["params", "paramsSchema"]
       }
     },
     "paramEntry": {
