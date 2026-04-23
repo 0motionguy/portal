@@ -108,7 +108,7 @@ const JSON_LD = {
       description:
         "Portal specification artifacts — JSON Schema, conformance vectors, and a zero-dependency lean validator for any LLM visitor SDK.",
       url: "https://www.npmjs.com/package/@visitportal/spec",
-      softwareVersion: "0.1.5",
+      softwareVersion: "0.1.6",
       license: "https://www.apache.org/licenses/LICENSE-2.0",
       author: {
         "@type": "Person",
@@ -120,7 +120,7 @@ const JSON_LD = {
     {
       "@type": "TechArticle",
       "@id": `${SITE_URL}/docs/#article`,
-      headline: "Portal v0.1.5 — adopter quickstart",
+      headline: "Portal v0.1.6 — provider and MCP adapter packages",
       description:
         "Two endpoints, one manifest. 30-second conformance check via runSmokeConformance. Ship a Portal in 10 minutes.",
       url: `${SITE_URL}/docs`,

@@ -126,7 +126,7 @@ const report = await runSmokeConformance("https://your-service.com/portal");
 // { target, manifestOk, manifestErrors, notFoundOk, notFoundDetail }
 ```
 
-Full adopter guide: [`docs/quickstart-provider.md`](docs/quickstart-provider.md).
+Full adopter guide: [`docs/quickstart-provider.md`](docs/quickstart-provider.md). MCP bridge guide: [`docs/quickstart-mcp-adapter.md`](docs/quickstart-mcp-adapter.md).
 
 ---
 
@@ -142,7 +142,7 @@ Full technical flow in [`docs/architecture.md`](docs/architecture.md). One-page 
 
 ## What's in this repo
 
-Workspace note: [`@visitportal/provider`](packages/provider/ts) and [`@visitportal/mcp-adapter`](packages/mcp-adapter) now exist as in-repo helpers. Providers can expose a validated Portal surface directly, and MCP stdio servers can be wrapped into that same surface without rewriting tool manifests by hand.
+Package note: [`@visitportal/provider`](packages/provider/ts) and [`@visitportal/mcp-adapter`](packages/mcp-adapter) are npm-published helpers. Providers can expose a validated Portal surface directly, and MCP stdio servers can be wrapped into that same surface without rewriting tool manifests by hand.
 
 | Package | Version | Purpose |
 |---|---|---|
@@ -150,8 +150,8 @@ Workspace note: [`@visitportal/provider`](packages/provider/ts) and [`@visitport
 | [`@visitportal/visit`](packages/visit/ts) | `0.1.5` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
 | [`@visitportal/cli`](packages/cli) | `0.1.5` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
 | [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
-| [`@visitportal/provider`](packages/provider/ts) | workspace | TypeScript provider helper - `manifest()` + `serve()` |
-| [`@visitportal/mcp-adapter`](packages/mcp-adapter) | workspace | Wrap MCP stdio servers as Portals, with a local HTTP bridge |
+| [`@visitportal/provider`](packages/provider/ts) | `0.1.6` · published on npm | TypeScript provider helper - `manifest()` + `serve()` |
+| [`@visitportal/mcp-adapter`](packages/mcp-adapter) | `0.1.6` · published on npm | Wrap MCP stdio servers as Portals, with a local HTTP bridge |
 | [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
 | [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
 | [`web/`](web) | — | [visitportal.dev](https://visitportal.dev) landing + docs |
@@ -249,7 +249,7 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 
 ### v0.2
 
-Workspace note: `@visitportal/provider` and `@visitportal/mcp-adapter` have landed on `main` as workspace packages. The remaining items below are still pending for the broader v0.2 release.
+Package note: `@visitportal/provider` and `@visitportal/mcp-adapter` are published as `0.1.6` packages. The remaining items below are still pending for the broader v0.2 release.
 
 - [ ] PE-002 paid tools — implementation (draft in `docs/pe-002-paid-tools-draft.md`)
 - [x] `@visitportal/provider` — one-line provider helper

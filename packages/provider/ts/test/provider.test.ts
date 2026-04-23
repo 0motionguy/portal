@@ -105,7 +105,14 @@ describe("@visitportal/provider serve()", () => {
       name: "Test Provider",
       brief: "A provider used in tests.",
       call_endpoint: "/portal/call",
-      tools: [{ name: "ping", async handler() { return { pong: true }; } }],
+      tools: [
+        {
+          name: "ping",
+          async handler() {
+            return { pong: true };
+          },
+        },
+      ],
     });
 
     await expect(portal.dispatch([])).resolves.toMatchObject({
@@ -187,7 +194,14 @@ describe("@visitportal/provider fetch()", () => {
       name: "Fetch Provider",
       brief: "Fetch-native helper.",
       call_endpoint: "/portal/call",
-      tools: [{ name: "ping", async handler() { return { pong: true }; } }],
+      tools: [
+        {
+          name: "ping",
+          async handler() {
+            return { pong: true };
+          },
+        },
+      ],
     });
 
     const [a, b] = await Promise.all([
@@ -205,7 +219,14 @@ describe("@visitportal/provider fetch()", () => {
       name: "Fetch Provider",
       brief: "Fetch-native helper.",
       call_endpoint: "/portal/call",
-      tools: [{ name: "ping", async handler() { return { pong: true }; } }],
+      tools: [
+        {
+          name: "ping",
+          async handler() {
+            return { pong: true };
+          },
+        },
+      ],
     });
 
     const res = await portal.fetch(
@@ -229,7 +250,14 @@ describe("@visitportal/provider fetch()", () => {
       brief: "Echoes origin.",
       call_endpoint: "/portal/call",
       auth: "api_key",
-      tools: [{ name: "ping", async handler() { return { pong: true }; } }],
+      tools: [
+        {
+          name: "ping",
+          async handler() {
+            return { pong: true };
+          },
+        },
+      ],
     });
 
     const res = await portal.fetch(
@@ -286,7 +314,14 @@ describe("@visitportal/provider fetch()", () => {
       name: "Fetch Provider",
       brief: "Fetch-native helper.",
       call_endpoint: "/portal/call",
-      tools: [{ name: "ping", async handler() { return { pong: true }; } }],
+      tools: [
+        {
+          name: "ping",
+          async handler() {
+            return { pong: true };
+          },
+        },
+      ],
     });
 
     const res = await portal.fetch(

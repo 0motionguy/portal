@@ -12,6 +12,7 @@ Derived from the monorepo's git log and the Phase plan in
 | 2 | `reference/trending-demo` — Hono server, 3 tools, 30-repo snapshot, 12-maintainer roster, Fly-ready | done | `d1c40ba` | `reference/trending-demo/src/server.ts`, `reference/trending-demo/portal.json` |
 | 3 | `@visitportal/visit` — TS visitor SDK, 14 vitest cases, ~2.25 kB gzipped | done | `272cd53` | `packages/visit/ts/src/index.ts`, `packages/visit/ts/test/visit.test.ts` |
 | 5 | `@visitportal/bench` — 48-cell `count_tokens` matrix, measured 81× less overhead than MCP at 100 tools | done | `f6c8b32` | `packages/bench/src/run.ts`, `packages/bench/results/tokens-matrix-v1.md` |
+| v0.1.6 | `@visitportal/provider` and `@visitportal/mcp-adapter` published to npm | done | this release | `packages/provider/ts`, `packages/mcp-adapter` |
 
 ## Phase 6 — in progress
 
@@ -27,8 +28,6 @@ Derived from the monorepo's git log and the Phase plan in
 | Scope | Why it's stretch |
 |---|---|
 | `visitportal` Python SDK | TS surface was first; Python mirrors v0.2 once the TS API is proven. |
-| `@visitportal/mcp-adapter` | Needs stdio introspection + schema translation; first to cut if Phase 4 slipped. |
-| `@visitportal/provider` helpers (`serve()`, `manifest()`) | Reference already works in plain Hono; helpers are ergonomic, not load-bearing. |
 | Cold-start latency + concurrent-visits benches | Token-cost matrix is the headline number; extra scenarios ride on the same harness when added. |
 | Public directory / discovery service | Single-URL visits work fine today; discovery is a follow-on product. |
 

@@ -9,6 +9,12 @@ Optional helper library for Portal providers. Nothing here you cannot do with ra
 - Dispatches `{ tool, params }` requests into your handlers
 - Exposes a fetch-native `portal.fetch(request)` helper for Edge / Workers / route handlers
 
+## Install
+
+```sh
+npm i @visitportal/provider
+```
+
 ## Example
 
 ```ts

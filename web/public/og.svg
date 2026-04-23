@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="banner-title banner-desc" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
   <title id="banner-title">Portal — if your service has a URL, an agent can visit it</title>
-  <desc id="banner-desc">Cream background with coral accent. Two-line hero in serif/italic with the v0.1.5 tagline and a mono caption.</desc>
+  <desc id="banner-desc">Cream background with coral accent. Two-line hero in serif/italic with the v0.1.6 tagline and a mono caption.</desc>
 
   <defs>
     <radialGradient id="glow" cx="18%" cy="12%" r="58%">
@@ -26,7 +26,7 @@
   <g transform="translate(80 68)">
     <rect x="0" y="-18" width="8" height="8" fill="#DA7756"/>
     <text x="20" y="-10" font-size="13" letter-spacing="2.4" fill="#2A2724" font-weight="500">
-      VISITPORTAL.DEV · v0.1.5 · APACHE-2.0
+      VISITPORTAL.DEV · v0.1.6 · APACHE-2.0
     </text>
   </g>
 
@@ -46,7 +46,7 @@
 
   <!-- bottom caption -->
   <g transform="translate(80 388)" font-family="'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="13" fill="#2A2724">
-    <text>visitportal.dev &#x00B7; v0.1.5 &#x00B7; HTTP-native agent contract</text>
+    <text>visitportal.dev &#x00B7; v0.1.6 &#x00B7; HTTP-native agent contract</text>
     <text x="1040" text-anchor="end" fill="#6B6359">github.com/0motionguy/portal</text>
   </g>
 </svg>

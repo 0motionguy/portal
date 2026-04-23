@@ -1,24 +1,32 @@
 {
   "name": "@visitportal/mcp-adapter",
   "license": "Apache-2.0",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.6",
+  "private": false,
   "description": "Wrap an MCP stdio server as a Portal. Minimal client, manifest translation, and local HTTP bridge.",
   "type": "module",
   "bin": {
-    "visitportal-mcp-adapter": "./src/cli.ts"
+    "visitportal-mcp-adapter": "./dist/cli.js"
   },
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "files": ["src", "README.md"],
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "test": "vitest run"
   },
   "dependencies": {
-    "@visitportal/provider": "workspace:*",
+    "@visitportal/provider": "workspace:^0.1.6",
     "tsx": "^4.20.6"
   },
   "devDependencies": {

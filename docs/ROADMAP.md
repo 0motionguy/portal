@@ -56,12 +56,12 @@ Second-wave hardening pass, all Sev-level fixes. No normative spec change (spec 
 
 ## Planned for v0.2
 
-`@visitportal/provider` and `@visitportal/mcp-adapter` have already landed on `main` as workspace packages. The list below reflects the remaining release work unless noted otherwise.
+`@visitportal/provider` and `@visitportal/mcp-adapter` have already shipped as npm package release `0.1.6`. The list below reflects the remaining release work unless noted otherwise.
 
 - **PE-002 paid tools** — implementation (draft exists in [`docs/pe-002-paid-tools-draft.md`](pe-002-paid-tools-draft.md))
-- **`@visitportal/provider`** — landed on `main`; one-line provider helper
+- **`@visitportal/provider`** — shipped in `0.1.6`; one-line provider helper
 - **`@visitportal/x402-adapter`** — make any x402 provider Portal-discoverable in 50 LOC
-- **`@visitportal/mcp-adapter`** — landed on `main`; wraps MCP stdio servers as Portals
+- **`@visitportal/mcp-adapter`** — shipped in `0.1.6`; wraps MCP stdio servers as Portals
 - **Python visitor SDK** (`@visitportal/visit-py`) reaching parity with the TypeScript SDK
 - **`@visitportal/cli` GA** — `validate` / `call` / `conformance` subcommands published to npm as a global binary
 - **Pagination / cursor envelope** for large responses (`{ ok: true, result, next_cursor }`)

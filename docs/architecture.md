@@ -16,8 +16,8 @@ surface. Everything else is a rule.
 +---------------------------------------------------------------+
 |  /packages/visit/ts               (TS visitor SDK, ~2.25 kB)  |
 |  /packages/visit/py               (Python visitor SDK — stub) |
-|  /packages/provider/ts            (optional provider helper)  |
-|  /packages/mcp-adapter            (wrap MCP as Portal — stub) |
+|  /packages/provider/ts            (published provider helper) |
+|  /packages/mcp-adapter            (wrap MCP as Portal)        |
 +---------------------------------------------------------------+
 |  /packages/spec                   (JSON Schema + vectors)     |
 +---------------------------------------------------------------+
@@ -52,11 +52,12 @@ intentionally and bump `portal_version` if the spec moves.
 - **`visitportal` (Python)** — stub; stretch for v0.2. Namespace
   reserved on PyPI.
 
-- **`@visitportal/provider`** — optional ergonomic helper for provider
-  authors. Not required — the reference uses plain Hono.
+- **`@visitportal/provider`** — published ergonomic helper for provider
+  authors. Not required; it validates manifests, dispatches calls, and exposes
+  a fetch-native handler.
 
-- **`@visitportal/mcp-adapter`** — stretch goal. Wraps an MCP server
-  behind a Portal endpoint so any MCP server is visitable cold.
+- **`@visitportal/mcp-adapter`** — published adapter that wraps an MCP stdio
+  server behind a Portal endpoint so MCP tools are visitable cold.
 
 - **`@visitportal/bench`** — the measurement layer. Drives Anthropic's
   `count_tokens` API across a 48-cell matrix (MCP vs Portal × tool

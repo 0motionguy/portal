@@ -9,9 +9,13 @@ You are building a Portal: one manifest at `GET /portal`, one dispatcher at `POS
 
 ## The 10-minute path
 
-If you are working inside this monorepo, there is now also an unpublished workspace helper at [`packages/provider/ts`](../packages/provider/ts/) (`@visitportal/provider`) that builds a validated manifest and dispatches calls for you. The reference implementation in [`reference/trending-demo/src/server.ts`](../reference/trending-demo/src/server.ts) now uses that helper; the raw HTTP shape below is still the baseline contract.
+For TypeScript providers, [`@visitportal/provider`](../packages/provider/ts/) is published on npm and builds a validated manifest plus a fetch-native dispatcher:
 
-There is nothing published on npm yet (hackathon week). Build a Portal directly against the raw HTTP shape — it is three fields of JSON and one POST handler. The reference implementation in [`reference/trending-demo/src/server.ts`](../reference/trending-demo/src/server.ts) is under 100 lines of Hono and is the canonical pattern.
+```sh
+npm i @visitportal/provider
+```
+
+The reference implementation in [`reference/trending-demo/src/server.ts`](../reference/trending-demo/src/server.ts) uses that helper. The raw HTTP shape below is still the baseline contract for every language and framework.
 
 ### 1. Write the manifest
 
@@ -65,7 +69,7 @@ Application errors always return HTTP 200 with `{ ok: false, error, code }`. The
 
 ### 3. Validate locally against the spec schema
 
-Optional workspace helper:
+Optional TypeScript helper:
 
 ```ts
 import { serve } from "@visitportal/provider";
@@ -132,6 +136,7 @@ See [`packages/cli/README.md`](../packages/cli/README.md) for the full CLI refer
 - [Hono](./quickstart-hono.md)
 - [FastAPI](./quickstart-fastapi.md)
 - [Express](./quickstart-express.md)
+- [MCP adapter](./quickstart-mcp-adapter.md)
 
 ## Deploying
 

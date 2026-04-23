@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Docs",
   description:
-    "Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.",
+    "Portal is the minimal HTTP contract for agent-accessible services, with npm helpers for providers and MCP servers.",
 };
 
 export default function DocsPage() {
@@ -12,7 +12,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.5</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.6 packages</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
@@ -102,6 +102,45 @@ app.post('/portal/call', async (req, res) => {
           , and{" "}
           <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-express.md">
             Express
+          </a>
+          .
+        </p>
+
+        <h2 id="provider-helper">Provider helper</h2>
+        <p>
+          TypeScript providers can use <code>@visitportal/provider</code> to build a validated
+          manifest and expose both endpoints through one fetch-native handler.
+        </p>
+        <pre>
+          <code>{`npm i @visitportal/provider
+
+import { serve } from '@visitportal/provider';
+
+const portal = serve({
+  name: 'My Service',
+  brief: 'One sentence describing what visiting agents can do here.',
+  call_endpoint: '/portal/call',
+  tools: [
+    {
+      name: 'ping',
+      description: 'returns pong',
+      async handler(params) {
+        return { pong: true, msg: params.msg ?? null };
+      },
+    },
+  ],
+});
+
+export default {
+  fetch(request: Request) {
+    return portal.fetch(request);
+  },
+};`}</code>
+        </pre>
+        <p>
+          Full package docs:{" "}
+          <a href="https://github.com/0motionguy/portal/tree/main/packages/provider/ts">
+            packages/provider/ts
           </a>
           .
         </p>
@@ -220,6 +259,31 @@ const result = await portal.call('top_gainers', { limit: 3 });`}</code>
           <code>ToolNotInManifest</code>, <code>CallFailed</code>. <code>CallFailed.code</code> is
           typed as the five-code enum above. Python and other-language SDKs follow; the wire
           contract is the constant.
+        </p>
+
+        <h2 id="mcp-adapter">MCP adapter</h2>
+        <p>
+          If you already have an MCP stdio server, <code>@visitportal/mcp-adapter</code> can expose
+          it as a Portal without rewriting the tool catalog by hand.
+        </p>
+        <pre>
+          <code>{`npx -p @visitportal/mcp-adapter visitportal-mcp-adapter \\
+  --mcp "npx some-mcp-server" \\
+  --port 8080
+
+curl http://127.0.0.1:8080/portal
+curl -X POST http://127.0.0.1:8080/portal/call \\
+  -H 'content-type: application/json' \\
+  -d '{"tool":"some_tool","params":{}}'`}</code>
+        </pre>
+        <p>
+          The adapter performs the MCP <code>initialize</code> handshake, reads{" "}
+          <code>tools/list</code>, builds a Portal manifest, and forwards calls into{" "}
+          <code>tools/call</code>. Full guide:{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-mcp-adapter.md">
+            docs/quickstart-mcp-adapter.md
+          </a>
+          .
         </p>
 
         <h2 id="conformance">Conformance</h2>

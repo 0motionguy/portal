@@ -106,7 +106,11 @@ export function internal(message: string): InternalError {
 
 export function normalizeThrownError(err: unknown): DispatchResult {
   if (err instanceof ProviderCallError) {
-    return toDispatchResult(err.status, { ok: false, error: err.message, code: err.code }, err.headers);
+    return toDispatchResult(
+      err.status,
+      { ok: false, error: err.message, code: err.code },
+      err.headers,
+    );
   }
 
   if (isErrorWithKnownCode(err)) {

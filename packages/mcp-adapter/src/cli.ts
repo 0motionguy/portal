@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --import tsx
+#!/usr/bin/env node
 import { createServer } from "node:http";
 import { URL } from "node:url";
 import { adaptMcpServer } from "./adapter.ts";

@@ -1,21 +1,29 @@
 {
   "name": "@visitportal/provider",
   "license": "Apache-2.0",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.6",
+  "private": false,
   "description": "Optional helper library for Portal providers. Build a validated manifest and serve it over raw fetch-compatible HTTP.",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "files": ["src", "README.md"],
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "test": "vitest run"
   },
   "dependencies": {
-    "@visitportal/spec": "workspace:*"
+    "@visitportal/spec": "workspace:^0.1.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -10,10 +10,16 @@ Wrap an MCP stdio server as a Portal. Library plus local HTTP bridge.
 - forwards `POST /portal/call` requests into MCP `tools/call`
 - serves the result through the same fetch-native provider surface as the rest of the repo
 
+## Install
+
+```sh
+npm i @visitportal/mcp-adapter
+```
+
 ## CLI
 
 ```sh
-visitportal-mcp-adapter --mcp "npx some-mcp-server" --port 8080
+npx -p @visitportal/mcp-adapter visitportal-mcp-adapter --mcp "npx some-mcp-server" --port 8080
 ```
 
 Then visit:

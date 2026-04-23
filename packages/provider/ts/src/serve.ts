@@ -1,5 +1,5 @@
 import { InvalidParamsError, ManifestBuildError, normalizeThrownError } from "./errors.ts";
-import { ensureManifest, manifest as buildManifest } from "./manifest.ts";
+import { manifest as buildManifest, ensureManifest } from "./manifest.ts";
 import type {
   DispatchResult,
   HandlerMap,
@@ -74,18 +74,24 @@ export function serve(options: ServeOptions): PortalProvider {
 
       if (pathname === manifestPath || (alternateDiscovery && pathname === ALT_DISCOVERY_PATH)) {
         if (request.method === "OPTIONS") {
-          return new Response(null, responseInit(204, cors ? manifestOptionsCorsHeaders() : undefined));
+          return new Response(
+            null,
+            responseInit(204, cors ? manifestOptionsCorsHeaders() : undefined),
+          );
         }
         if (request.method !== "GET") {
           return methodNotAllowed("GET, OPTIONS");
         }
-        return new Response(manifestText, {
-          status: 200,
-          headers: mergeHeaders(
-            { "content-type": "application/json; charset=utf-8" },
-            cors ? manifestCorsHeaders() : undefined,
-          )!,
-        });
+        return new Response(
+          manifestText,
+          responseInit(
+            200,
+            mergeHeaders(
+              { "content-type": "application/json; charset=utf-8" },
+              cors ? manifestCorsHeaders() : undefined,
+            ),
+          ),
+        );
       }
 
       if (pathname === callPath) {
@@ -160,7 +166,9 @@ function assertHandlerCoverage(
   handlers: ReadonlyMap<string, ToolHandler>,
 ): void {
   const names = new Set(manifest.tools.map((tool) => tool.name));
-  const missing = manifest.tools.filter((tool) => !handlers.has(tool.name)).map((tool) => tool.name);
+  const missing = manifest.tools
+    .filter((tool) => !handlers.has(tool.name))
+    .map((tool) => tool.name);
   const extra = [...handlers.keys()].filter((name) => !names.has(name));
 
   if (missing.length === 0 && extra.length === 0) return;
@@ -184,14 +192,13 @@ function methodNotAllowed(allow: string): Response {
   });
 }
 
-function jsonResponse(
-  body: unknown,
-  status: number,
-  headers?: Record<string, string>,
-): Response {
+function jsonResponse(body: unknown, status: number, headers?: Record<string, string>): Response {
   return new Response(
     JSON.stringify(body),
-    responseInit(status, mergeHeaders({ "content-type": "application/json; charset=utf-8" }, headers)),
+    responseInit(
+      status,
+      mergeHeaders({ "content-type": "application/json; charset=utf-8" }, headers),
+    ),
   );
 }
 
@@ -213,7 +220,9 @@ function manifestOptionsCorsHeaders(): Record<string, string> {
 function callCorsHeaders(request: Request, manifest: Manifest): Record<string, string> {
   const origin = request.headers.get("origin");
   const requiresEcho =
-    manifest.pricing?.model === "x402" || manifest.auth === "api_key" || manifest.auth === "erc8004";
+    manifest.pricing?.model === "x402" ||
+    manifest.auth === "api_key" ||
+    manifest.auth === "erc8004";
 
   if (!requiresEcho) {
     return { "Access-Control-Allow-Origin": "*" };

@@ -19,9 +19,7 @@ export function manifest(options: ManifestOptions): Manifest {
 export function ensureManifest(input: Manifest): Manifest {
   const duplicateNames = findDuplicateToolNames(input.tools);
   if (duplicateNames.length > 0) {
-    throw new ManifestBuildError(
-      duplicateNames.map((name) => `duplicate tool name: '${name}'`),
-    );
+    throw new ManifestBuildError(duplicateNames.map((name) => `duplicate tool name: '${name}'`));
   }
 
   const result = validateManifest(input);

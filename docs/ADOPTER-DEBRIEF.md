@@ -46,8 +46,8 @@ truth: [`packages/bench/results/tokens-matrix-v1.json`](../packages/bench/result
  /packages/bench             Anthropic count_tokens measurement matrix
  ──────────────────────────────────────────────────────────────────────────
  /packages/visit/ts          TS visitor SDK · visit(url) → Portal
- /packages/provider/ts       Optional provider helper (stub)
- /packages/mcp-adapter       Stretch, stub
+ /packages/provider/ts       Provider helper (shipped v0.1.6)
+ /packages/mcp-adapter       MCP adapter (shipped v0.1.6)
  ──────────────────────────────────────────────────────────────────────────
  /packages/spec              JSON Schema + 30 conformance vectors + runner
 ```
@@ -194,12 +194,14 @@ match the numbers in `tokens-matrix-v1.json` within 2%.
 
 Not regressions — documented skip decisions.
 
+Update, 2026-04-23: `@visitportal/provider` and `@visitportal/mcp-adapter` have since shipped as npm package release `0.1.6`. The bullets below preserve the original first-adopter debrief context.
+
 - **Python SDK** — `packages/visit/py/` is a stub with the namespace
   reserved on PyPI. TS surface was first; Python mirrors when the TS
   API is proven.
-- **MCP adapter** — `packages/mcp-adapter/` is a stub. Wrapping an MCP
-  server as a Portal requires stdio introspection + schema translation;
-  first-to-cut if Phase 4 slipped. Deferred to v0.2.
+- **MCP adapter** — resolved in package release v0.1.6. The original
+  debrief correctly identified stdio introspection + schema translation
+  as the next leverage point.
 - **Live deploy (as of this writing)** — Local-first. `bash scripts/demo.sh`
   is the primary. A Fly / Vercel hookup exists in `reference/trending-demo/fly.toml`
   and `web/vercel.json`; deploy is a one-flag swap when ready.
