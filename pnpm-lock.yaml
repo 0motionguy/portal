@@ -167,9 +167,6 @@ importers:
       '@upstash/redis':
         specifier: ^1.34.3
         version: 1.37.0
-      '@visitportal/provider':
-        specifier: workspace:^0.1.6
-        version: link:../packages/provider/ts
       '@visitportal/spec':
         specifier: ^0.1.5
         version: 0.1.5

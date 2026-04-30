@@ -5,6 +5,12 @@ import { validateManifest } from "@visitportal/spec/runner";
 import { describe, expect, it } from "vitest";
 import { OPTIONS, POST } from "./route";
 
+// Hardcoded source of truth — the static JSON manifest at
+// web/public/portal-static-example.json MUST declare exactly this set,
+// and the dispatcher in route.ts MUST implement exactly this set. The
+// "matches" test below asserts both halves agree.
+const EXPECTED_TOOLS = ["posts", "whoami"] as const;
+
 const here = dirname(fileURLToPath(import.meta.url));
 const staticManifestPath = resolve(
   here,
@@ -43,7 +49,7 @@ describe("static-fallback Portal — manifest parity", () => {
   it("static JSON manifest matches the dispatcher's tool set (one source of truth check)", () => {
     const parsed = JSON.parse(staticManifestText) as { tools: Array<{ name: string }> };
     const declaredTools = parsed.tools.map((t) => t.name).sort();
-    expect(declaredTools).toEqual(["posts", "whoami"]);
+    expect(declaredTools).toEqual([...EXPECTED_TOOLS].sort());
   });
 });
 

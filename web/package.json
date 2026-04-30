@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 3035",
-    "prebuild": "pnpm --filter @visitportal/spec build && pnpm --filter @visitportal/provider build",
+    "prebuild": "pnpm --filter @visitportal/spec build",
     "build": "next build",
     "start": "next start -p 3035",
     "preview": "cd public && npx --yes serve -l 5173",
@@ -16,7 +16,6 @@
   "dependencies": {
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.34.3",
-    "@visitportal/provider": "workspace:^0.1.6",
     "@visitportal/spec": "^0.1.5",
     "ipaddr.js": "^2.2.0",
     "next": "^15.1.4",
