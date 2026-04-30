@@ -9,7 +9,12 @@
     "build": "tsc --noEmit",
     "test": "vitest run",
     "bench": "tsx scripts/run.ts",
-    "bench:smoke": "tsx scripts/smoke.ts"
+    "bench:smoke": "tsx scripts/smoke.ts",
+    "agent-sim": "tsx scripts/agent-sim.ts"
+  },
+  "dependencies": {
+    "@visitportal/provider": "workspace:^0.1.6",
+    "@visitportal/visit": "workspace:^0.1.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
