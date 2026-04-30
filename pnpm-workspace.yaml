@@ -6,4 +6,5 @@ packages:
   - "packages/bench"
   - "packages/cli"
   - "reference/trending-demo"
+  - "reference/portal-cf-worker"
   - "web"

@@ -136,6 +136,7 @@ See [`packages/cli/README.md`](../packages/cli/README.md) for the full CLI refer
 - [Hono](./quickstart-hono.md)
 - [FastAPI](./quickstart-fastapi.md)
 - [Express](./quickstart-express.md)
+- [Cloudflare Workers](./quickstart-cloudflare-worker.md)
 - [MCP adapter](./quickstart-mcp-adapter.md)
 
 ## Deploying
