@@ -42,3 +42,5 @@ packages/bench/results/bench-*
 
 .vercel
 .claude/worktrees/
+.claude/settings.json
+.claude/settings.local.json
