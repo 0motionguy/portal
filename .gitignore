@@ -44,3 +44,4 @@ packages/bench/results/bench-*
 .claude/worktrees/
 .claude/settings.json
 .claude/settings.local.json
+.wrangler/
