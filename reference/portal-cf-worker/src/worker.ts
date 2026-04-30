@@ -1,83 +1,140 @@
-import { invalidParams, serve } from "@visitportal/provider";
-import { mockFacilitator, withPayment } from "@visitportal/x402-adapter";
+import { invalidParams, serve, type PortalProvider } from "@visitportal/provider";
+import {
+  coinbaseFacilitator,
+  type FacilitatorClient,
+  mockFacilitator,
+  selfHostedFacilitator,
+  withPayment,
+} from "@visitportal/x402-adapter";
 
-// Reference token + payee for the paid demo tool. Base-Sepolia USDC.
-// Adopters: replace USDC_BASE_SEPOLIA + DEMO_PAYEE with your own.
+// Cloudflare bindings the deployed Worker reads at request time.
+// All optional — missing values fall back to the default test/dev posture
+// (mockFacilitator, burn-address payee). Configure via wrangler.toml [vars]
+// or `wrangler secret put` for production.
+interface Env {
+  FACILITATOR_URL?: string;       // "https://x402.org/facilitator" or self-hosted
+  FACILITATOR_API_KEY?: string;   // optional, for self-hosted facilitators
+  PAYEE_ADDRESS?: string;         // "0x..." your receiving wallet
+  PAYMENT_ASSET?: string;         // ERC-20 contract; default Base-Sepolia USDC
+  PAYMENT_NETWORK?: string;       // default "base-sepolia"
+  PAYMENT_AMOUNT?: string;        // atomic units; default "10000" (0.01 USDC at 6dp)
+}
+
 const USDC_BASE_SEPOLIA = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
-const DEMO_PAYEE = "0x0000000000000000000000000000000000000000";
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-const portal = serve({
-  name: "Portal CF Worker (reference demo)",
-  brief:
-    "Two routes, one Worker. Three tools: whoami (free), reverse (free), premium_data (paid · PE-002 · x402-compatible). Demonstrates the minimum a Cloudflare Worker needs to be agent-visitable, including paid tools.",
-  call_endpoint: "/portal/call",
-  pricing: { model: "x402", rate: "0.01 USDC/call · base-sepolia" },
-  tools: [
-    {
-      name: "whoami",
-      description: "Return a fixed self-description.",
-      params: {},
-      handler: () => ({
-        runtime: "cloudflare-workers",
-        portal_version: "0.1",
-        message: "hello from a Worker",
-      }),
-    },
-    {
-      name: "reverse",
-      description: "Reverse the input string.",
-      params: {
-        text: { type: "string", required: true, description: "1-2000 chars" },
-      },
-      handler: (params) => {
-        const text = params.text;
-        if (typeof text !== "string" || text.length === 0 || text.length > 2000) {
-          throw invalidParams("'text' must be a 1-2000 char string");
-        }
-        return { reversed: [...text].reverse().join("") };
-      },
-    },
-    {
-      name: "premium_data",
-      description:
-        "Returns one premium fact. Paid tool — costs 0.01 USDC per call (PE-002 / x402). Test mode uses a mock facilitator that accepts any non-empty X-Payment header; swap coinbaseFacilitator() in for production.",
-      params: {},
-      handler: withPayment(
-        () => ({
-          paid: true,
-          fact: "Portal is the visitor-side half of the open agent web.",
-          ts: Date.now(),
+function pickFacilitator(env: Env): { client: FacilitatorClient; label: string } {
+  if (env.FACILITATOR_URL) {
+    // Default Coinbase facilitator URL is x402.org/facilitator. Treat any other
+    // URL as self-hosted (same wire shape; see @x402-rs/x402-rs for a self-hosted
+    // implementation).
+    if (env.FACILITATOR_URL.includes("x402.org")) {
+      return {
+        client: coinbaseFacilitator(env.FACILITATOR_URL, env.FACILITATOR_API_KEY),
+        label: `coinbase · ${env.FACILITATOR_URL}`,
+      };
+    }
+    return {
+      client: selfHostedFacilitator(env.FACILITATOR_URL, env.FACILITATOR_API_KEY),
+      label: `self-hosted · ${env.FACILITATOR_URL}`,
+    };
+  }
+  // No facilitator configured → test/dev mode. Accepts any X-Payment header
+  // so smoke tests + the wire-mode test-payer pass without a wallet.
+  return { client: mockFacilitator({ acceptAny: true }), label: "mock (test/dev only)" };
+}
+
+// Cache the provider keyed by the env-derived config string so cold starts
+// build it once and warm starts reuse it.
+let providerCache: { provider: PortalProvider; key: string } | null = null;
+
+function getPortal(env: Env): PortalProvider {
+  const network = env.PAYMENT_NETWORK ?? "base-sepolia";
+  const asset = env.PAYMENT_ASSET ?? USDC_BASE_SEPOLIA;
+  const amount = env.PAYMENT_AMOUNT ?? "10000";
+  const payTo = env.PAYEE_ADDRESS ?? BURN_ADDRESS;
+  const facUrl = env.FACILITATOR_URL ?? "";
+  const facKey = env.FACILITATOR_API_KEY ?? "";
+
+  const cacheKey = `${facUrl}|${facKey}|${payTo}|${network}|${asset}|${amount}`;
+  if (providerCache && providerCache.key === cacheKey) return providerCache.provider;
+
+  const { client: facilitator, label: facLabel } = pickFacilitator(env);
+
+  const provider = serve({
+    name: "Portal CF Worker (reference demo)",
+    brief: `Two routes, one Worker. Three tools: whoami (free), reverse (free), premium_data (paid · PE-002 · x402-compatible). Facilitator: ${facLabel}.`,
+    call_endpoint: "/portal/call",
+    pricing: { model: "x402", rate: `${amount} atomic-units of ${asset} per call · ${network}` },
+    tools: [
+      {
+        name: "whoami",
+        description: "Return a fixed self-description. Free.",
+        params: {},
+        handler: () => ({
+          runtime: "cloudflare-workers",
+          portal_version: "0.1",
+          message: "hello from a Worker",
+          facilitator_mode: facLabel.startsWith("mock") ? "test" : "production",
         }),
-        {
-          price: {
-            scheme: "exact",
-            network: "base-sepolia",
-            asset: USDC_BASE_SEPOLIA,
-            amount: "10000", // 0.01 USDC at 6 decimals
-            payTo: DEMO_PAYEE,
-            maxTimeoutSeconds: 60,
-            description: "premium_data fact",
-          },
-          // Demo mode — accepts any payload. Production: coinbaseFacilitator()
-          // or selfHostedFacilitator(url, apiKey).
-          facilitator: mockFacilitator({ acceptAny: true }),
-          resource: { id: "cf-worker-premium-data-v1" },
+      },
+      {
+        name: "reverse",
+        description: "Reverse the input string. Free.",
+        params: {
+          text: { type: "string", required: true, description: "1-2000 chars" },
         },
-      ),
-    },
-  ],
-});
+        handler: (params) => {
+          const text = params.text;
+          if (typeof text !== "string" || text.length === 0 || text.length > 2000) {
+            throw invalidParams("'text' must be a 1-2000 char string");
+          }
+          return { reversed: [...text].reverse().join("") };
+        },
+      },
+      {
+        name: "premium_data",
+        description:
+          "Returns one premium fact. Paid tool — costs the configured amount per call (PE-002 / x402). With the default mock facilitator any X-Payment payload is accepted (test/dev only); set FACILITATOR_URL + PAYEE_ADDRESS in wrangler.toml [vars] to switch to production signing.",
+        params: {},
+        handler: withPayment(
+          () => ({
+            paid: true,
+            fact: "Portal is the visitor-side half of the open agent web.",
+            ts: Date.now(),
+          }),
+          {
+            price: {
+              scheme: "exact",
+              network,
+              asset,
+              amount,
+              payTo,
+              maxTimeoutSeconds: 60,
+              description: "premium_data fact",
+            },
+            facilitator,
+            resource: { id: "cf-worker-premium-data-v1" },
+          },
+        ),
+      },
+    ],
+  });
+
+  providerCache = { provider, key: cacheKey };
+  return provider;
+}
 
 const PORTAL_ROUTES = new Set(["/portal", "/.well-known/portal.json", "/portal/call"]);
 
 export default {
-  fetch: async (request: Request): Promise<Response> => {
+  fetch: async (request: Request, env?: Env): Promise<Response> => {
     const { pathname } = new URL(request.url);
     if (pathname === "/" || pathname === "/healthz") {
       return Response.json({ ok: true, see: "/portal" });
     }
     if (PORTAL_ROUTES.has(pathname)) {
-      return portal.fetch(request);
+      return getPortal(env ?? {}).fetch(request);
     }
     return Response.json(
       { ok: false, error: `route '${pathname}' not found`, code: "NOT_FOUND" },

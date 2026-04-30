@@ -125,45 +125,118 @@ async function main(): Promise<number> {
   let xPayment: string;
 
   if (MODE === "real") {
-    // Real x402 signing. Requires viem + @coinbase/x402-fetch.
-    // Lazy-loaded so wire-mode runs without these deps installed.
+    // Real x402 v1 signing per the "exact" scheme. Signs an EIP-3009
+    // TransferWithAuthorization on the configured ERC-20 (default USDC on
+    // Base-Sepolia), base64-encodes the {signature, authorization} payload,
+    // and uses it as the X-Payment header. The Worker's coinbaseFacilitator
+    // verifies on-chain.
+    //
+    // Lazy-loaded so wire-mode runs without these deps installed:
+    //   pnpm add -D viem
     const walletKey = process.env.WALLET_KEY;
     if (!walletKey) {
-      console.error("✗ MODE=real requires WALLET_KEY in env");
+      console.error("✗ MODE=real requires WALLET_KEY in env (0x-prefixed 64-char hex)");
       return 1;
     }
+    if (!/^0x[0-9a-fA-F]{64}$/.test(walletKey)) {
+      console.error("✗ WALLET_KEY must be 0x + 64 hex chars (a viem private key)");
+      return 1;
+    }
+
+    let signedXPayment: string;
     try {
-      const viem = (await import("viem")) as typeof import("viem");
+      // @ts-expect-error optional dep; wire mode runs without it
       const accounts = (await import("viem/accounts")) as typeof import("viem/accounts");
-      const chains = (await import("viem/chains")) as typeof import("viem/chains");
+      // @ts-expect-error optional dep
+      const { randomBytes } = (await import("node:crypto")) as typeof import("node:crypto");
+
       const account = accounts.privateKeyToAccount(walletKey as `0x${string}`);
-      const wallet = viem.createWalletClient({
-        account,
-        chain: chains.baseSepolia,
-        transport: viem.http(),
-      });
       console.log(`  wallet: ${account.address}`);
 
-      // Coinbase x402-fetch wraps fetch with auto-retry-on-402, signing per
-      // the requirement returned in body.x402.accepts. We instead build the
-      // payload manually so the script stays small and dependency-light.
-      // The real signing path lives in @coinbase/x402-fetch's
-      // signPaymentHeader() — adopters who want a one-liner should use that
-      // package directly:
-      //
-      //   import { wrapFetchWithPayment } from "@coinbase/x402-fetch";
-      //   const fetchWithPayment = wrapFetchWithPayment(fetch, wallet);
-      //   const res = await fetchWithPayment(callUrl, { method: "POST", ... });
-      //
-      // For full provenance and adopter trust, prefer that path in production.
-      console.error(
-        "✗ MODE=real signer not implemented inline; install @coinbase/x402-fetch and replace this script's MODE=real branch with wrapFetchWithPayment(fetch, wallet). The wire-mode branch above proves the Portal side end-to-end.",
-      );
-      return 2;
+      // Build EIP-3009 TransferWithAuthorization. Domain MUST match the
+      // ERC-20's EIP-712 domain — for Base-Sepolia USDC that's
+      //   { name: "USDC", version: "2", chainId: 84532, verifyingContract: <USDC> }
+      // For other tokens/networks, read the contract's `eip712Domain()` view
+      // and hardcode here, or use viem's `getEip712Domain()`.
+      const network = String(accept.network);
+      const asset = String(accept.asset);
+      const value = String(accept.amount);
+      const payTo = String(accept.payTo);
+
+      const chainId = network === "base-sepolia" ? 84532 : network === "base" ? 8453 : null;
+      if (chainId === null) {
+        console.error(
+          `✗ MODE=real: chainId for network='${network}' not hardcoded. Add it to the script or use viem's getEip712Domain().`,
+        );
+        return 2;
+      }
+      const tokenName = network === "base" ? "USD Coin" : "USDC";
+
+      const validAfter = 0n;
+      const validBefore = BigInt(Math.floor(Date.now() / 1000) + 600); // 10 min
+      const nonce = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
+
+      const authorization = {
+        from: account.address,
+        to: payTo as `0x${string}`,
+        value: BigInt(value),
+        validAfter,
+        validBefore,
+        nonce,
+      };
+
+      const signature = await account.signTypedData({
+        domain: {
+          name: tokenName,
+          version: "2",
+          chainId,
+          verifyingContract: asset as `0x${string}`,
+        },
+        types: {
+          TransferWithAuthorization: [
+            { name: "from", type: "address" },
+            { name: "to", type: "address" },
+            { name: "value", type: "uint256" },
+            { name: "validAfter", type: "uint256" },
+            { name: "validBefore", type: "uint256" },
+            { name: "nonce", type: "bytes32" },
+          ],
+        },
+        primaryType: "TransferWithAuthorization",
+        message: authorization,
+      });
+
+      const x402Payload = {
+        x402Version: 1,
+        scheme: "exact",
+        network,
+        payload: {
+          signature,
+          authorization: {
+            from: authorization.from,
+            to: authorization.to,
+            value: value,
+            validAfter: validAfter.toString(),
+            validBefore: validBefore.toString(),
+            nonce,
+          },
+        },
+      };
+
+      signedXPayment = btoa(JSON.stringify(x402Payload));
+      console.log(`✓ EIP-3009 authorization signed`);
+      console.log(`  amount:       ${value} (atomic units)`);
+      console.log(`  validBefore:  ${new Date(Number(validBefore) * 1000).toISOString()}`);
+      console.log(`  signature:    ${signature.slice(0, 18)}…${signature.slice(-8)}`);
+      console.log(`  payload size: ${signedXPayment.length} chars (base64)`);
     } catch (err) {
-      console.error(`✗ MODE=real requires 'viem' (and ideally @coinbase/x402-fetch): ${(err as Error).message}`);
+      const msg = (err as Error).message;
+      console.error(`✗ MODE=real signing failed: ${msg}`);
+      console.error(`  Likely cause: 'viem' not installed. Run:`);
+      console.error(`    pnpm --filter portal-cf-worker add -D viem`);
       return 2;
     }
+    xPayment = signedXPayment;
   } else {
     // Wire mode: any base64 payload works against the default mockFacilitator
     // shipped in the reference Worker. This proves the wire flow + envelope
@@ -192,15 +265,22 @@ async function main(): Promise<number> {
   console.log(`✓ HTTP 200 · result: ${JSON.stringify(paidRes.body.result).slice(0, 200)}`);
 
   // ── Done ────────────────────────────────────────────────────────────────
-  header("PE-002 round-trip verified");
+  header(`PE-002 round-trip verified · MODE=${MODE}`);
   console.log("✓ manifest discovered");
   console.log("✓ unpaid call → HTTP 402 + x402 challenge");
-  console.log("✓ paid call → HTTP 200 + result");
-  console.log("\nNext steps for real on-chain proof:");
-  console.log("  1. Edit src/worker.ts — swap mockFacilitator() for coinbaseFacilitator()");
-  console.log("  2. wrangler deploy");
-  console.log("  3. Fund WALLET_KEY with 0.10 USDC on Base-Sepolia");
-  console.log("  4. WORKER_URL=https://... WALLET_KEY=0x... MODE=real npm run test:payer");
+  console.log(`✓ paid call → HTTP 200 + result${MODE === "real" ? " (real on-chain authorization signed)" : ""}`);
+  if (MODE === "wire") {
+    console.log("\nNext step for real on-chain proof:");
+    console.log("  1. Set wrangler.toml [vars] FACILITATOR_URL + PAYEE_ADDRESS");
+    console.log("  2. wrangler deploy");
+    console.log("  3. Fund WALLET_KEY with 0.10 USDC on Base-Sepolia (https://faucet.circle.com)");
+    console.log("  4. pnpm --filter portal-cf-worker add -D viem");
+    console.log("  5. WORKER_URL=https://... WALLET_KEY=0x... MODE=real pnpm --filter portal-cf-worker test:payer");
+  } else {
+    console.log("\nThe X-Payment header carried a real EIP-3009 USDC authorization.");
+    console.log("If the Worker is wired to coinbaseFacilitator(), the facilitator");
+    console.log("verified the signature on-chain before this 200 came back.");
+  }
   return 0;
 }
 
