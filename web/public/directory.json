@@ -20,10 +20,11 @@
       "source": "https://github.com/0motionguy/portal/tree/main/web/app/api/portal-static-example"
     },
     {
-      "name": "Portal CF Worker (reference)",
-      "brief": "Two routes, one Cloudflare Worker — ~30 lines of glue on top of @visitportal/provider's fetch handler.",
+      "name": "Portal CF Worker (reference, paid + free)",
+      "brief": "Two routes, one Cloudflare Worker — ~30 lines of glue on top of @visitportal/provider. Ships premium_data as a paid tool gated by @visitportal/x402-adapter (PE-002), alongside free whoami + reverse.",
       "url": "https://github.com/0motionguy/portal/tree/main/reference/portal-cf-worker",
-      "tools": ["whoami", "reverse"],
+      "tools": ["whoami", "reverse", "premium_data (paid · x402)"],
+      "pricing": "x402",
       "added": "2026-04-30",
       "source": "https://github.com/0motionguy/portal/tree/main/reference/portal-cf-worker"
     }

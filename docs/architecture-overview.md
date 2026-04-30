@@ -176,6 +176,10 @@ The manifest's `auth` field is **a declaration, not a protocol**. The base spec 
 
 For **protected actions**, declare the appropriate `auth` value and validate the credential in your handler: `throw provider.unauthorized("...")` to get the standard `{ ok: false, code: "UNAUTHORIZED" }` envelope.
 
+### 5.6 Paid tools (PE-002, stable since v0.1.8)
+
+For **per-call payments**, declare `pricing: { model: "x402", rate: "..." }` in the manifest and wrap the handler with [`@visitportal/x402-adapter`](../packages/x402-adapter)'s `withPayment(handler, { price, facilitator })`. Unpaid calls return HTTP 402 with `code: "PAYMENT_REQUIRED"` and the x402 challenge embedded in `body.x402.accepts[]`. Wire-compatible with [x402.org](https://x402.org) (Coinbase) and [MPP](https://mpp.dev) `charge` intent (Cloudflare/Stripe/Tempo, x402-`exact` superset). Spec: [`docs/pe-002-paid-tools.md`](./pe-002-paid-tools.md). Quickstart: [`docs/quickstart-paid-tools.md`](./quickstart-paid-tools.md).
+
 > **Project rule**: the auth *protocol* is never added to the base spec. It belongs in Portal Extensions (PE-001 ERC-8004, PE-002 x402, etc.). See [`.claude/CLAUDE.md`](../.claude/CLAUDE.md) "What NOT to do" and [`docs/ROADMAP.md`](./ROADMAP.md) "Explicitly out of scope".
 
 ---
