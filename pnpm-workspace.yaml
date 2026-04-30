@@ -3,6 +3,7 @@ packages:
   - "packages/visit/ts"
   - "packages/provider/ts"
   - "packages/mcp-adapter"
+  - "packages/x402-adapter"
   - "packages/bench"
   - "packages/cli"
   - "reference/trending-demo"

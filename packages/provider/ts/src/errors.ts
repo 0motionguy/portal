@@ -6,7 +6,8 @@ export const STATUS_BY_CODE = {
   UNAUTHORIZED: 401,
   RATE_LIMITED: 429,
   INTERNAL: 500,
-} as const satisfies Record<ErrorCode, 400 | 401 | 404 | 429 | 500>;
+  PAYMENT_REQUIRED: 402, // PE-002 extension
+} as const satisfies Record<ErrorCode, 400 | 401 | 402 | 404 | 429 | 500>;
 
 export class ManifestBuildError extends Error {
   readonly errors: readonly string[];
@@ -20,17 +21,23 @@ export class ManifestBuildError extends Error {
 
 export abstract class ProviderCallError extends Error {
   abstract readonly code: ErrorCode;
-  readonly status: 400 | 401 | 404 | 429 | 500;
+  readonly status: 400 | 401 | 402 | 404 | 429 | 500;
   readonly headers?: Record<string, string>;
+  // PE-002 extension hook: subclasses can attach extra body fields (e.g. the
+  // x402 challenge envelope on PaymentRequiredError). Keys are merged into
+  // the response body alongside { ok, error, code }.
+  readonly bodyExtras?: Record<string, unknown>;
 
   protected constructor(
     message: string,
-    status: 400 | 401 | 404 | 429 | 500,
+    status: 400 | 401 | 402 | 404 | 429 | 500,
     headers?: Record<string, string>,
+    bodyExtras?: Record<string, unknown>,
   ) {
     super(message);
     this.status = status;
     if (headers !== undefined) this.headers = headers;
+    if (bodyExtras !== undefined) this.bodyExtras = bodyExtras;
   }
 }
 
@@ -81,6 +88,33 @@ export class InternalError extends ProviderCallError {
   }
 }
 
+// Portal Extension PE-002 — paid tools.
+// Throwing this from a ToolHandler emits HTTP 402 with the x402 challenge
+// embedded in the response body's `x402` field, alongside the standard
+// { ok: false, error, code: "PAYMENT_REQUIRED" } envelope.
+export class PaymentRequiredError extends ProviderCallError {
+  readonly code = "PAYMENT_REQUIRED" as const;
+
+  constructor(
+    challenge: {
+      x402Version?: number;
+      accepts: ReadonlyArray<Record<string, unknown>>;
+      resource?: Record<string, unknown>;
+    },
+    message = "payment required",
+  ) {
+    const body = {
+      x402: {
+        x402Version: challenge.x402Version ?? 1,
+        accepts: challenge.accepts,
+        ...(challenge.resource ? { resource: challenge.resource } : {}),
+      },
+    };
+    super(message, STATUS_BY_CODE.PAYMENT_REQUIRED, undefined, body);
+    this.name = "PaymentRequiredError";
+  }
+}
+
 export function invalidParams(message: string): InvalidParamsError {
   return new InvalidParamsError(message);
 }
@@ -104,13 +138,29 @@ export function internal(message: string): InternalError {
   return new InternalError(message);
 }
 
+// PE-002 factory.
+export function paymentRequired(
+  challenge: {
+    x402Version?: number;
+    accepts: ReadonlyArray<Record<string, unknown>>;
+    resource?: Record<string, unknown>;
+  },
+  message?: string,
+): PaymentRequiredError {
+  return message === undefined
+    ? new PaymentRequiredError(challenge)
+    : new PaymentRequiredError(challenge, message);
+}
+
 export function normalizeThrownError(err: unknown): DispatchResult {
   if (err instanceof ProviderCallError) {
-    return toDispatchResult(
-      err.status,
-      { ok: false, error: err.message, code: err.code },
-      err.headers,
-    );
+    const body: DispatchResult["body"] = {
+      ok: false,
+      error: err.message,
+      code: err.code,
+      ...(err.bodyExtras ?? {}),
+    };
+    return toDispatchResult(err.status, body, err.headers);
   }
 
   if (isErrorWithKnownCode(err)) {
@@ -163,7 +213,7 @@ function describe(err: unknown): string {
 }
 
 function toDispatchResult(
-  status: 400 | 401 | 404 | 429 | 500,
+  status: 400 | 401 | 402 | 404 | 429 | 500,
   body: DispatchResult["body"],
   headers?: Record<string, string>,
 ): DispatchResult {

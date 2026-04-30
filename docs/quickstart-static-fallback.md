@@ -129,4 +129,4 @@ pnpm install
 pnpm conformance https://your-site.example/portal.json
 ```
 
-Or use `/.well-known/portal.json` if you serve the manifest there too — both paths are documented in [spec Appendix E](./spec-v0.1.7.md).
+Or use `/.well-known/portal.json` if you serve the manifest there too — both paths are documented in [spec Appendix E](./spec-v0.1.8.md).

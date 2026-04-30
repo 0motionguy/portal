@@ -46,8 +46,8 @@ truth: [`packages/bench/results/tokens-matrix-v1.json`](../packages/bench/result
  /packages/bench             Anthropic count_tokens measurement matrix
  ──────────────────────────────────────────────────────────────────────────
  /packages/visit/ts          TS visitor SDK · visit(url) → Portal
- /packages/provider/ts       Provider helper (shipped v0.1.7)
- /packages/mcp-adapter       MCP adapter (shipped v0.1.7)
+ /packages/provider/ts       Provider helper (shipped v0.1.8)
+ /packages/mcp-adapter       MCP adapter (shipped v0.1.8)
  ──────────────────────────────────────────────────────────────────────────
  /packages/spec              JSON Schema + 30 conformance vectors + runner
 ```
@@ -199,7 +199,7 @@ Update, 2026-04-23: `@visitportal/provider` and `@visitportal/mcp-adapter` have 
 - **Python SDK** — `packages/visit/py/` is a stub with the namespace
   reserved on PyPI. TS surface was first; Python mirrors when the TS
   API is proven.
-- **MCP adapter** — resolved in package release v0.1.7. The original
+- **MCP adapter** — resolved in package release v0.1.8. The original
   debrief correctly identified stdio introspection + schema translation
   as the next leverage point.
 - **Live deploy (as of this writing)** — Local-first. `bash scripts/demo.sh`

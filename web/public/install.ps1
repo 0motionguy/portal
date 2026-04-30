@@ -3,7 +3,7 @@
 # Non-interactive host requires $env:VISITPORTAL_ASSUME_YES = '1'.
 #
 # Release pinning: $RepoRef and $RepoTarballSha256 must be updated each release.
-# Helper: scripts/compute-install-sha.sh v0.1.7 prints both values to paste here.
+# Helper: scripts/compute-install-sha.sh v0.1.6 prints both values to paste here.
 
 [CmdletBinding()]
 param(
@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 
 $Version           = '0.1.6'
 $RepoUrl           = 'https://github.com/0motionguy/portal'
-$RepoRef           = 'v0.1.7'
+$RepoRef           = 'v0.1.6'
 $RepoTarballSha256 = '4532322463d8e3f1d06dcb4c2c5a8da7e8c9c3fae3c1f5f2d68162bb17842acf'
 $InstallDir = if ($env:VISITPORTAL_HOME) { $env:VISITPORTAL_HOME } else { Join-Path $env:USERPROFILE '.visitportal' }
 $BinDir     = Join-Path $InstallDir 'bin'

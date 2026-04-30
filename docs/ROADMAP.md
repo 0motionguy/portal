@@ -1,6 +1,16 @@
 # Portal Roadmap
 
-## Shipped in v0.1.7 (current) — adopter ergonomics + release alignment
+## Shipped in v0.1.8 (current) — agent commerce: PE-002 paid tools
+
+Per-call paywall extension graduates from draft to stable. Reference adapter ships as `@visitportal/x402-adapter`. Wire-compatible with both [x402](https://x402.org) (Coinbase, ~75M txns / $24M settled by Dec 2025) and the [MPP](https://mpp.dev) `charge` intent (Cloudflare/Stripe/Tempo, x402-`exact` superset). Base v0.1 wire byte-identical to v0.1.5; PE-002 is opt-in.
+
+- **`@visitportal/x402-adapter`** — `withPayment(handler, { price, facilitator })` wrapper. Throws on unpaid, verifies on `X-Payment`, returns the 402 challenge in the standard Portal envelope. BYO facilitator (Coinbase, self-hosted, mock for tests). [`packages/x402-adapter`](../packages/x402-adapter).
+- **PE-002 stabilized** — [`docs/pe-002-paid-tools.md`](./pe-002-paid-tools.md) (was `-draft`). Body shape locked, MPP/AP2 compatibility documented.
+- **Provider package extended** — `PaymentRequiredError` class + `STATUS_BY_CODE.PAYMENT_REQUIRED = 402` + `BaseErrorCode` / `ExtensionErrorCode` type split.
+- **Reference paid Portal** — [`reference/portal-cf-worker`](../reference/portal-cf-worker) ships `premium_data` (paid) alongside `whoami` and `reverse` (free). 14 smoke tests cover the 402/X-Payment flow.
+- **Quickstart** — [`docs/quickstart-paid-tools.md`](./quickstart-paid-tools.md). 10 minutes from clone to a working paid tool.
+
+## Shipped in v0.1.7 — adopter ergonomics + release alignment
 
 Spec doc renamed `v0.1.5 → v0.1.7` and all five npm packages bumped to `0.1.7` together. **Wire protocol byte-identical to v0.1.5** — every v0.1.5-conformant Portal remains v0.1.7-conformant. Plus additive docs + one new reference example + one new test target.
 

@@ -1,6 +1,6 @@
-# Portal v0.1.7 — Specification
+# Portal v0.1.8 — Specification
 
-**Status:** CURRENT. Published 2026-04-30 as `v0.1.7`. Supersedes v0.1.5 (release-alignment rename only — wire protocol byte-identical to v0.1.5; every v0.1.5-conformant portal remains v0.1.7-conformant).
+**Status:** CURRENT. Published 2026-04-30 as `v0.1.8`. Supersedes v0.1.7. **Base wire byte-identical to v0.1.5**; every v0.1.5-conformant portal remains v0.1.8-conformant. v0.1.8 promotes PE-002 (paid tools, optional extension) to stable and locks the response body shape for `code: "PAYMENT_REQUIRED"` (HTTP 402).
 **License:** Public domain. No copyright is asserted over this specification.
 **Normative schema:** [`packages/spec/manifest.schema.json`](../packages/spec/manifest.schema.json).
 **Conformance suite:** [`packages/spec/conformance/`](../packages/spec/conformance/).
@@ -163,9 +163,9 @@ Base Portal implementations (visitor SDKs, provider helpers, MCP adapter, benchm
 
 ## 9. Conformance
 
-A provider is **v0.1.7-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
+A provider is **v0.1.8-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
 
-A visitor SDK is **v0.1.7-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
+A visitor SDK is **v0.1.8-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
 
 `pnpm conformance <url>` runs the suite against a live URL and emits a pass/fail report.
 
@@ -249,9 +249,19 @@ Visitors SHOULD try `/portal` first. Falling back to `/.well-known/portal.json` 
 
 ## Changelog
 
+### v0.1.8 (2026-04-30) — PE-002 paid tools stabilized
+
+Base wire unchanged. Optional extension surface added.
+
+- **PE-002 (paid tools) promoted to stable.** Reference implementation shipped as [`@visitportal/x402-adapter@0.1.8`](../packages/x402-adapter). Spec at [`docs/pe-002-paid-tools.md`](./pe-002-paid-tools.md).
+- **Provider package** (`@visitportal/provider`) gains `PaymentRequiredError` class and `STATUS_BY_CODE.PAYMENT_REQUIRED = 402`. Visitors that don't implement PE-002 see the unknown code and fail gracefully per §6.
+- **Body shape locked for PE-002 402 responses:** `{ ok: false, error, code: "PAYMENT_REQUIRED", x402: { x402Version: 1, accepts: [...], resource? } }`. The `x402` field is the [x402.org](https://x402.org) challenge envelope verbatim, surfaced inside Portal's standard envelope so a single visitor SDK can handle both paid and free tools.
+- **Compatibility note:** wire-compatible with [Cloudflare MPP](https://mpp.dev) `charge` intent (x402-`exact` superset). Not compatible with Google AP2 (mandate-based, separate adapter planned).
+- **All npm packages bumped to `0.1.8`**: `@visitportal/spec`, `@visitportal/visit`, `@visitportal/cli`, `@visitportal/provider`, `@visitportal/mcp-adapter`, **and the new** `@visitportal/x402-adapter`. Schema `$id` `manifest-v0.1.7.json` → `manifest-v0.1.8.json` (body unchanged). Vectors `spec_version` `0.1.7` → `0.1.8` (body unchanged).
+
 ### v0.1.7 (2026-04-30) — release alignment
 
-No wire-protocol change, no schema field change, no enum change, no envelope change. Document and schema artifacts renamed to align all package versions and the spec doc under a single release marker. Every v0.1.5-conformant portal remains v0.1.7-conformant; every v0.1.7-conformant portal validates against either the v0.1.5 or the v0.1.7 schema (they are byte-identical).
+No wire-protocol change. Document and schema artifacts renamed `0.1.5 → 0.1.7` to align all package versions and the spec doc under a single release marker. Every v0.1.5-conformant portal remains v0.1.7-conformant.
 
 - **Spec document filename.** `docs/spec-v0.1.5.md` → `docs/spec-v0.1.7.md`.
 - **Schema `$id`.** `manifest-v0.1.5.json` → `manifest-v0.1.7.json` (URL only; schema body unchanged).
@@ -268,7 +278,7 @@ No wire-protocol change, no schema field change, no enum change, no envelope cha
 All v0.1.1-conformant providers remain v0.1.4-conformant. No wire-protocol change, no schema field change, no enum change. Additions:
 
 - **Appendix E (NEW, draft).** Alternate discovery at `/.well-known/portal.json`. Providers MAY serve the manifest at both paths; when they do, the two responses MUST be byte-identical. Visitors SHOULD try `/portal` first.
-- **§8 Extensions.** PE-002 paid tools draft (x402-compatible HTTP 402) referenced; full draft in [`pe-002-paid-tools-draft.md`](./pe-002-paid-tools-draft.md).
+- **§8 Extensions.** PE-002 paid tools (x402-compatible HTTP 402) referenced; spec at [`pe-002-paid-tools.md`](./pe-002-paid-tools.md) (draft at the time of v0.1.4; promoted to stable in v0.1.8).
 - **Editorial.** Header date + status bumped to track release cadence (v0.1.2 license fix, v0.1.3 Sev-level hardening, v0.1.4 HTTP-native reframe). Normative wire protocol unchanged since v0.1.1.
 
 No breaking changes.

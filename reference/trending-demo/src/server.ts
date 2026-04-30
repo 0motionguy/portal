@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
-import { serve as servePortal, type Manifest } from "@visitportal/provider";
+import { type Manifest, serve as servePortal } from "@visitportal/provider";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { rateLimit } from "./rate-limit.ts";
@@ -20,7 +20,7 @@ const portal = servePortal({
 export function createApp(): Hono {
   const app = new Hono();
 
-  // CORS per spec v0.1.7 Appendix C (normative for browser-resident visitors).
+  // CORS per spec v0.1.8 Appendix C (normative for browser-resident visitors).
   app.use("/portal", cors({ origin: "*", allowMethods: ["GET", "OPTIONS"], maxAge: 86400 }));
   app.use(
     "/.well-known/portal.json",
@@ -45,7 +45,7 @@ export function createApp(): Hono {
 
   app.get("/portal", (c) => c.json(portal.manifest));
 
-  // Alternate discovery per spec v0.1.7 Appendix E (draft). Providers MAY
+  // Alternate discovery per spec v0.1.8 Appendix E (draft). Providers MAY
   // serve the manifest at /.well-known/portal.json in addition to /portal;
   // if both are served they MUST return byte-identical manifests.
   app.get("/.well-known/portal.json", (c) => c.json(portal.manifest));

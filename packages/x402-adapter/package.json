@@ -1,9 +1,9 @@
 {
-  "name": "@visitportal/provider",
+  "name": "@visitportal/x402-adapter",
   "license": "Apache-2.0",
   "version": "0.1.8",
   "private": false,
-  "description": "Optional helper library for Portal providers. Build a validated manifest and serve it over raw fetch-compatible HTTP.",
+  "description": "Portal Extension PE-002 (paid tools) — wraps a Portal ToolHandler with x402-compatible HTTP 402 payment gating. Bring your own facilitator.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,7 +23,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@visitportal/spec": "workspace:^0.1.8"
+    "@visitportal/provider": "workspace:^0.1.8"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

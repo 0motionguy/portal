@@ -35,7 +35,7 @@ The shape is normative: AISO output MUST validate against [`aiso-readiness-score
 | Manifest fetched at a non-standard path declared in a homepage `<link rel="portal" href="...">` | 10 |
 | No manifest discoverable | 0 |
 
-The `.well-known` path is per [spec v0.1.7 Appendix E](../spec-v0.1.7.md). Byte-parity is asserted by string-equality on the response body.
+The `.well-known` path is per [spec v0.1.8 Appendix E](../spec-v0.1.8.md). Byte-parity is asserted by string-equality on the response body.
 
 ### 2. Schema validity (20 pts)
 
@@ -232,4 +232,4 @@ Persist the score keyed by `portal_url`. AISO's storage layer is its own concern
 
 ## Changelog
 
-- **1.0.0 (2026-04-30)** — initial 5×20 rubric. Aligned to spec v0.1.7.
+- **1.0.0 (2026-04-30)** — initial 5×20 rubric. Aligned to spec v0.1.8.

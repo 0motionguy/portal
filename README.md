@@ -9,12 +9,12 @@ Portal is the minimal HTTP contract for agent-accessible services. Two endpoints
 
 [![npm · @visitportal/spec](https://img.shields.io/npm/v/@visitportal/spec?color=DA7756&label=%40visitportal%2Fspec&labelColor=181818)](https://www.npmjs.com/package/@visitportal/spec)
 [![CI](https://img.shields.io/github/actions/workflow/status/0motionguy/portal/ci.yml?label=tests&color=181818&labelColor=181818)](https://github.com/0motionguy/portal/actions)
-[![spec v0.1.7](https://img.shields.io/badge/spec-v0.1.7-DA7756.svg?labelColor=181818)](docs/spec-v0.1.7.md)
-[![release v0.1.7](https://img.shields.io/badge/release-v0.1.7-181818.svg?labelColor=181818)](CHANGELOG.md)
+[![spec v0.1.8](https://img.shields.io/badge/spec-v0.1.8-DA7756.svg?labelColor=181818)](docs/spec-v0.1.8.md)
+[![release v0.1.8](https://img.shields.io/badge/release-v0.1.8-181818.svg?labelColor=181818)](CHANGELOG.md)
 [![license · Apache 2.0 / CC0](https://img.shields.io/badge/license-Apache--2.0%20%2F%20CC0-181818.svg)](LICENSE)
 [![Built with Opus 4.7](https://img.shields.io/badge/Built%20with-Opus%204.7-DA7756.svg?labelColor=181818)](https://cerebralvalley.ai/e/built-with-4-7-hackathon)
 
-[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.7](docs/spec-v0.1.7.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
+[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.8](docs/spec-v0.1.8.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
 
 </div>
 
@@ -137,7 +137,7 @@ Full adopter guide: [`docs/quickstart-provider.md`](docs/quickstart-provider.md)
 
 A Portal visit is five steps: **arrive, read, call, use, leave.** The manifest enters the LLM's context only for the duration of the visit; the session end is a clean drop. No per-connection state on the server, no residue on the client.
 
-Full technical flow in [`docs/architecture.md`](docs/architecture.md). System architecture (one-page answer to *"how does an agent visit a website?"*): [`docs/architecture-overview.md`](docs/architecture-overview.md). One-page spec in [`docs/spec-v0.1.7.md`](docs/spec-v0.1.7.md).
+Full technical flow in [`docs/architecture.md`](docs/architecture.md). System architecture (one-page answer to *"how does an agent visit a website?"*): [`docs/architecture-overview.md`](docs/architecture-overview.md). One-page spec in [`docs/spec-v0.1.8.md`](docs/spec-v0.1.8.md).
 
 ---
 
@@ -147,14 +147,15 @@ Package note: [`@visitportal/provider`](packages/provider/ts) and [`@visitportal
 
 | Package | Version | Purpose |
 |---|---|---|
-| [`@visitportal/spec`](packages/spec) | `0.1.5` · published on npm | JSON Schema, 36 conformance vectors, ajv + zero-dep lean validator, smoke runner |
-| [`@visitportal/visit`](packages/visit/ts) | `0.1.5` · hackathon-week, run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
-| [`@visitportal/cli`](packages/cli) | `0.1.5` · hackathon-week, run from clone | `visit-portal info \| call \| conformance` |
+| [`@visitportal/spec`](packages/spec) | `0.1.8` | JSON Schema, 36 conformance vectors, ajv + zero-dep lean validator, smoke runner |
+| [`@visitportal/visit`](packages/visit/ts) | `0.1.8` · run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
+| [`@visitportal/cli`](packages/cli) | `0.1.8` · run from clone | `visit-portal info \| call \| conformance` |
 | [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
-| [`@visitportal/provider`](packages/provider/ts) | `0.1.6` · published on npm | TypeScript provider helper - `manifest()` + `serve()` |
-| [`@visitportal/mcp-adapter`](packages/mcp-adapter) | `0.1.6` · published on npm | Wrap MCP stdio servers as Portals, with a local HTTP bridge |
+| [`@visitportal/provider`](packages/provider/ts) | `0.1.8` | TypeScript provider helper — `manifest()` + `serve()` + `PaymentRequiredError` (PE-002) |
+| [`@visitportal/mcp-adapter`](packages/mcp-adapter) | `0.1.8` | Wrap MCP stdio servers as Portals, with a local HTTP bridge |
+| [`@visitportal/x402-adapter`](packages/x402-adapter) | `0.1.8` · **new in v0.1.8** | PE-002 paid tools — `withPayment(handler, { price, facilitator })`. Wire-compatible with x402 + MPP. |
 | [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
-| [`reference/portal-cf-worker`](reference/portal-cf-worker) | — | Reference Portal as a single Cloudflare Worker, ~30 lines |
+| [`reference/portal-cf-worker`](reference/portal-cf-worker) | — | Reference Portal as a single Cloudflare Worker — free + paid (PE-002) tools |
 | [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
 | [`web/`](web) | — | [visitportal.dev](https://visitportal.dev) landing + docs |
 
@@ -195,13 +196,13 @@ Methodology: [`packages/bench/METHODOLOGY.md`](packages/bench/METHODOLOGY.md).
 
 ---
 
-## Spec — v0.1.7
+## Spec — v0.1.8
 
 Two endpoints (`GET /portal`, `POST /portal/call`). One manifest. A five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`). Dual params form — simple sugar plus an escape hatch for full JSON Schema. One printed page of core + appendices A–E (examples, versioning, CORS, rate-limit defaults, alternate discovery draft).
 
 Explicit non-goals for v0.1: task lifecycles, stateful sessions, server-initiated messages, streaming, multi-agent choreography. Those live in MCP / A2A, or arrive as Portal Extensions (PE-001 verified identity, PE-002 x402 micropayments, …).
 
-Full spec: [`docs/spec-v0.1.7.md`](docs/spec-v0.1.7.md).
+Full spec: [`docs/spec-v0.1.8.md`](docs/spec-v0.1.8.md).
 
 ---
 
@@ -220,7 +221,7 @@ Verification standard: every claim on [visitportal.dev](https://visitportal.dev)
 
 ## Roadmap
 
-### v0.1.7 — shipped (current)
+### v0.1.8 — shipped (current)
 
 - [x] Relative `call_endpoint` resolution (kills a class of copy-paste bugs)
 - [x] `paramsSchema` (JSON Schema 2020-12) alongside sugar `params`
@@ -251,7 +252,7 @@ Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate 
 
 ### v0.2
 
-Package note: `@visitportal/provider` and `@visitportal/mcp-adapter` are published as `0.1.6` packages. v0.1.7 is an adopter-ergonomics release — no package contents changed; the additions are docs + one new reference (Cloudflare Worker) + one new test target (agent simulation). The remaining items below are still pending for the broader v0.2 release.
+Package note: `@visitportal/provider` and `@visitportal/mcp-adapter` are published as `0.1.6` packages. v0.1.8 is an adopter-ergonomics release — no package contents changed; the additions are docs + one new reference (Cloudflare Worker) + one new test target (agent simulation). The remaining items below are still pending for the broader v0.2 release.
 
 - [ ] PE-002 paid tools — implementation (draft in `docs/pe-002-paid-tools-draft.md`)
 - [x] `@visitportal/provider` — one-line provider helper

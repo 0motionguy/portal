@@ -12,7 +12,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.7 release</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.8 release</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
@@ -230,7 +230,7 @@ export default {
           endpoints MUST handle <code>OPTIONS</code> preflight and MUST set{" "}
           <code>Access-Control-Allow-Origin</code>. Credentialed requests have per-auth-mode
           semantics. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.7.md#appendix-c--cors">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.8.md#appendix-c--cors">
             spec Appendix C
           </a>{" "}
           for the full table.
@@ -241,7 +241,7 @@ export default {
           Portal SHOULDs a per-auth-mode default for rate limits. Visitor SDKs MUST treat{" "}
           <code>RATE_LIMITED</code> as recoverable and SHOULD honor <code>Retry-After</code>.
           Providers without a rate-limit strategy of their own can adopt the defaults verbatim. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.7.md#appendix-d--rate-limits">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.8.md#appendix-d--rate-limits">
             spec Appendix D
           </a>
           .
@@ -379,13 +379,67 @@ ANTHROPIC_API_KEY=sk-ant-... pnpm tsx packages/bench/scripts/agent-sim.ts`}</cod
             <strong>PE-001</strong> — streaming responses (draft)
           </li>
           <li>
-            <strong>PE-002</strong> — paid tools via <code>x402</code> micropayments (draft · see{" "}
-            <a href="https://github.com/0motionguy/portal/blob/main/docs/pe-002-paid-tools-draft.md">
-              docs/pe-002-paid-tools-draft.md
+            <strong>PE-002</strong> — paid tools via HTTP 402 + <code>x402</code> /{" "}
+            <a href="https://mpp.dev">MPP</a> (stable, v0.1.8 · spec:{" "}
+            <a href="https://github.com/0motionguy/portal/blob/main/docs/pe-002-paid-tools.md">
+              docs/pe-002-paid-tools.md
+            </a>
+            , adapter:{" "}
+            <a href="https://github.com/0motionguy/portal/tree/main/packages/x402-adapter">
+              @visitportal/x402-adapter
+            </a>
+            , quickstart:{" "}
+            <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-paid-tools.md">
+              quickstart-paid-tools.md
             </a>
             )
           </li>
         </ul>
+
+        <h2 id="paid-tools">Paid tools (PE-002)</h2>
+        <p>
+          As of <strong>v0.1.8</strong>, Portal has a stable optional extension for paid tools. Wrap
+          any handler with <code>withPayment()</code> from <code>@visitportal/x402-adapter</code>{" "}
+          and the unpaid call returns HTTP 402 with the x402 challenge embedded in the standard
+          Portal envelope. The visiting agent signs a payment per the requirement, retries with{" "}
+          <code>X-Payment</code>, and gets the result. Wire-compatible with{" "}
+          <a href="https://x402.org">x402</a> (Coinbase) and <a href="https://mpp.dev">MPP</a>{" "}
+          (Cloudflare/Stripe <code>charge</code> intent).
+        </p>
+        <pre>
+          <code>{`import { serve } from '@visitportal/provider';
+import { coinbaseFacilitator, withPayment } from '@visitportal/x402-adapter';
+
+const portal = serve({
+  name: 'Premium Echo',
+  brief: 'Echo a string back. 0.01 USDC per call.',
+  call_endpoint: '/portal/call',
+  pricing: { model: 'x402', rate: '0.01 USDC/call' },
+  tools: [{
+    name: 'premium_echo',
+    params: { text: { type: 'string', required: true } },
+    handler: withPayment(
+      (params) => ({ echoed: params.text as string }),
+      {
+        price: { scheme: 'exact', network: 'base-sepolia',
+                 asset: USDC, amount: '10000', payTo: WALLET },
+        facilitator: coinbaseFacilitator(),
+      },
+    ),
+  }],
+});`}</code>
+        </pre>
+        <p>
+          Full walkthrough:{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-paid-tools.md">
+            docs/quickstart-paid-tools.md
+          </a>
+          . Reference Portal with a paid tool:{" "}
+          <a href="https://github.com/0motionguy/portal/tree/main/reference/portal-cf-worker">
+            reference/portal-cf-worker
+          </a>
+          .
+        </p>
 
         <h2 id="layers">Three-layer model</h2>
         <p>

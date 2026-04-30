@@ -12,7 +12,7 @@ Derived from the monorepo's git log and the Phase plan in
 | 2 | `reference/trending-demo` — Hono server, 3 tools, 30-repo snapshot, 12-maintainer roster, Fly-ready | done | `d1c40ba` | `reference/trending-demo/src/server.ts`, `reference/trending-demo/portal.json` |
 | 3 | `@visitportal/visit` — TS visitor SDK, 14 vitest cases, ~2.25 kB gzipped | done | `272cd53` | `packages/visit/ts/src/index.ts`, `packages/visit/ts/test/visit.test.ts` |
 | 5 | `@visitportal/bench` — 48-cell `count_tokens` matrix, measured 81× less overhead than MCP at 100 tools | done | `f6c8b32` | `packages/bench/src/run.ts`, `packages/bench/results/tokens-matrix-v1.md` |
-| v0.1.7 | `@visitportal/provider` and `@visitportal/mcp-adapter` published to npm | done | this release | `packages/provider/ts`, `packages/mcp-adapter` |
+| v0.1.8 | `@visitportal/provider` and `@visitportal/mcp-adapter` published to npm | done | this release | `packages/provider/ts`, `packages/mcp-adapter` |
 
 ## Phase 6 — in progress
 

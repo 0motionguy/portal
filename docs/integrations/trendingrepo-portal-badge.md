@@ -16,19 +16,19 @@ For every repository in its index whose homepage exposes a Portal manifest, Tren
 {
   "repo_id": "0motionguy/portal",
   "portal_url": "https://www.visitportal.dev/portal",
-  "manifest": { /* ...validated v0.1.7 manifest... */ },
+  "manifest": { /* ...validated v0.1.8 manifest... */ },
   "readiness_score": { /* ...AISO score v1, optional... */ },
   "last_checked": "2026-04-30T13:00:00Z"
 }
 ```
 
-`manifest` MUST validate against the v0.1.7 schema (use `validateManifest` from `@visitportal/spec`). `readiness_score` is the [AISO score envelope](./aiso-readiness-score.md) — optional; when absent, badge state is computed from `manifest` alone.
+`manifest` MUST validate against the v0.1.8 schema (use `validateManifest` from `@visitportal/spec`). `readiness_score` is the [AISO score envelope](./aiso-readiness-score.md) — optional; when absent, badge state is computed from `manifest` alone.
 
 ## Discovery
 
 TrendingRepo polls the repo's homepage URL (resolved from the GitHub `homepage` field, falling back to README links). Order:
 
-1. `<homepage>/.well-known/portal.json` (preferred, per [spec Appendix E](../spec-v0.1.7.md))
+1. `<homepage>/.well-known/portal.json` (preferred, per [spec Appendix E](../spec-v0.1.8.md))
 2. `<homepage>/portal`
 3. Give up after both fail with a 5 s timeout each
 
@@ -130,4 +130,4 @@ This contract is `v1`. Any change to badge thresholds or preview shape requires 
 
 ## Changelog
 
-- **1.0.0 (2026-04-30)** — initial 4-state badge + 3-line preview. Aligned to spec v0.1.7 and AISO readiness-score v1.0.0.
+- **1.0.0 (2026-04-30)** — initial 4-state badge + 3-line preview. Aligned to spec v0.1.8 and AISO readiness-score v1.0.0.

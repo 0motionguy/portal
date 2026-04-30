@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@visitportal/provider": "workspace:*",
-    "@visitportal/spec": "workspace:*"
+    "@visitportal/spec": "workspace:*",
+    "@visitportal/x402-adapter": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250410.0",

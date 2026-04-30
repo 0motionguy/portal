@@ -7,6 +7,32 @@ All notable changes to Portal are recorded here. The specification is versioned 
 
 Nothing yet.
 
+## [0.1.8] — 2026-04-30
+
+**Agent commerce release.** PE-002 (paid tools) graduates from draft to stable; reference implementation ships as `@visitportal/x402-adapter@0.1.8`. The base v0.1 wire stays byte-identical to v0.1.5 — every v0.1.5-conformant Portal remains v0.1.8-conformant. PE-002 is opt-in.
+
+### Added
+
+- **`@visitportal/x402-adapter` published.** New package wraps a Portal `ToolHandler` with x402-compatible HTTP 402 payment gating. Public API: `withPayment(handler, { price, facilitator })`, `coinbaseFacilitator()`, `selfHostedFacilitator()`, `mockFacilitator()` (testing), `PaymentRequirement`, `FacilitatorClient`. ~200 LOC, 8 vitest cases, BYO signer / facilitator. Wire-compatible with [x402](https://x402.org) and the [MPP](https://mpp.dev) `charge` intent.
+- **PE-002 (paid tools) promoted to stable.** Renamed `docs/pe-002-paid-tools-draft.md` → `docs/pe-002-paid-tools.md`. Body shape locked: `{ ok: false, error, code: "PAYMENT_REQUIRED", x402: { x402Version, accepts, resource? } }`. Compatibility note added for Cloudflare MPP and Google AP2.
+- **`@visitportal/provider` extended.** New `PaymentRequiredError` class + `STATUS_BY_CODE.PAYMENT_REQUIRED = 402` + `BaseErrorCode` / `ExtensionErrorCode` type split. Backwards-compatible: visitors that don't implement PE-002 see the unknown code and fail gracefully per spec §6.
+- **Reference Portal with paid tool.** [`reference/portal-cf-worker`](reference/portal-cf-worker) gains `premium_data` (paid via x402-adapter, mock facilitator in demo mode); free `whoami` and `reverse` unchanged. 14 smoke tests (was 10).
+- **Quickstart.** [`docs/quickstart-paid-tools.md`](docs/quickstart-paid-tools.md) — 10-minute walkthrough from clone to `HTTP 402 → X-Payment → 200`. Cites x402, MPP, AP2 with correct compatibility notes.
+
+### Changed
+
+- **Spec doc renamed.** `docs/spec-v0.1.7.md` → `docs/spec-v0.1.8.md`. Body adds the v0.1.8 changelog entry; base wire unchanged.
+- **Schema `$id`.** `manifest-v0.1.7.json` → `manifest-v0.1.8.json`. Schema body unchanged.
+- **Conformance vectors.** `spec_version: "0.1.7"` → `"0.1.8"`. Vectors body unchanged.
+- **npm package versions.** All bumped to `0.1.8`: `@visitportal/spec`, `@visitportal/visit`, `@visitportal/cli`, `@visitportal/provider`, `@visitportal/mcp-adapter`, plus the new `@visitportal/x402-adapter`.
+- **Web UI markers.** `v0.1.7` → `v0.1.8`: nav footer, one-pager hero/status bar, OG image (SVG + dynamic), JSON-LD, docs page eyebrow.
+
+### Not changed (deliberately)
+
+- **Base wire protocol.** Byte-identical to v0.1.5. No schema field changes, no enum changes (PE-002's `PAYMENT_REQUIRED` is an extension code, not a base addition), no envelope changes for non-PE-002 calls, no endpoint changes.
+- **Install scripts** still pinned to `v0.1.6` tag + SHA256 (a follow-up commit will pin `v0.1.8` once the GitHub release tarball SHA is computed).
+- **No new auth in base packages.** PE-001 / `auth: "api_key"` declaration covers protected actions; auth protocol stays in extensions.
+
 ## [0.1.7] — 2026-04-30
 
 Adopter-ergonomics release with **release alignment** — every artifact under one version. Wire protocol byte-identical to v0.1.5; the spec doc, schema `$id`, conformance vectors `spec_version`, and all five npm packages move to `0.1.7` together. Every v0.1.5-conformant Portal remains v0.1.7-conformant.

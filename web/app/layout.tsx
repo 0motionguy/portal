@@ -108,7 +108,7 @@ const JSON_LD = {
       description:
         "Portal specification artifacts — JSON Schema, conformance vectors, and a zero-dependency lean validator for any LLM visitor SDK.",
       url: "https://www.npmjs.com/package/@visitportal/spec",
-      softwareVersion: "0.1.7",
+      softwareVersion: "0.1.8",
       license: "https://www.apache.org/licenses/LICENSE-2.0",
       author: {
         "@type": "Person",
@@ -121,7 +121,7 @@ const JSON_LD = {
       "@type": "TechArticle",
       "@id": `${SITE_URL}/docs/#article`,
       headline:
-        "Portal v0.1.7 — Cloudflare Worker, static fallback, AISO + TrendingRepo contracts, agent simulation",
+        "Portal v0.1.8 — agent commerce: PE-002 paid tools, x402-adapter, Cloudflare Worker reference with paid endpoint",
       description:
         "Two endpoints, one manifest. 30-second conformance check via runSmokeConformance. Ship a Portal in 10 minutes — on Node, Hono, FastAPI, Cloudflare Workers, or a static host.",
       url: `${SITE_URL}/docs`,

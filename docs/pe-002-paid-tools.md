@@ -1,6 +1,6 @@
-# PE-002 — Paid Tools (draft)
+# PE-002 — Paid Tools
 
-**Status:** Draft · v0.1 · Non-normative in base spec · Author: Portal contributors · Last updated: 2026-04-21
+**Status:** Stable · v1 · Non-normative in base spec · Reference implementation: [`@visitportal/x402-adapter`](../packages/x402-adapter) · Last updated: 2026-04-30
 
 ---
 
@@ -101,15 +101,23 @@ Base-v0.1 visitors treat `PAYMENT_REQUIRED` the same way they treat any unknown 
 
 No other error codes are redefined. `UNAUTHORIZED` still means "credentials missing/invalid"; `PAYMENT_REQUIRED` is specifically "payment missing," not "auth missing."
 
-## Relationship to x402
+## Relationship to x402 and MPP
 
-PE-002 **is not** a new payment protocol. It is the Portal-side declaration and error-code surface that wires x402 into Portal's two-endpoint contract. The `payment` object in the 402 response, the `X-PAYMENT` header, the settlement flow — all defined by x402. PE-002 specifies only:
+PE-002 **is not** a new payment protocol. It is the Portal-side declaration and error-code surface that wires x402-style HTTP 402 into Portal's two-endpoint contract. The `accepts[]` shape in the 402 response, the `X-Payment` header, the settlement flow — all defined externally by:
+
+- **[x402](https://x402.org)** (Coinbase / x402 Foundation) — stablecoin-only, on-chain proof, ~75M txns / $24M settled by Dec 2025. Reference: [github.com/coinbase/x402](https://github.com/coinbase/x402).
+- **[MPP](https://mpp.dev)** (Cloudflare / Stripe / Tempo) — multi-rail (cards via Stripe SPT, stablecoins via Tempo, Lightning), session-based. **MPP's `charge` intent is a strict superset of x402's `exact` scheme** — a server speaking MPP accepts x402 traffic on the same endpoint. Reference: [Cloudflare MPP docs](https://developers.cloudflare.com/agents/agentic-payments/mpp/).
+
+PE-002 specifies only:
 
 - How providers declare paid tools in the Portal manifest.
-- Which Portal error code maps to the x402 challenge.
+- Which Portal error code (`PAYMENT_REQUIRED`) maps to the 402 challenge.
 - That providers MUST NOT return `402` on tools not declared paid.
+- The body shape that surfaces `accepts[]` in a Portal-envelope-compatible way (`body.x402.accepts`).
 
-A provider that already speaks x402 can become Portal-discoverable by adding the manifest declaration and a 50-LOC adapter (planned: `@visitportal/x402-adapter`).
+A provider that already speaks x402 or MPP becomes Portal-discoverable by adding the manifest declaration and a one-line `withPayment(handler, { price, facilitator })` wrapper. See [`@visitportal/x402-adapter`](../packages/x402-adapter) and [`docs/quickstart-paid-tools.md`](./quickstart-paid-tools.md).
+
+PE-002 does **not** cover Google's [AP2](https://ap2-protocol.org) (Agent Payments Protocol). AP2 is mandate-based (signed user mandates → cart mandates → payment mandates) rather than per-request 402. A separate `@visitportal/ap2-adapter` is planned.
 
 ## What PE-002 is NOT
 
@@ -129,4 +137,5 @@ A provider that already speaks x402 can become Portal-discoverable by adding the
 
 ## Changelog
 
-- **2026-04-21** — Initial draft. Extracted from the v0.1.4 reframe; no reference implementation yet.
+- **2026-04-30 (v1, stable)** — Promoted from draft. Reference implementation shipped as [`@visitportal/x402-adapter@0.1.8`](../packages/x402-adapter). Provider package gains `PaymentRequiredError` class and HTTP 402 → `PAYMENT_REQUIRED` code mapping. Body shape locked: `{ ok: false, error, code: "PAYMENT_REQUIRED", x402: { x402Version, accepts, resource? } }`. Compatibility note added for Cloudflare MPP (x402 charge-intent superset).
+- **2026-04-21 (draft)** — Initial draft. Extracted from the v0.1.4 reframe; no reference implementation yet.

@@ -113,3 +113,56 @@ describe("portal-cf-worker smoke", () => {
     expect(body.code).toBe("NOT_FOUND");
   });
 });
+
+describe("portal-cf-worker · PE-002 paid tool (premium_data)", () => {
+  it("manifest declares pricing.model: 'x402'", async () => {
+    const res = await get("/portal");
+    const body = (await res.json()) as { pricing?: { model?: string } };
+    expect(body.pricing?.model).toBe("x402");
+  });
+
+  it("premium_data without X-Payment returns HTTP 402 + PAYMENT_REQUIRED + x402.accepts", async () => {
+    const { status, body } = await call("premium_data", {});
+    expect(status).toBe(402);
+    expect(body.ok).toBe(false);
+    expect(body.code).toBe("PAYMENT_REQUIRED");
+    const x402 = body.x402 as Record<string, unknown>;
+    expect(x402).toBeDefined();
+    expect(x402.x402Version).toBe(1);
+    const accepts = x402.accepts as Array<Record<string, unknown>>;
+    expect(accepts.length).toBe(1);
+    const first = accepts[0];
+    if (!first) throw new Error("expected at least one accept entry");
+    expect(first.scheme).toBe("exact");
+    expect(first.network).toBe("base-sepolia");
+    expect(first.amount).toBe("10000");
+    const resource = x402.resource as Record<string, unknown>;
+    expect(resource.id).toBe("cf-worker-premium-data-v1");
+  });
+
+  it("premium_data with X-Payment header runs the handler and returns the paid fact", async () => {
+    const xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xdemo" }));
+    const res = await worker.fetch(
+      new Request(`${ORIGIN}/portal/call`, {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-payment": xPayment },
+        body: JSON.stringify({ tool: "premium_data", params: {} }),
+      }),
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as Record<string, unknown>;
+    expect(body.ok).toBe(true);
+    const result = body.result as Record<string, unknown>;
+    expect(result.paid).toBe(true);
+    expect(typeof result.fact).toBe("string");
+  });
+
+  it("free tools (whoami, reverse) stay free with x402 sibling enabled", async () => {
+    const a = await call("whoami", {});
+    expect(a.status).toBe(200);
+    expect(a.body.ok).toBe(true);
+    const b = await call("reverse", { text: "abc" });
+    expect(b.status).toBe(200);
+    expect(b.body.ok).toBe(true);
+  });
+});

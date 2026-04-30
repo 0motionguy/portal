@@ -49,12 +49,20 @@ export interface ManifestOptions {
 
 export type HandlerMap = ReadonlyMap<string, ToolHandler> | Record<string, ToolHandler>;
 
-export type ErrorCode =
+// Base v0.1.8 spec error codes (normative).
+export type BaseErrorCode =
   | "NOT_FOUND"
   | "INVALID_PARAMS"
   | "UNAUTHORIZED"
   | "RATE_LIMITED"
   | "INTERNAL";
+
+// Portal Extension PE-002 (paid tools) extension code.
+// Visitors that don't implement PE-002 will see this code and fail gracefully
+// per spec §6 "visitors MUST NOT parse the error string programmatically".
+export type ExtensionErrorCode = "PAYMENT_REQUIRED";
+
+export type ErrorCode = BaseErrorCode | ExtensionErrorCode;
 
 export interface DispatchSuccess {
   ok: true;
@@ -65,10 +73,19 @@ export interface DispatchFailure {
   ok: false;
   error: string;
   code: ErrorCode;
+  // PE-002 paid-tools extension field. When code === "PAYMENT_REQUIRED",
+  // this carries the x402 challenge body verbatim per the x402 wire spec.
+  // Visitors that implement PE-002 read body.x402.accepts to satisfy the
+  // payment requirements and retry with X-PAYMENT header.
+  x402?: {
+    x402Version: number;
+    accepts: ReadonlyArray<Record<string, unknown>>;
+    resource?: Record<string, unknown>;
+  };
 }
 
 export interface DispatchResult {
-  status: 200 | 400 | 401 | 404 | 429 | 500;
+  status: 200 | 400 | 401 | 402 | 404 | 429 | 500;
   headers?: Record<string, string>;
   body: DispatchSuccess | DispatchFailure;
 }

@@ -28,10 +28,10 @@ importers:
   packages/bench:
     dependencies:
       '@visitportal/provider':
-        specifier: workspace:^0.1.7
+        specifier: workspace:^0.1.8
         version: link:../provider/ts
       '@visitportal/visit':
-        specifier: workspace:^0.1.7
+        specifier: workspace:^0.1.8
         version: link:../visit/ts
     devDependencies:
       '@types/node':
@@ -63,7 +63,7 @@ importers:
   packages/mcp-adapter:
     dependencies:
       '@visitportal/provider':
-        specifier: workspace:^0.1.7
+        specifier: workspace:^0.1.8
         version: link:../provider/ts
       tsx:
         specifier: ^4.20.6
@@ -79,7 +79,7 @@ importers:
   packages/provider/ts:
     dependencies:
       '@visitportal/spec':
-        specifier: workspace:^0.1.7
+        specifier: workspace:^0.1.8
         version: link:../../spec
     devDependencies:
       '@types/node':
@@ -118,6 +118,19 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.17)(lightningcss@1.32.0)(tsx@4.21.0)
 
+  packages/x402-adapter:
+    dependencies:
+      '@visitportal/provider':
+        specifier: workspace:^0.1.8
+        version: link:../provider/ts
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.17)(lightningcss@1.32.0)(tsx@4.21.0)
+
   reference/portal-cf-worker:
     dependencies:
       '@visitportal/provider':
@@ -126,6 +139,9 @@ importers:
       '@visitportal/spec':
         specifier: workspace:*
         version: link:../../packages/spec
+      '@visitportal/x402-adapter':
+        specifier: workspace:*
+        version: link:../../packages/x402-adapter
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20250410.0
@@ -168,7 +184,7 @@ importers:
         specifier: ^1.34.3
         version: 1.37.0
       '@visitportal/spec':
-        specifier: workspace:^0.1.7
+        specifier: workspace:^0.1.8
         version: link:../packages/spec
       ipaddr.js:
         specifier: ^2.2.0

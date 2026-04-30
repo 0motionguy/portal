@@ -10,7 +10,13 @@
       "Read(//c/Users/mirko/AppData/Roaming/com.vercel.cli/Data/**)",
       "Bash(git -C \"c:/Users/mirko/OneDrive/Desktop/visitportal.dev\" rev-parse HEAD)",
       "WebFetch(domain:developers.cloudflare.com)",
-      "Bash(git mv *)"
+      "Bash(git mv *)",
+      "WebFetch(domain:x402.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:mpp.dev)",
+      "WebSearch",
+      "WebFetch(domain:www.x402.org)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }
