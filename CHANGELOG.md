@@ -7,6 +7,40 @@ All notable changes to Portal are recorded here. The specification is versioned 
 
 Nothing yet.
 
+## [0.1.11] — 2026-04-30 (production verification)
+
+**End-to-end x402 v2 round-trip verified against production.** Hit our own [AISO Scan service on Sponge gateway](https://api.paysponge.com/x402/purchase/svc_d7nqes8p13x5p4888/api/scan) with the v0.1.11 adapter + test-payer; facilitator's response: `invalid_exact_evm_insufficient_balance` — i.e., **signature + wire format are 100% correct**, only blocker is funded testnet balance. Protocol works.
+
+### Fixed
+
+- **Adapter facilitator request shape.** v0.1.10 sent only the inner `{signature, authorization}` object as `paymentPayload` to `/verify`. The v2 facilitator wants the FULL `PaymentPayload` envelope `{x402Version, accepted, payload}`. Probed the live `www.x402.org/facilitator/verify` with 5 candidate shapes; the full-envelope one (Shape B) is what works. Adapter now lifts inner blobs into a v2 envelope before forwarding to verify.
+- **Extra.name + extra.version on PaymentRequirement now required.** v2 "exact" scheme: facilitator reads the EIP-712 domain (`name`, `version`) from `paymentRequirement.extra` to reconstruct the typed-data hash. Without these, facilitator returns `invalid_exact_evm_missing_eip712_domain` even with a valid signature. Worker reference now sets `extra: { name: "USDC", version: "2" }` (or `"USD Coin"` on Base mainnet) by default; configurable via `PAYMENT_ASSET_NAME`/`PAYMENT_ASSET_VERSION` env vars.
+- **EIP-3009 timing**: test-payer now uses `validAfter = now - 600` and `validBefore = now + maxTimeoutSeconds` (matching x402-foundation canonical client). Previous `validAfter: 0` was permissive but non-canonical.
+
+### Added
+
+- `reference/portal-cf-worker/scripts/buy-aiso.ts` — direct buy script. Hits the live [AISO Sponge gateway](https://api.paysponge.com), parses the 402 challenge, signs EIP-3009, retries with `Payment-Signature`. Useful as a copy-paste reference for adopters paying ANY x402 v2 service.
+- `scripts/check-balance.ts` — reads USDC balance + EIP-712 `name()`/`version()` on Base mainnet AND Sepolia for any address. Diagnostic.
+- `scripts/check-domain.ts` — reads `eip712Domain()` from a contract (EIP-5267). Diagnostic.
+- `scripts/probe-facilitator.ts` — sends 5 candidate request shapes to a facilitator's `/verify` endpoint and prints what each returns. Use this when integrating with a new facilitator.
+
+### Changed
+
+- **`@visitportal/x402-adapter` `0.1.10` → `0.1.11`.** Fixes documented above. ABI unchanged for adopters; this is a wire-correctness patch.
+- CF Worker `wrangler.toml [vars]` example now includes `PAYMENT_ASSET_NAME` and `PAYMENT_ASSET_VERSION`.
+
+### Production verification
+
+```
+$ WALLET_KEY=0x... pnpm tsx scripts/buy-aiso.ts
+✓ HTTP 402 · x402Version=2
+✓ signed: 0x41805ff866eec65e…b8cc431c
+HTTP 402
+response: {"x402Version":2,"error":"invalid_exact_evm_insufficient_balance",...}
+```
+
+The facilitator distinguishing `insufficient_balance` from `missing_eip712_domain` / `invalid_signature` confirms our payload reaches the on-chain simulator stage. Funded wallet → guaranteed settlement.
+
 ## [0.1.10] — 2026-04-30
 
 **x402 v2 wire migration.** The Coinbase / x402 Foundation hosted facilitator at `https://www.x402.org/facilitator` only accepts `x402Version: 2` payloads. Our v0.1.8 adapter emitted v1 — incompatible with production. Triple-checked against the live `/supported` endpoint and the canonical types in `x402-foundation/x402:typescript/packages/core/src/types/payments.ts`.

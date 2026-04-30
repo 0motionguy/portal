@@ -12,12 +12,14 @@ import {
 // (mockFacilitator, burn-address payee). Configure via wrangler.toml [vars]
 // or `wrangler secret put` for production.
 interface Env {
-  FACILITATOR_URL?: string;       // "https://x402.org/facilitator" or self-hosted
-  FACILITATOR_API_KEY?: string;   // optional, for self-hosted facilitators
-  PAYEE_ADDRESS?: string;         // "0x..." your receiving wallet
-  PAYMENT_ASSET?: string;         // ERC-20 contract; default Base-Sepolia USDC
-  PAYMENT_NETWORK?: string;       // default "base-sepolia"
-  PAYMENT_AMOUNT?: string;        // atomic units; default "10000" (0.01 USDC at 6dp)
+  FACILITATOR_URL?: string;        // "https://www.x402.org/facilitator" or self-hosted
+  FACILITATOR_API_KEY?: string;    // optional, for self-hosted facilitators
+  PAYEE_ADDRESS?: string;          // "0x..." your receiving wallet
+  PAYMENT_ASSET?: string;          // ERC-20 contract; default Base-Sepolia USDC
+  PAYMENT_NETWORK?: string;        // CAIP-2; default "eip155:84532"
+  PAYMENT_AMOUNT?: string;         // atomic units; default "10000" (0.01 USDC at 6dp)
+  PAYMENT_ASSET_NAME?: string;     // EIP-712 domain name; required for x402 v2 exact scheme
+  PAYMENT_ASSET_VERSION?: string;  // EIP-712 domain version; required for x402 v2 exact scheme
 }
 
 const USDC_BASE_SEPOLIA = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
@@ -53,10 +55,15 @@ function getPortal(env: Env): PortalProvider {
   const asset = env.PAYMENT_ASSET ?? USDC_BASE_SEPOLIA;
   const amount = env.PAYMENT_AMOUNT ?? "10000";
   const payTo = env.PAYEE_ADDRESS ?? BURN_ADDRESS;
+  // x402 v2 "exact" scheme requires extra.name + extra.version (the EIP-712
+  // domain values reported by the ERC-20 contract) so the facilitator can
+  // reconstruct the typed-data hash for signature verification.
+  const assetName = env.PAYMENT_ASSET_NAME ?? "USDC";
+  const assetVersion = env.PAYMENT_ASSET_VERSION ?? "2";
   const facUrl = env.FACILITATOR_URL ?? "";
   const facKey = env.FACILITATOR_API_KEY ?? "";
 
-  const cacheKey = `${facUrl}|${facKey}|${payTo}|${network}|${asset}|${amount}`;
+  const cacheKey = `${facUrl}|${facKey}|${payTo}|${network}|${asset}|${amount}|${assetName}|${assetVersion}`;
   if (providerCache && providerCache.key === cacheKey) return providerCache.provider;
 
   const { client: facilitator, label: facLabel } = pickFacilitator(env);
@@ -111,7 +118,9 @@ function getPortal(env: Env): PortalProvider {
               amount,
               payTo,
               maxTimeoutSeconds: 60,
-              extra: {},
+              // v2 "exact" scheme: facilitator reads name+version from extra
+              // to rebuild the EIP-712 domain.
+              extra: { name: assetName, version: assetVersion },
             },
             facilitator,
             resource: {

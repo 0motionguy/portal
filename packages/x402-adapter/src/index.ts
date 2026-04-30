@@ -148,14 +148,28 @@ export function withPayment(handler: ToolHandler, opts: WithPaymentOptions): Too
       );
     }
 
-    // v2 PaymentPayload shape: { x402Version, accepted, payload, extensions? }
-    // Legacy v1 shape: { x402Version: 1, scheme, network, payload }
-    // Extract the scheme-specific signed bytes uniformly.
-    const innerPayload = isRecord(raw) && "payload" in raw ? raw.payload : raw;
+    // The facilitator wants the FULL v2 PaymentPayload envelope
+    // ({ x402Version, accepted, payload }) as `paymentPayload`. If a legacy
+    // v1 client sent just an inner blob, lift it into a v2 envelope so the
+    // verify call shape stays consistent.
+    let v2Envelope: Record<string, unknown>;
+    if (isRecord(raw) && "x402Version" in raw && "payload" in raw) {
+      v2Envelope = raw;
+      // Mirror missing `accepted` from our requirement so v1 clients still verify.
+      if (!("accepted" in v2Envelope)) {
+        v2Envelope = { ...v2Envelope, accepted: requirementToObj(opts.price) };
+      }
+    } else {
+      v2Envelope = {
+        x402Version: X402_VERSION,
+        accepted: requirementToObj(opts.price),
+        payload: raw,
+      };
+    }
 
     let verification: FacilitatorVerifyResult;
     try {
-      verification = await opts.facilitator.verify(innerPayload, opts.price);
+      verification = await opts.facilitator.verify(v2Envelope, opts.price);
     } catch (err) {
       throw new PaymentRequiredError(
         buildChallenge(opts),
@@ -173,13 +187,25 @@ export function withPayment(handler: ToolHandler, opts: WithPaymentOptions): Too
     const result = await handler(params, ctx);
 
     if (opts.settleOnSuccess && opts.facilitator.settle) {
-      const settle = await opts.facilitator.settle(innerPayload, opts.price);
+      const settle = await opts.facilitator.settle(v2Envelope, opts.price);
       if (!settle.ok) {
         throw new Error(`settle failed: ${settle.reason ?? "unknown"}`);
       }
     }
 
     return result;
+  };
+}
+
+function requirementToObj(req: PaymentRequirement): Record<string, unknown> {
+  return {
+    scheme: req.scheme,
+    network: req.network,
+    asset: req.asset,
+    amount: req.amount,
+    payTo: req.payTo,
+    maxTimeoutSeconds: req.maxTimeoutSeconds,
+    extra: req.extra ?? {},
   };
 }
 

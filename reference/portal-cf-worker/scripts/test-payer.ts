@@ -152,7 +152,7 @@ async function main(): Promise<number> {
       const account = accounts.privateKeyToAccount(walletKey as `0x${string}`);
       console.log(`  wallet: ${account.address}`);
 
-      // Parse CAIP-2 network identifier ("eip155:84532" → chainId 84532).
+      // Parse CAIP-2 network identifier ("eip155:8453" → chainId 8453).
       const network = String(accept.network);
       const asset = String(accept.asset);
       const value = String(accept.amount);
@@ -167,14 +167,26 @@ async function main(): Promise<number> {
       }
       const chainId = Number.parseInt(caipMatch[1], 10);
 
-      // EIP-712 domain for the ERC-20. Base-Sepolia USDC reports
-      // { name: "USDC", version: "2" }; Base mainnet USDC reports
-      // { name: "USD Coin", version: "2" }. Adopters on other chains/tokens
-      // should read the contract's `eip712Domain()` view.
-      const tokenName = chainId === 8453 ? "USD Coin" : "USDC";
+      // x402 v2 "exact" scheme: the EIP-712 domain (name, version) MUST come
+      // from PaymentRequirement.extra. This is what the facilitator reads to
+      // verify the signature, so client-side signing must use the same.
+      const extra = (accept.extra as { name?: string; version?: string } | undefined) ?? {};
+      if (!extra.name || !extra.version) {
+        console.error(
+          `✗ MODE=real: paymentRequirement.extra is missing { name, version }. ` +
+            `These are mandatory for x402 v2 exact-scheme signing.`,
+        );
+        return 2;
+      }
+      const tokenName = extra.name;
+      const tokenVersion = extra.version;
 
-      const validAfter = 0n;
-      const validBefore = BigInt(Math.floor(Date.now() / 1000) + 600); // 10 min
+      // Match the canonical client (x402-foundation:mechanisms/evm/exact/client/eip3009.ts):
+      //   validAfter  = now - 600   (10 min in the past)
+      //   validBefore = now + maxTimeoutSeconds
+      const now = Math.floor(Date.now() / 1000);
+      const validAfter = BigInt(now - 600);
+      const validBefore = BigInt(now + Number(accept.maxTimeoutSeconds ?? 60));
       const nonce = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
 
       const authorization = {
@@ -189,7 +201,7 @@ async function main(): Promise<number> {
       const signature = await account.signTypedData({
         domain: {
           name: tokenName,
-          version: "2",
+          version: tokenVersion,
           chainId,
           verifyingContract: asset as `0x${string}`,
         },
