@@ -1,3 +1,6 @@
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 // Security response headers.
 //
 // Mirrored in vercel.json so the same defensive set applies at the Vercel
@@ -10,6 +13,8 @@
 // fonts.googleapis.com is in style-src to allow the Google Fonts stylesheet
 // <link> in app/layout.tsx; the font files themselves load from
 // fonts.gstatic.com via font-src.
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const CSP = [
   "default-src 'self'",
@@ -28,6 +33,19 @@ const CSP = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Trace from monorepo root so the spec package's JSON files (read at
+  // module-load via fs.readFileSync in @visitportal/spec/runner) are
+  // bundled with serverless functions that import @visitportal/provider.
+  // /api/visit imports @visitportal/spec/lean-validator (zero-fs) and
+  // doesn't need this; /api/portal-static-example/call uses provider.serve()
+  // which transitively pulls the ajv-compiled runner.
+  outputFileTracingRoot: join(__dirname, ".."),
+  outputFileTracingIncludes: {
+    "/api/portal-static-example/call": [
+      "../packages/spec/manifest.schema.json",
+      "../packages/spec/conformance/vectors.json",
+    ],
+  },
   async headers() {
     return [
       {
