@@ -49,7 +49,7 @@ function pickFacilitator(env: Env): { client: FacilitatorClient; label: string }
 let providerCache: { provider: PortalProvider; key: string } | null = null;
 
 function getPortal(env: Env): PortalProvider {
-  const network = env.PAYMENT_NETWORK ?? "base-sepolia";
+  const network = env.PAYMENT_NETWORK ?? "eip155:84532"; // Base-Sepolia (CAIP-2)
   const asset = env.PAYMENT_ASSET ?? USDC_BASE_SEPOLIA;
   const amount = env.PAYMENT_AMOUNT ?? "10000";
   const payTo = env.PAYEE_ADDRESS ?? BURN_ADDRESS;
@@ -111,10 +111,13 @@ function getPortal(env: Env): PortalProvider {
               amount,
               payTo,
               maxTimeoutSeconds: 60,
-              description: "premium_data fact",
+              extra: {},
             },
             facilitator,
-            resource: { id: "cf-worker-premium-data-v1" },
+            resource: {
+              url: "https://portal-cf-worker.example/portal/call#premium_data",
+              description: "premium_data fact",
+            },
           },
         ),
       },

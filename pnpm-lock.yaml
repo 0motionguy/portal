@@ -121,7 +121,7 @@ importers:
   packages/x402-adapter:
     dependencies:
       '@visitportal/provider':
-        specifier: workspace:^0.1.8
+        specifier: workspace:^0.1.9
         version: link:../provider/ts
     devDependencies:
       '@types/node':

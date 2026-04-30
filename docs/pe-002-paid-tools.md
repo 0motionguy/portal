@@ -1,6 +1,8 @@
 # PE-002 — Paid Tools
 
-**Status:** Stable · v1 · Non-normative in base spec · Reference implementation: [`@visitportal/x402-adapter`](../packages/x402-adapter) · Last updated: 2026-04-30
+**Status:** Stable · v1.1 (x402 v2 wire) · Non-normative in base spec · Reference implementation: [`@visitportal/x402-adapter`](../packages/x402-adapter) (v0.1.10+) · Last updated: 2026-04-30
+
+**Wire format note:** PE-002 v1 (released v0.1.8) wrapped the x402 v1 challenge inside Portal's envelope. PE-002 v1.1 (released v0.1.10) updates the embedded shape to **x402 v2** to match the live Coinbase / x402 Foundation facilitator at `www.x402.org/facilitator`. The visible changes are: `x402Version: 2` (was 1), CAIP-2 network identifiers (`eip155:84532` vs `base-sepolia`), retry header `Payment-Signature` (legacy `X-Payment` still accepted by the reference adapter for back-compat), `PaymentPayload` shape `{ x402Version, accepted, payload }` with the matched `paymentRequirement` echoed back as `accepted`. EIP-3009 `TransferWithAuthorization` signing internals are unchanged. See [CHANGELOG `[0.1.10]`](../CHANGELOG.md) for the migration diff.
 
 ---
 

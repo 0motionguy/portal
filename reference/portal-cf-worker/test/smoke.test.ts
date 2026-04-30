@@ -121,31 +121,45 @@ describe("portal-cf-worker · PE-002 paid tool (premium_data)", () => {
     expect(body.pricing?.model).toBe("x402");
   });
 
-  it("premium_data without X-Payment returns HTTP 402 + PAYMENT_REQUIRED + x402.accepts", async () => {
+  it("premium_data without payment header returns HTTP 402 + PAYMENT_REQUIRED + x402 v2 challenge", async () => {
     const { status, body } = await call("premium_data", {});
     expect(status).toBe(402);
     expect(body.ok).toBe(false);
     expect(body.code).toBe("PAYMENT_REQUIRED");
     const x402 = body.x402 as Record<string, unknown>;
     expect(x402).toBeDefined();
-    expect(x402.x402Version).toBe(1);
+    expect(x402.x402Version).toBe(2);
     const accepts = x402.accepts as Array<Record<string, unknown>>;
     expect(accepts.length).toBe(1);
     const first = accepts[0];
     if (!first) throw new Error("expected at least one accept entry");
     expect(first.scheme).toBe("exact");
-    expect(first.network).toBe("base-sepolia");
+    expect(first.network).toBe("eip155:84532");
     expect(first.amount).toBe("10000");
     const resource = x402.resource as Record<string, unknown>;
-    expect(resource.id).toBe("cf-worker-premium-data-v1");
+    expect(typeof resource.url).toBe("string");
   });
 
-  it("premium_data with X-Payment header runs the handler and returns the paid fact", async () => {
-    const xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xdemo" }));
+  it("premium_data with Payment-Signature header runs the handler and returns the paid fact", async () => {
+    const v2Payload = btoa(
+      JSON.stringify({
+        x402Version: 2,
+        accepted: {
+          scheme: "exact",
+          network: "eip155:84532",
+          asset: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+          amount: "10000",
+          payTo: "0x0000000000000000000000000000000000000000",
+          maxTimeoutSeconds: 60,
+          extra: {},
+        },
+        payload: { signature: "0xdemo", authorization: { mock: true } },
+      }),
+    );
     const res = await worker.fetch(
       new Request(`${ORIGIN}/portal/call`, {
         method: "POST",
-        headers: { "content-type": "application/json", "x-payment": xPayment },
+        headers: { "content-type": "application/json", "payment-signature": v2Payload },
         body: JSON.stringify({ tool: "premium_data", params: {} }),
       }),
     );

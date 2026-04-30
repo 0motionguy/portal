@@ -9,11 +9,12 @@ import {
 
 const PRICE: PaymentRequirement = {
   scheme: "exact",
-  network: "base-sepolia",
+  network: "eip155:84532", // Base-Sepolia in CAIP-2 format (x402 v2)
   asset: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
   amount: "10000",
   payTo: "0xRecipient",
   maxTimeoutSeconds: 60,
+  extra: {},
 };
 
 function buildPortal(facilitator: FacilitatorClient) {
@@ -73,24 +74,31 @@ describe("withPayment — PE-002 dispatcher", () => {
     expect(body.code).toBe("PAYMENT_REQUIRED");
     const x402 = body.x402 as Record<string, unknown>;
     expect(x402).toBeDefined();
-    expect(x402.x402Version).toBe(1);
+    expect(x402.x402Version).toBe(2);
     const accepts = x402.accepts as Array<Record<string, unknown>>;
     expect(accepts.length).toBe(1);
     const first = accepts[0];
     if (!first) throw new Error("expected at least one accept entry");
     expect(first.scheme).toBe("exact");
-    expect(first.network).toBe("base-sepolia");
+    expect(first.network).toBe("eip155:84532");
     expect(first.amount).toBe("10000");
     expect(first.payTo).toBe("0xRecipient");
   });
 
-  it("paid tool with valid X-Payment runs the handler and returns 200 + ok:true", async () => {
+  it("paid tool with valid Payment-Signature runs the handler and returns 200 + ok:true", async () => {
     const portal = buildPortal(mockFacilitator({ acceptAny: true }));
-    const xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xabc" }));
+    // v2 PaymentPayload shape — adapter peels .payload off and feeds to facilitator
+    const v2Payload = btoa(
+      JSON.stringify({
+        x402Version: 2,
+        accepted: PRICE,
+        payload: { signature: "0xabc", authorization: { mock: true } },
+      }),
+    );
     const { status, body } = await call(
       portal,
       { tool: "premium_echo", params: { text: "hello" } },
-      { "x-payment": xPayment },
+      { "payment-signature": v2Payload },
     );
     expect(status).toBe(200);
     expect(body.ok).toBe(true);
@@ -105,23 +113,29 @@ describe("withPayment — PE-002 dispatcher", () => {
         return { ok: false, reason: "signature invalid" };
       },
     });
-    const xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xbad" }));
+    const v2Payload = btoa(
+      JSON.stringify({
+        x402Version: 2,
+        accepted: PRICE,
+        payload: { signature: "0xbad", authorization: { mock: true } },
+      }),
+    );
     const { status, body } = await call(
       portal,
       { tool: "premium_echo", params: { text: "x" } },
-      { "x-payment": xPayment },
+      { "payment-signature": v2Payload },
     );
     expect(status).toBe(402);
     expect(body.code).toBe("PAYMENT_REQUIRED");
     expect(body.error).toBe("signature invalid");
   });
 
-  it("malformed X-Payment header returns HTTP 402 with a clear error", async () => {
+  it("malformed Payment-Signature header returns HTTP 402 with a clear error", async () => {
     const portal = buildPortal(mockFacilitator({ acceptAny: true }));
     const { status, body } = await call(
       portal,
       { tool: "premium_echo", params: { text: "x" } },
-      { "x-payment": "@@not-base64-json@@" },
+      { "payment-signature": "@@not-base64-json@@" },
     );
     expect(status).toBe(402);
     expect(body.code).toBe("PAYMENT_REQUIRED");
@@ -134,11 +148,17 @@ describe("withPayment — PE-002 dispatcher", () => {
         throw new Error("connection refused");
       },
     });
-    const xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xabc" }));
+    const v2Payload = btoa(
+      JSON.stringify({
+        x402Version: 2,
+        accepted: PRICE,
+        payload: { signature: "0xabc", authorization: { mock: true } },
+      }),
+    );
     const { status, body } = await call(
       portal,
       { tool: "premium_echo", params: { text: "x" } },
-      { "x-payment": xPayment },
+      { "payment-signature": v2Payload },
     );
     expect(status).toBe(402);
     expect(body.code).toBe("PAYMENT_REQUIRED");
@@ -170,10 +190,16 @@ describe("withPayment — PE-002 dispatcher", () => {
         },
       ],
     });
-    const xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xabc" }));
+    const v2Payload = btoa(
+      JSON.stringify({
+        x402Version: 2,
+        accepted: PRICE,
+        payload: { signature: "0xabc", authorization: { mock: true } },
+      }),
+    );
     const req = new Request("https://test.invalid/portal/call", {
       method: "POST",
-      headers: { "content-type": "application/json", "x-payment": xPayment },
+      headers: { "content-type": "application/json", "payment-signature": v2Payload },
       body: JSON.stringify({ tool: "premium", params: {} }),
     });
     const res = await portal.fetch(req);
@@ -181,6 +207,19 @@ describe("withPayment — PE-002 dispatcher", () => {
     const body = (await res.json()) as Record<string, unknown>;
     expect(body.code).toBe("INTERNAL");
     expect(body.error).toContain("settle failed");
+  });
+
+  it("legacy X-Payment header still accepted for backward compat", async () => {
+    const portal = buildPortal(mockFacilitator({ acceptAny: true }));
+    // Pre-v0.1.10 v1-shape payload sent in legacy X-Payment header
+    const legacy = btoa(JSON.stringify({ scheme: "exact", signed: "0xlegacy" }));
+    const { status, body } = await call(
+      portal,
+      { tool: "premium_echo", params: { text: "hi" } },
+      { "x-payment": legacy },
+    );
+    expect(status).toBe(200);
+    expect(body.ok).toBe(true);
   });
 });
 
@@ -198,7 +237,10 @@ describe("PaymentRequirement shape", () => {
           handler: withPayment(() => ({ ok: true }), {
             price: PRICE,
             facilitator: mockFacilitator({ acceptAny: true }),
-            resource: { id: "premium-resource-v1", url: "https://test.invalid/portal/call" },
+            resource: {
+              url: "https://test.invalid/portal/call",
+              description: "premium-resource-v1",
+            },
           }),
         },
       ],
@@ -213,6 +255,7 @@ describe("PaymentRequirement shape", () => {
     const body = (await res.json()) as Record<string, unknown>;
     const x402 = body.x402 as Record<string, unknown>;
     const resource = x402.resource as Record<string, unknown>;
-    expect(resource.id).toBe("premium-resource-v1");
+    expect(resource.url).toBe("https://test.invalid/portal/call");
+    expect(resource.description).toBe("premium-resource-v1");
   });
 });

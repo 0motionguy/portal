@@ -97,7 +97,7 @@ async function main(): Promise<number> {
     : `${baseUrl}${manifest.call_endpoint}`;
 
   // ── Step 2: POST /portal/call (unpaid) — expect 402 + x402.accepts ──────
-  header("2. POST /portal/call (no X-Payment) — expect HTTP 402 + x402 challenge");
+  header("2. POST /portal/call (no Payment-Signature) — expect HTTP 402 + x402 v2 challenge");
   const unpaid = await postJson<CallResultEnvelope>(callUrl, {
     tool: paidToolName,
     params: {},
@@ -120,16 +120,16 @@ async function main(): Promise<number> {
   console.log(`  accepts[0]: scheme=${accept.scheme} network=${accept.network}`);
   console.log(`              amount=${accept.amount} payTo=${accept.payTo}`);
 
-  // ── Step 3: Build the X-Payment header ──────────────────────────────────
-  header("3. Build X-Payment payload");
-  let xPayment: string;
+  // ── Step 3: Build the Payment-Signature header (x402 v2 PaymentPayload) ─
+  header("3. Build x402 v2 PaymentPayload");
+  let paymentSignature: string;
 
   if (MODE === "real") {
-    // Real x402 v1 signing per the "exact" scheme. Signs an EIP-3009
+    // Real x402 v2 signing per the "exact" scheme. Signs an EIP-3009
     // TransferWithAuthorization on the configured ERC-20 (default USDC on
-    // Base-Sepolia), base64-encodes the {signature, authorization} payload,
-    // and uses it as the X-Payment header. The Worker's coinbaseFacilitator
-    // verifies on-chain.
+    // Base-Sepolia), wraps in v2 PaymentPayload { x402Version: 2, accepted,
+    // payload }, base64-encodes, sends as the Payment-Signature header.
+    // The Worker's coinbaseFacilitator verifies on-chain.
     //
     // Lazy-loaded so wire-mode runs without these deps installed:
     //   pnpm add -D viem
@@ -143,7 +143,6 @@ async function main(): Promise<number> {
       return 1;
     }
 
-    let signedXPayment: string;
     try {
       // @ts-expect-error optional dep; wire mode runs without it
       const accounts = (await import("viem/accounts")) as typeof import("viem/accounts");
@@ -153,24 +152,26 @@ async function main(): Promise<number> {
       const account = accounts.privateKeyToAccount(walletKey as `0x${string}`);
       console.log(`  wallet: ${account.address}`);
 
-      // Build EIP-3009 TransferWithAuthorization. Domain MUST match the
-      // ERC-20's EIP-712 domain — for Base-Sepolia USDC that's
-      //   { name: "USDC", version: "2", chainId: 84532, verifyingContract: <USDC> }
-      // For other tokens/networks, read the contract's `eip712Domain()` view
-      // and hardcode here, or use viem's `getEip712Domain()`.
+      // Parse CAIP-2 network identifier ("eip155:84532" → chainId 84532).
       const network = String(accept.network);
       const asset = String(accept.asset);
       const value = String(accept.amount);
       const payTo = String(accept.payTo);
 
-      const chainId = network === "base-sepolia" ? 84532 : network === "base" ? 8453 : null;
-      if (chainId === null) {
+      const caipMatch = network.match(/^eip155:(\d+)$/);
+      if (!caipMatch || !caipMatch[1]) {
         console.error(
-          `✗ MODE=real: chainId for network='${network}' not hardcoded. Add it to the script or use viem's getEip712Domain().`,
+          `✗ MODE=real: network='${network}' is not CAIP-2 EVM format (expected 'eip155:<chainId>'). Solana/other chains require a different signer.`,
         );
         return 2;
       }
-      const tokenName = network === "base" ? "USD Coin" : "USDC";
+      const chainId = Number.parseInt(caipMatch[1], 10);
+
+      // EIP-712 domain for the ERC-20. Base-Sepolia USDC reports
+      // { name: "USDC", version: "2" }; Base mainnet USDC reports
+      // { name: "USD Coin", version: "2" }. Adopters on other chains/tokens
+      // should read the contract's `eip712Domain()` view.
+      const tokenName = chainId === 8453 ? "USD Coin" : "USDC";
 
       const validAfter = 0n;
       const validBefore = BigInt(Math.floor(Date.now() / 1000) + 600); // 10 min
@@ -206,10 +207,12 @@ async function main(): Promise<number> {
         message: authorization,
       });
 
-      const x402Payload = {
-        x402Version: 1,
-        scheme: "exact",
-        network,
+      // x402 v2 PaymentPayload: { x402Version: 2, accepted, payload }
+      // The `accepted` field echoes back the matched paymentRequirement so
+      // the facilitator knows which slot the client is paying against.
+      const v2Payload = {
+        x402Version: 2,
+        accepted: accept,
         payload: {
           signature,
           authorization: {
@@ -223,12 +226,12 @@ async function main(): Promise<number> {
         },
       };
 
-      signedXPayment = btoa(JSON.stringify(x402Payload));
-      console.log(`✓ EIP-3009 authorization signed`);
+      paymentSignature = btoa(JSON.stringify(v2Payload));
+      console.log(`✓ EIP-3009 authorization signed (chainId=${chainId})`);
       console.log(`  amount:       ${value} (atomic units)`);
       console.log(`  validBefore:  ${new Date(Number(validBefore) * 1000).toISOString()}`);
       console.log(`  signature:    ${signature.slice(0, 18)}…${signature.slice(-8)}`);
-      console.log(`  payload size: ${signedXPayment.length} chars (base64)`);
+      console.log(`  payload size: ${paymentSignature.length} chars (base64)`);
     } catch (err) {
       const msg = (err as Error).message;
       console.error(`✗ MODE=real signing failed: ${msg}`);
@@ -236,21 +239,26 @@ async function main(): Promise<number> {
       console.error(`    pnpm --filter portal-cf-worker add -D viem`);
       return 2;
     }
-    xPayment = signedXPayment;
   } else {
     // Wire mode: any base64 payload works against the default mockFacilitator
     // shipped in the reference Worker. This proves the wire flow + envelope
     // shape end-to-end without needing a wallet.
-    xPayment = btoa(JSON.stringify({ scheme: "exact", signed: "0xWIRETEST", note: "wire-mode mock payment" }));
-    console.log(`✓ wire-mode mock payment payload (base64, ${xPayment.length} chars)`);
+    paymentSignature = btoa(
+      JSON.stringify({
+        x402Version: 2,
+        accepted: accept,
+        payload: { signature: "0xWIRETEST", authorization: { mock: true } },
+      }),
+    );
+    console.log(`✓ wire-mode v2 PaymentPayload (base64, ${paymentSignature.length} chars)`);
   }
 
-  // ── Step 4: POST /portal/call WITH X-Payment — expect 200 + result ──────
-  header("4. POST /portal/call (with X-Payment) — expect HTTP 200 + result");
+  // ── Step 4: POST with Payment-Signature — expect 200 + result ──────────
+  header("4. POST /portal/call (with Payment-Signature) — expect HTTP 200 + result");
   const paidRes = await postJson<CallResultEnvelope>(
     callUrl,
     { tool: paidToolName, params: {} },
-    { "x-payment": xPayment },
+    { "payment-signature": paymentSignature },
   );
   if (paidRes.status !== 200) {
     console.error(`✗ paid call returned HTTP ${paidRes.status}, expected 200`);

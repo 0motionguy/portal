@@ -7,6 +7,60 @@ All notable changes to Portal are recorded here. The specification is versioned 
 
 Nothing yet.
 
+## [0.1.10] — 2026-04-30
+
+**x402 v2 wire migration.** The Coinbase / x402 Foundation hosted facilitator at `https://www.x402.org/facilitator` only accepts `x402Version: 2` payloads. Our v0.1.8 adapter emitted v1 — incompatible with production. Triple-checked against the live `/supported` endpoint and the canonical types in `x402-foundation/x402:typescript/packages/core/src/types/payments.ts`.
+
+### Changed (breaking for the wire — opt-in extension only)
+
+- **`@visitportal/x402-adapter` `0.1.8` → `0.1.10`.** Wire format updated to x402 v2:
+  - `x402Version: 1` → `2` everywhere.
+  - **Network identifier**: named (`"base-sepolia"`) → CAIP-2 (`"eip155:84532"`).
+  - **Headers**: `X-Payment` → `Payment-Signature` (request), new `Payment-Required` (response, future). Legacy `X-Payment` still accepted for back-compat (read both).
+  - **PaymentPayload shape**: top-level `{x402Version, scheme, network, payload}` → `{x402Version, accepted, payload, extensions?}`. The `accepted` field echoes back the matched paymentRequirement.
+  - **Challenge body**: now includes `resource: { url, description?, mimeType? }` per v2 spec.
+  - **`PaymentRequirement.extra`** now required (was optional). `PaymentRequirement.description` removed (moved into `resource`).
+- **CF Worker reference** updated for v2: env default `PAYMENT_NETWORK=eip155:84532`. Smoke tests assert v2 envelope shapes.
+- **`test-payer.ts` MODE=real** signs EIP-3009 (unchanged internally), wraps in v2 `PaymentPayload`, sends as `Payment-Signature` header. Network parsing now expects CAIP-2 (`eip155:<chainId>`).
+
+### Verified
+
+- 9 adapter tests + 14 CF-Worker smoke tests pass with v2 shapes.
+- End-to-end round-trip against `wrangler dev` (local Workers runtime): `GET /portal` → `POST /portal/call` 402 + `body.x402.accepts[0].network: "eip155:84532"` → retry with `Payment-Signature` header → 200 + paid result.
+
+### Why a 0.1.8 → 0.1.10 jump
+
+`0.1.9` was the provider-only patch (leanValidate fix for Workers bundling). x402-adapter wasn't published at 0.1.9. Going straight to `0.1.10` keeps the adapter version aligned with the project release tag.
+
+### Migration
+
+Adopters using `@visitportal/x402-adapter@0.1.8`:
+
+```diff
+ const portal = serve({
+   pricing: { model: "x402", rate: "..." },
+   tools: [{
+     handler: withPayment(handler, {
+       price: {
+         scheme: "exact",
+-        network: "base-sepolia",
++        network: "eip155:84532",
+         asset: USDC,
+         amount: "10000",
+         payTo: WALLET,
+         maxTimeoutSeconds: 60,
++        extra: {},
+       },
+       facilitator: coinbaseFacilitator(),
+-      resource: { id: "...", url: "..." },
++      resource: { url: "...", description: "..." },
+     }),
+   }],
+ });
+```
+
+Visitor-side: `X-Payment` header still accepted, but new code should send `Payment-Signature` with the v2 `PaymentPayload` shape.
+
 ## [0.1.9] — 2026-04-30 (patch)
 
 **Workers / Edge runtime fix.** The `@visitportal/provider` package was importing `validateManifest` from `@visitportal/spec`'s ajv-based runner, which `fs.readFileSync`s the schema + vectors JSON at module load. That's fine in Node but breaks `wrangler dev` / Cloudflare Workers / any V8-isolate runtime with `Uncaught Error: No such module "node:fs"` at bundle time.
