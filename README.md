@@ -24,14 +24,14 @@ Portal is the minimal HTTP contract for agent-accessible services. Two endpoints
 
 ```sh
 # 1. Discover — read the manifest
-curl https://demo.visitportal.dev/portal
+curl https://www.visitportal.dev/portal-static-example.json
 ```
 
 ```sh
 # 2. Call — invoke a tool
-curl -X POST https://demo.visitportal.dev/portal/call \
+curl -X POST https://www.visitportal.dev/api/portal-static-example/call \
   -H 'content-type: application/json' \
-  -d '{"tool":"top_gainers","params":{"limit":3}}'
+  -d '{"tool":"posts","params":{"limit":3}}'
 ```
 
 No client library required. Works from bash, Python urllib, any fetch.
@@ -79,10 +79,10 @@ powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
 ### Visit any Portal — plain HTTP, no SDK
 
 ```sh
-curl https://demo.visitportal.dev/portal
-curl -X POST https://demo.visitportal.dev/portal/call \
+curl https://www.visitportal.dev/portal-static-example.json
+curl -X POST https://www.visitportal.dev/api/portal-static-example/call \
   -H 'content-type: application/json' \
-  -d '{"tool":"top_gainers","params":{"limit":3}}'
+  -d '{"tool":"posts","params":{"limit":3}}'
 ```
 
 ### Visit from TypeScript (optional convenience)
@@ -91,7 +91,7 @@ curl -X POST https://demo.visitportal.dev/portal/call \
 import { visit } from "@visitportal/visit";
 
 // Production:
-const portal = await visit("https://demo.visitportal.dev/portal");
+const portal = await visit("https://www.visitportal.dev/portal-static-example.json");
 
 // Or against a local reference Portal:
 // const portal = await visit("http://localhost:3075/portal", { allowInsecure: true });

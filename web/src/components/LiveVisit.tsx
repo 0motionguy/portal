@@ -42,7 +42,7 @@ interface Manifest {
 
 type Phase = "idle" | "fetching" | "success" | "error";
 
-const DEFAULT_URL = "https://demo.visitportal.dev/portal";
+const DEFAULT_URL = "https://www.visitportal.dev/portal-static-example.json";
 const LINE_STAGGER_MS = 110;
 
 export default function LiveVisit(): React.ReactElement {

@@ -37,12 +37,12 @@ export default function DocsPage() {
         </p>
         <pre>
           <code>{`# 1. Discover — read the manifest
-curl https://demo.visitportal.dev/portal
+curl https://www.visitportal.dev/portal-static-example.json
 
 # 2. Call — execute a tool
-curl -X POST https://demo.visitportal.dev/portal/call \\
+curl -X POST https://www.visitportal.dev/api/portal-static-example/call \\
   -H 'content-type: application/json' \\
-  -d '{"tool":"top_gainers","params":{"limit":3}}'`}</code>
+  -d '{"tool":"posts","params":{"limit":3}}'`}</code>
         </pre>
         <p>
           No client library required. Works from bash, Python <code>urllib</code>, any{" "}
