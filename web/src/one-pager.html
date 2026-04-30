@@ -1150,8 +1150,8 @@
     <div class="metrics-grid">
       <div class="metric-card">
         <div class="tag"><span>TESTS</span><span class="dot">●</span></div>
-        <div class="big">172<em>/172</em></div>
-        <div class="sub">across spec · bench · visit · cli · reference</div>
+        <div class="big">189<em>/189</em></div>
+        <div class="sub">across spec · provider · visit · cli · bench · mcp-adapter · x402-adapter · reference</div>
         <div class="src">pnpm -r test</div>
       </div>
       <div class="metric-card">
@@ -1180,14 +1180,14 @@
       </div>
       <div class="metric-card">
         <div class="tag"><span>CONFORMANCE</span><span class="dot">●</span></div>
-        <div class="big">30<em>/30</em></div>
-        <div class="sub">vectors · ajv ↔ lean validator agree on every one</div>
+        <div class="big">36<em>/36</em></div>
+        <div class="sub">vectors · ajv ↔ lean validator agree on every one (13 valid + 13 invalid + 10 call pairs)</div>
         <div class="src">packages/spec/conformance/vectors.json</div>
       </div>
     </div>
 
     <p class="wide" style="margin-top: 8px; color: var(--dim); font-size: 12px; font-family: 'Geist Mono', monospace;">
-      <span style="color: var(--coral);">▸</span> As of <span class="inline-code">2026-04-19</span>, one commit per phase on <span class="inline-code">main</span>: <span class="inline-code">c82c882 · 98ec8d9 · d1c40ba · 272cd53 · f6c8b32 · 8f1c997</span>. Full phase table in <span class="inline-code">docs/status.md</span>.
+      <span style="color: var(--coral);">▸</span> As of <span class="inline-code">2026-04-30</span> (<span class="inline-code">v0.1.11</span>): five npm packages live (<span class="inline-code">@visitportal/{spec, provider, mcp-adapter, x402-adapter}</span>), end-to-end x402 v2 round-trip <strong>production-verified</strong> against AISO Sponge gateway. Full phase table in <span class="inline-code">docs/status.md</span>; release notes in <span class="inline-code">CHANGELOG.md</span>.
     </p>
   </section>
 
@@ -1525,8 +1525,8 @@
     <div class="econ-grid">
       <div class="econ-card">
         <h3>Pay-per-visit</h3>
-        <span class="tag">new surface</span>
-        <p>Every visit is a billable event. x402 micropayments per call. The Stripe-of-agents primitive.</p>
+        <span class="tag">SHIPPED · v0.1.11</span>
+        <p>Every visit is a billable event. x402 v2 micropayments per call via <span class="inline-code">@visitportal/x402-adapter</span> (on npm). Production-verified against AISO Sponge gateway.</p>
         <span class="big">$0.001<span class="sub">/ call</span></span>
       </div>
       <div class="econ-card">
@@ -1552,23 +1552,23 @@
     <div class="term-banner">
       <span class="prompt-char">▸</span>
       <div>
-        <strong>Every visit is a billable event.</strong> Portal doesn't just solve the scaling problem — it creates the monetization surface the agent economy has been missing.
+        <strong>Pay-per-visit is shipped, not promised.</strong> <span class="inline-code">@visitportal/x402-adapter</span> is on npm. PE-002 paid tools are stable. End-to-end x402 v2 round-trip <strong>production-verified</strong> against the live AISO Sponge gateway: signed EIP-3009 USDC authorization, valid signature, only blocker on test was unfunded testnet balance — the protocol settles.
       </div>
     </div>
   </section>
 
   <!-- 09 BUILD PLAN -->
   <section>
-    <div class="sec-tag"><span class="num">09</span><span>WHAT WE'RE BUILDING</span></div>
+    <div class="sec-tag"><span class="num">09</span><span>WHAT'S SHIPPED</span></div>
     <h2>The visitor-side half of the <em>agent-interop story.</em></h2>
     <p class="wide">
-      A published <span class="inline-code">v0.1 spec</span>. A reference Portal at a live service. NPM packages for provider helpers and MCP wrapping. A Claude Code demo where the agent visits a Portal cold, executes real work, and leaves — all in under ten seconds with zero configuration.
+      Spec <span class="inline-code">v0.1.8</span> normative. Five npm packages live: <span class="inline-code">@visitportal/spec</span>, <span class="inline-code">@visitportal/provider</span>, <span class="inline-code">@visitportal/mcp-adapter</span>, <span class="inline-code">@visitportal/visit</span>, <span class="inline-code">@visitportal/x402-adapter</span>. Reference Portals run on Hono (<span class="inline-code">trending-demo</span>), Cloudflare Workers (<span class="inline-code">portal-cf-worker</span>), and as a static-fallback Edge function. The Claude Code demo visits cold and leaves in ~7 seconds.
     </p>
     <p class="wide">
-      A reproducible MCP-vs-Portal benchmark suite so every claim on this page is independently verifiable. <span class="inline-code">@visitportal/mcp-adapter</span> wraps existing stdio MCP servers as cold-visit Portals. A public directory so Claude Code users can discover Portals the way they already discover repos.
+      Reproducible MCP-vs-Portal bench (48 cells, real Anthropic <span class="inline-code">count_tokens</span>) so every number on this page is independently re-derivable. End-to-end agent-simulation script drives a real Claude run against the reference Portal. <span class="inline-code">@visitportal/mcp-adapter</span> wraps existing stdio MCP servers; <span class="inline-code">@visitportal/x402-adapter</span> wraps any handler with x402 v2 paid-tool gating in one line.
     </p>
     <p class="wide">
-      Built by operators, not researchers — the team behind ClawPulse (streaming intelligence for agents), AGNT (agent marketplace), and the AGP envelope. We've been shipping this category for a year. Portal is the piece that makes the rest of the stack compounding.
+      External integration contracts shipped: AISO Portal Readiness Score (5 × 20-point rubric, normative JSON Schema) and TrendingRepo "Portal Ready" badge (4 states + agent-actions preview). Both are docs-only — base Portal stays neutral and unowned. Architecture overview at <span class="inline-code">docs/architecture-overview.md</span>; one-page spec at <span class="inline-code">docs/spec-v0.1.8.md</span>.
     </p>
   </section>
 
