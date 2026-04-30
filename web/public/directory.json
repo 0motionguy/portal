@@ -1,6 +1,6 @@
 {
   "portal_directory_version": "0.1",
-  "generated": "2026-04-19",
+  "generated": "2026-04-30",
   "note": "Stub directory — v0.1. Grows as more Portals publish. Open a PR against web/public/directory.json to add yours.",
   "portals": [
     {
@@ -10,6 +10,22 @@
       "tools": ["top_gainers", "search_repos", "maintainer_profile"],
       "added": "2026-04-19",
       "source": "https://github.com/0motionguy/portal/tree/main/reference/trending-demo"
+    },
+    {
+      "name": "Static Fallback (reference)",
+      "brief": "A Portal hosted as a static JSON file plus a single Edge function dispatcher. Demonstrates the pattern for sites that ship as static assets.",
+      "url": "https://www.visitportal.dev/portal-static-example.json",
+      "tools": ["whoami", "posts"],
+      "added": "2026-04-30",
+      "source": "https://github.com/0motionguy/portal/tree/main/web/app/api/portal-static-example"
+    },
+    {
+      "name": "Portal CF Worker (reference)",
+      "brief": "Two routes, one Cloudflare Worker — ~30 lines of glue on top of @visitportal/provider's fetch handler.",
+      "url": "https://github.com/0motionguy/portal/tree/main/reference/portal-cf-worker",
+      "tools": ["whoami", "reverse"],
+      "added": "2026-04-30",
+      "source": "https://github.com/0motionguy/portal/tree/main/reference/portal-cf-worker"
     }
   ]
 }

@@ -12,7 +12,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.6 packages</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.7 release</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
@@ -99,11 +99,19 @@ app.post('/portal/call', async (req, res) => {
           <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-fastapi.md">
             FastAPI
           </a>
-          , and{" "}
+          ,{" "}
           <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-express.md">
             Express
           </a>
-          .
+          ,{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-cloudflare-worker.md">
+            Cloudflare Workers
+          </a>
+          , and{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/quickstart-static-fallback.md">
+            static fallback
+          </a>{" "}
+          (for sites without a backend).
         </p>
 
         <h2 id="provider-helper">Provider helper</h2>
@@ -315,6 +323,51 @@ if (!report.ok) {
   process.exit(1);
 }`}</code>
         </pre>
+
+        <h2 id="architecture">Architecture overview</h2>
+        <p>
+          One page that ties the spec, the SDK, the security model, the AISO + TrendingRepo
+          integration contracts, and the testing plan together — read this if you want the system
+          assembled rather than the parts.
+        </p>
+        <ul>
+          <li>
+            <a href="https://github.com/0motionguy/portal/blob/main/docs/architecture-overview.md">
+              docs/architecture-overview.md
+            </a>{" "}
+            — 9-section system overview
+          </li>
+          <li>
+            <a href="https://github.com/0motionguy/portal/blob/main/docs/integrations/aiso-readiness-score.md">
+              docs/integrations/aiso-readiness-score.md
+            </a>{" "}
+            — Portal Readiness Score (5 × 20-point rubric) for AISO scanners
+          </li>
+          <li>
+            <a href="https://github.com/0motionguy/portal/blob/main/docs/integrations/trendingrepo-portal-badge.md">
+              docs/integrations/trendingrepo-portal-badge.md
+            </a>{" "}
+            — "Portal Ready" badge contract for TrendingRepo
+          </li>
+        </ul>
+
+        <h2 id="agent-sim">End-to-end agent simulation</h2>
+        <p>
+          Bench the protocol with a real Claude run, not just <code>count_tokens</code>:
+        </p>
+        <pre>
+          <code>{`# clone the repo, install, run with your own Anthropic key
+ANTHROPIC_API_KEY=sk-ant-... pnpm tsx packages/bench/scripts/agent-sim.ts`}</code>
+        </pre>
+        <p>
+          Spins up a Portal in-process, gives Claude the manifest as Anthropic tools, and runs the{" "}
+          <code>tool_use → tool_result</code> loop until <code>end_turn</code>. Mocked unit test
+          runs in CI; live script is opt-in. Source:{" "}
+          <a href="https://github.com/0motionguy/portal/blob/main/packages/bench/scripts/agent-sim.ts">
+            packages/bench/scripts/agent-sim.ts
+          </a>
+          .
+        </p>
 
         <h2 id="extensions">Extensions</h2>
         <p>
