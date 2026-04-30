@@ -1,4 +1,9 @@
-import { validateManifest } from "@visitportal/spec";
+// Use the zero-dep lean validator (no Ajv, no fs) so this module bundles
+// cleanly for Cloudflare Workers / Edge runtimes without pulling node:fs.
+// Behaviorally equivalent to validateManifest from @visitportal/spec —
+// the conformance suite verifies "ajv↔lean agree on all manifest vectors"
+// (see packages/spec/conformance/self-test.ts).
+import { leanValidate } from "@visitportal/spec/lean-validator";
 import { ManifestBuildError } from "./errors.ts";
 import type { Manifest, ManifestOptions, Tool, ToolDefinition } from "./types.ts";
 
@@ -22,11 +27,9 @@ export function ensureManifest(input: Manifest): Manifest {
     throw new ManifestBuildError(duplicateNames.map((name) => `duplicate tool name: '${name}'`));
   }
 
-  const result = validateManifest(input);
+  const result = leanValidate(input);
   if (!result.ok) {
-    throw new ManifestBuildError(
-      result.errors.map((e) => `${e.instancePath || "/"} ${e.message ?? ""}`.trim()),
-    );
+    throw new ManifestBuildError(result.errors);
   }
 
   return input;

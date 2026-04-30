@@ -7,6 +7,26 @@ All notable changes to Portal are recorded here. The specification is versioned 
 
 Nothing yet.
 
+## [0.1.9] — 2026-04-30 (patch)
+
+**Workers / Edge runtime fix.** The `@visitportal/provider` package was importing `validateManifest` from `@visitportal/spec`'s ajv-based runner, which `fs.readFileSync`s the schema + vectors JSON at module load. That's fine in Node but breaks `wrangler dev` / Cloudflare Workers / any V8-isolate runtime with `Uncaught Error: No such module "node:fs"` at bundle time.
+
+### Fixed
+
+- **`@visitportal/provider`** now uses `leanValidate` from `@visitportal/spec/lean-validator` (zero-dep, no fs). Behaviorally equivalent — the conformance suite asserts `ajv↔lean agree on all manifest vectors`. Workers, Deno, Bun, and any non-Node runtime now bundle cleanly.
+- **End-to-end CF Worker round-trip verified** with `wrangler dev`: manifest discovery → 402 + x402 challenge → X-Payment retry → 200 + result. The reference `portal-cf-worker` is now actually deployable.
+
+### Changed
+
+- `@visitportal/provider` `0.1.8` → `0.1.9`. No public API change. Every `^0.1.8` consumer gets the fix automatically on next install.
+- Reference `portal-cf-worker` source refactored to env-driven facilitator selection: `mockFacilitator` by default (test/dev), switches to `coinbaseFacilitator` or `selfHostedFacilitator` based on `FACILITATOR_URL` env binding from `wrangler.toml [vars]`.
+- `scripts/test-payer.ts` `MODE=real` now signs a real EIP-3009 USDC `TransferWithAuthorization` with viem, builds the x402 v1 payload, and uses it as `X-Payment`. `MODE=wire` (default) unchanged.
+
+### Not changed
+
+- Spec stays at v0.1.8 (no wire change).
+- `@visitportal/spec`, `@visitportal/visit`, `@visitportal/cli`, `@visitportal/mcp-adapter`, `@visitportal/x402-adapter` packages unchanged on npm. The provider patch flows to them via semver `^0.1.8`.
+
 ## [0.1.8] — 2026-04-30
 
 **Agent commerce release.** PE-002 (paid tools) graduates from draft to stable; reference implementation ships as `@visitportal/x402-adapter@0.1.8`. The base v0.1 wire stays byte-identical to v0.1.5 — every v0.1.5-conformant Portal remains v0.1.8-conformant. PE-002 is opt-in.

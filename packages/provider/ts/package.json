@@ -1,7 +1,7 @@
 {
   "name": "@visitportal/provider",
   "license": "Apache-2.0",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": false,
   "description": "Optional helper library for Portal providers. Build a validated manifest and serve it over raw fetch-compatible HTTP.",
   "type": "module",
