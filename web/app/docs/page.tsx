@@ -12,7 +12,7 @@ export default function DocsPage() {
     <>
       <Nav active="docs" />
       <main className="page">
-        <span className="eyebrow">▶ adopter quickstart · v0.1.8 release</span>
+        <span className="eyebrow">▶ adopter quickstart · v0.1.11 release</span>
         <h1>
           Portal — <em>adopter quickstart.</em>
         </h1>
@@ -230,7 +230,7 @@ export default {
           endpoints MUST handle <code>OPTIONS</code> preflight and MUST set{" "}
           <code>Access-Control-Allow-Origin</code>. Credentialed requests have per-auth-mode
           semantics. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.8.md#appendix-c--cors">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.11.md#appendix-c--cors">
             spec Appendix C
           </a>{" "}
           for the full table.
@@ -241,7 +241,7 @@ export default {
           Portal SHOULDs a per-auth-mode default for rate limits. Visitor SDKs MUST treat{" "}
           <code>RATE_LIMITED</code> as recoverable and SHOULD honor <code>Retry-After</code>.
           Providers without a rate-limit strategy of their own can adopt the defaults verbatim. See{" "}
-          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.8.md#appendix-d--rate-limits">
+          <a href="https://github.com/0motionguy/portal/blob/main/docs/spec-v0.1.11.md#appendix-d--rate-limits">
             spec Appendix D
           </a>
           .
@@ -380,7 +380,7 @@ ANTHROPIC_API_KEY=sk-ant-... pnpm tsx packages/bench/scripts/agent-sim.ts`}</cod
           </li>
           <li>
             <strong>PE-002</strong> — paid tools via HTTP 402 + <code>x402</code> /{" "}
-            <a href="https://mpp.dev">MPP</a> (stable, v0.1.8 · spec:{" "}
+            <a href="https://mpp.dev">MPP</a> (stable, v0.1.11 · spec:{" "}
             <a href="https://github.com/0motionguy/portal/blob/main/docs/pe-002-paid-tools.md">
               docs/pe-002-paid-tools.md
             </a>
@@ -398,7 +398,7 @@ ANTHROPIC_API_KEY=sk-ant-... pnpm tsx packages/bench/scripts/agent-sim.ts`}</cod
 
         <h2 id="paid-tools">Paid tools (PE-002)</h2>
         <p>
-          As of <strong>v0.1.8</strong>, Portal has a stable optional extension for paid tools. Wrap
+          As of <strong>v0.1.11</strong>, Portal has a stable optional extension for paid tools. Wrap
           any handler with <code>withPayment()</code> from <code>@visitportal/x402-adapter</code>{" "}
           and the unpaid call returns HTTP 402 with the x402 challenge embedded in the standard
           Portal envelope. The visiting agent signs a payment per the requirement, retries with{" "}
