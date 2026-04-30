@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://visitportal.dev/schema/aiso-readiness-score-v1.json",
+  "title": "AISO Portal Readiness Score (v1.0.0)",
+  "description": "Output emitted by AISO (aiso.tools) for each scanned Portal URL. Producer-consumer contract — see docs/integrations/aiso-readiness-score.md.",
+  "type": "object",
+  "required": ["portal_url", "aiso_version", "last_checked", "score", "dimensions"],
+  "additionalProperties": false,
+  "properties": {
+    "portal_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL AISO fetched the manifest from. Either a /portal or a /.well-known/portal.json path."
+    },
+    "aiso_version": {
+      "type": "string",
+      "description": "SemVer of the AISO scorer that produced this output.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$"
+    },
+    "last_checked": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp of the scan."
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Sum of dimension points. MUST equal the arithmetic sum of dimensions.*.points."
+    },
+    "dimensions": {
+      "type": "object",
+      "required": [
+        "discoverability",
+        "schema_validity",
+        "conformance",
+        "metadata",
+        "live_execution"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "discoverability": { "$ref": "#/definitions/dimension" },
+        "schema_validity": { "$ref": "#/definitions/dimension" },
+        "conformance": { "$ref": "#/definitions/dimension" },
+        "metadata": { "$ref": "#/definitions/dimension" },
+        "live_execution": { "$ref": "#/definitions/dimension" }
+      }
+    }
+  },
+  "definitions": {
+    "dimension": {
+      "type": "object",
+      "required": ["points", "max", "detail"],
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20,
+          "description": "Points earned in this dimension. Each dimension is capped at 20."
+        },
+        "max": {
+          "type": "integer",
+          "const": 20,
+          "description": "Maximum points available in this dimension. Always 20 in v1."
+        },
+        "detail": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Human-readable note explaining the score."
+        }
+      }
+    }
+  }
+}
