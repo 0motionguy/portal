@@ -1,5 +1,16 @@
 # Portal Roadmap
 
+## Shipped post-v0.1.6 — adopter ergonomics
+
+Additive docs and one new reference example. No spec change; spec stays at v0.1.5.
+
+- **Cloudflare Worker reference** — [`reference/portal-cf-worker`](../reference/portal-cf-worker), runs `provider.serve()`'s Web-standard `fetch` handler. ~30 lines of glue. Quickstart: [`docs/quickstart-cloudflare-worker.md`](./quickstart-cloudflare-worker.md).
+- **Static-fallback recipe** — for sites that ship as static assets. Static manifest + single Edge function dispatcher. Quickstart: [`docs/quickstart-static-fallback.md`](./quickstart-static-fallback.md). Live example: [`web/public/portal-static-example.json`](../web/public/portal-static-example.json) + [`web/app/api/portal-static-example/call/route.ts`](../web/app/api/portal-static-example/call/route.ts).
+- **AISO Portal Readiness Score** — external integration contract. 5×20-point rubric. [`docs/integrations/aiso-readiness-score.md`](./integrations/aiso-readiness-score.md) + JSON Schema.
+- **TrendingRepo "Portal Ready" badge** — external integration contract. 4 badge states + 3-line preview. [`docs/integrations/trendingrepo-portal-badge.md`](./integrations/trendingrepo-portal-badge.md).
+- **End-to-end agent simulation** — real Claude → Portal tool-use loop. Mocked unit test in CI. [`packages/bench/scripts/agent-sim.ts`](../packages/bench/scripts/agent-sim.ts), [`packages/bench/test/agent-sim.test.ts`](../packages/bench/test/agent-sim.test.ts).
+- **Architecture overview** — single-page assembly of "how an agent visits a website" across 9 sections. [`docs/architecture-overview.md`](./architecture-overview.md).
+
 ## Shipped in v0.1.5 (current)
 
 Small adopter-ergonomics release. Spec bumped v0.1.4 → v0.1.5 with additive manifest relaxations; no endpoint or envelope changes.
