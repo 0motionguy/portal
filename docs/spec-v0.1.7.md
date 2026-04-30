@@ -1,10 +1,10 @@
-# Portal v0.1.5 — Specification
+# Portal v0.1.7 — Specification
 
-**Status:** CURRENT. Published 2026-04-23 as `v0.1.5`. Supersedes v0.1.4 (additive clarifications only; every v0.1.4 conformant portal remains v0.1.5 conformant).
+**Status:** CURRENT. Published 2026-04-30 as `v0.1.7`. Supersedes v0.1.5 (release-alignment rename only — wire protocol byte-identical to v0.1.5; every v0.1.5-conformant portal remains v0.1.7-conformant).
 **License:** Public domain. No copyright is asserted over this specification.
 **Normative schema:** [`packages/spec/manifest.schema.json`](../packages/spec/manifest.schema.json).
 **Conformance suite:** [`packages/spec/conformance/`](../packages/spec/conformance/).
-**Changelog vs v0.1.4:** see "Changelog" at end of document.
+**Changelog:** see end of document.
 
 ---
 
@@ -163,9 +163,9 @@ Base Portal implementations (visitor SDKs, provider helpers, MCP adapter, benchm
 
 ## 9. Conformance
 
-A provider is **v0.1.5-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
+A provider is **v0.1.7-conformant** iff it passes every vector in [`packages/spec/conformance/vectors.json`](../packages/spec/conformance/) when the suite is run against its `call_endpoint`.
 
-A visitor SDK is **v0.1.5-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
+A visitor SDK is **v0.1.7-conformant** iff it correctly fetches, validates, and calls every manifest and call-pair in the vectors.
 
 `pnpm conformance <url>` runs the suite against a live URL and emits a pass/fail report.
 
@@ -248,6 +248,15 @@ Visitors SHOULD try `/portal` first. Falling back to `/.well-known/portal.json` 
 **Status:** Appendix E is a v0.1 draft and will be promoted to normative in v0.2 after ecosystem feedback. Both paths are acceptable today; neither is required.
 
 ## Changelog
+
+### v0.1.7 (2026-04-30) — release alignment
+
+No wire-protocol change, no schema field change, no enum change, no envelope change. Document and schema artifacts renamed to align all package versions and the spec doc under a single release marker. Every v0.1.5-conformant portal remains v0.1.7-conformant; every v0.1.7-conformant portal validates against either the v0.1.5 or the v0.1.7 schema (they are byte-identical).
+
+- **Spec document filename.** `docs/spec-v0.1.5.md` → `docs/spec-v0.1.7.md`.
+- **Schema `$id`.** `manifest-v0.1.5.json` → `manifest-v0.1.7.json` (URL only; schema body unchanged).
+- **Conformance vectors `spec_version`.** `0.1.5` → `0.1.7` (vectors body unchanged).
+- **npm packages bumped to `0.1.7`** for consistency: `@visitportal/spec`, `@visitportal/visit`, `@visitportal/cli`, `@visitportal/provider`, `@visitportal/mcp-adapter`. No source-code change in any of them.
 
 ### v0.1.5 (2026-04-23) — relative `call_endpoint` + paramsSchema precedence
 

@@ -29,7 +29,7 @@ Portal is **the visitor-side half of the open agent web**. MCP and A2A are not c
 
 ## 2. Portal Manifest Schema (FINAL)
 
-Normative spec: [`docs/spec-v0.1.5.md §4`](./spec-v0.1.5.md). Machine-readable: [`packages/spec/manifest.schema.json`](../packages/spec/manifest.schema.json).
+Normative spec: [`docs/spec-v0.1.7.md §4`](./spec-v0.1.7.md). Machine-readable: [`packages/spec/manifest.schema.json`](../packages/spec/manifest.schema.json).
 
 Required: `portal_version`, `name`, `brief`, `tools`, `call_endpoint`. Optional: `auth`, `pricing`.
 
@@ -74,13 +74,13 @@ Rules (from the schema):
 - `pricing.model ∈ {"free", "x402"}`; `pricing.rate` is required iff `model != "free"`.
 - Unknown top-level fields are **rejected** by the schema (`additionalProperties: false`).
 
-Discovery: `GET /portal` is canonical; `GET /.well-known/portal.json` is an alternate path that MUST be byte-identical when both are served (spec Appendix E, draft in v0.1.5, normative in v0.2). See [`reference/trending-demo/src/server.ts:46-51`](../reference/trending-demo/src/server.ts#L46-L51).
+Discovery: `GET /portal` is canonical; `GET /.well-known/portal.json` is an alternate path that MUST be byte-identical when both are served (spec Appendix E, draft in v0.1.7, normative in v0.2). See [`reference/trending-demo/src/server.ts:46-51`](../reference/trending-demo/src/server.ts#L46-L51).
 
 ---
 
 ## 3. Portal Call API Spec
 
-Normative: [`docs/spec-v0.1.5.md §3.2 + §6`](./spec-v0.1.5.md). Provider helper: [`packages/provider/ts/src/serve.ts`](../packages/provider/ts/src/serve.ts).
+Normative: [`docs/spec-v0.1.7.md §3.2 + §6`](./spec-v0.1.7.md). Provider helper: [`packages/provider/ts/src/serve.ts`](../packages/provider/ts/src/serve.ts).
 
 **Request**
 
@@ -172,7 +172,7 @@ The manifest's `auth` field is **a declaration, not a protocol**. The base spec 
 
 - `"none"` — anonymous reads. Default.
 - `"api_key"` — provider expects `Authorization: Bearer <token>` or `X-API-Key: <token>`. Format and rotation are out of base scope.
-- `"erc8004"` — verified-agent identity. Documented as Portal Extension PE-001; see [`docs/spec-v0.1.5.md §8`](./spec-v0.1.5.md).
+- `"erc8004"` — verified-agent identity. Documented as Portal Extension PE-001; see [`docs/spec-v0.1.7.md §8`](./spec-v0.1.7.md).
 
 For **protected actions**, declare the appropriate `auth` value and validate the credential in your handler: `throw provider.unauthorized("...")` to get the standard `{ ok: false, code: "UNAUTHORIZED" }` envelope.
 

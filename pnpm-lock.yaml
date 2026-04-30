@@ -28,10 +28,10 @@ importers:
   packages/bench:
     dependencies:
       '@visitportal/provider':
-        specifier: workspace:^0.1.6
+        specifier: workspace:^0.1.7
         version: link:../provider/ts
       '@visitportal/visit':
-        specifier: workspace:^0.1.5
+        specifier: workspace:^0.1.7
         version: link:../visit/ts
     devDependencies:
       '@types/node':
@@ -63,7 +63,7 @@ importers:
   packages/mcp-adapter:
     dependencies:
       '@visitportal/provider':
-        specifier: workspace:^0.1.6
+        specifier: workspace:^0.1.7
         version: link:../provider/ts
       tsx:
         specifier: ^4.20.6
@@ -79,7 +79,7 @@ importers:
   packages/provider/ts:
     dependencies:
       '@visitportal/spec':
-        specifier: workspace:^0.1.5
+        specifier: workspace:^0.1.7
         version: link:../../spec
     devDependencies:
       '@types/node':
@@ -168,8 +168,8 @@ importers:
         specifier: ^1.34.3
         version: 1.37.0
       '@visitportal/spec':
-        specifier: ^0.1.5
-        version: 0.1.5
+        specifier: workspace:^0.1.7
+        version: link:../packages/spec
       ipaddr.js:
         specifier: ^2.2.0
         version: 2.3.0
@@ -939,9 +939,6 @@ packages:
 
   '@upstash/redis@1.37.0':
     resolution: {integrity: sha512-LqOJ3+XWPLSZ2rGSed5DYG3ixybxb8EhZu3yQqF7MdZX1wLBG/FRcI6xcUZXHy/SS7mmXWyadrud0HJHkOc+uw==}
-
-  '@visitportal/spec@0.1.5':
-    resolution: {integrity: sha512-gaLdop7KXZaQxancZFAudWyp+3qoZIxnG/ueNEJ5nBG9j2OX208VosH36QuFeaMhAKuUV/z7g7oPeJYFsnxXBQ==}
 
   '@vitest/expect@2.1.9':
     resolution: {integrity: sha512-UJCIkTBenHeKT1TTlKMJWy1laZewsRIzYighyYiJKZreqtdxSos/S1t+ktRMQWu2CKqaarrkeszJx1cgC5tGZw==}
@@ -2021,11 +2018,6 @@ snapshots:
   '@upstash/redis@1.37.0':
     dependencies:
       uncrypto: 0.1.3
-
-  '@visitportal/spec@0.1.5':
-    dependencies:
-      ajv: 8.18.0
-      ajv-formats: 3.0.1(ajv@8.18.0)
 
   '@vitest/expect@2.1.9':
     dependencies:

@@ -9,12 +9,12 @@ Nothing yet.
 
 ## [0.1.7] — 2026-04-30
 
-Adopter-ergonomics release. No spec change (still v0.1.5). No npm package contents changed; `@visitportal/spec` stays at `0.1.5`, `@visitportal/provider` and `@visitportal/mcp-adapter` stay at `0.1.6`. This release is purely additive docs + one new reference example + one new test target.
+Adopter-ergonomics release with **release alignment** — every artifact under one version. Wire protocol byte-identical to v0.1.5; the spec doc, schema `$id`, conformance vectors `spec_version`, and all five npm packages move to `0.1.7` together. Every v0.1.5-conformant Portal remains v0.1.7-conformant.
 
 ### Added
 
 - **Cloudflare Worker reference Portal.** `reference/portal-cf-worker/` runs `provider.serve()`'s Web-standard `fetch` handler in ~30 lines of glue. Quickstart: [`docs/quickstart-cloudflare-worker.md`](docs/quickstart-cloudflare-worker.md). Self-contained vitest smoke suite covers manifest validity, `/.well-known` parity, dispatch envelope shape, CORS preflight, and error mapping.
-- **Static-fallback Portal recipe.** [`docs/quickstart-static-fallback.md`](docs/quickstart-static-fallback.md) plus a live example wired into `web/`: [`web/public/portal-static-example.json`](web/public/portal-static-example.json) (static asset) + [`web/app/api/portal-static-example/call/route.ts`](web/app/api/portal-static-example/call/route.ts) (single serverless function dispatcher). For sites that ship as static assets (Jekyll, Hugo, Astro) and only need one tiny serverless function for `/portal/call`.
+- **Static-fallback Portal recipe.** [`docs/quickstart-static-fallback.md`](docs/quickstart-static-fallback.md) plus a live example wired into `web/`: [`web/public/portal-static-example.json`](web/public/portal-static-example.json) (static asset) + [`web/app/api/portal-static-example/call/route.ts`](web/app/api/portal-static-example/call/route.ts) (single serverless function dispatcher, hand-rolled, zero deps). For sites that ship as static assets (Jekyll, Hugo, Astro) and only need one tiny serverless function for `/portal/call`.
 - **AISO Portal Readiness Score (external integration contract).** [`docs/integrations/aiso-readiness-score.md`](docs/integrations/aiso-readiness-score.md) defines a 5 × 20-point additive rubric (discoverability, schema validity, conformance, metadata, live execution) and ships a normative output JSON Schema at [`docs/integrations/aiso-readiness-score.schema.json`](docs/integrations/aiso-readiness-score.schema.json). AISO consumes only the public `@visitportal/spec` package; no AISO code lives in this repo.
 - **TrendingRepo "Portal Ready" badge (external integration contract).** [`docs/integrations/trendingrepo-portal-badge.md`](docs/integrations/trendingrepo-portal-badge.md) defines four badge states (`none`/`detected`/`verified`/`gold`) keyed off the AISO score, plus a 3-line "what agents can do" preview pattern. Same rule: contract here, code in TrendingRepo's repo.
 - **End-to-end agent simulation.** [`packages/bench/scripts/agent-sim.ts`](packages/bench/scripts/agent-sim.ts) drives a real Claude run against an in-process Portal — manifest → Anthropic tools → `tool_use` → `tool_result` loop until `end_turn`. Mocked unit test in CI ([`packages/bench/test/agent-sim.test.ts`](packages/bench/test/agent-sim.test.ts)); live script opt-in via `ANTHROPIC_API_KEY`.
@@ -23,16 +23,20 @@ Adopter-ergonomics release. No spec change (still v0.1.5). No npm package conten
 
 ### Changed
 
-- Web UI version markers bumped `v0.1.6` → `v0.1.7`: nav footer, one-pager hero/status bar, OG image (SVG + dynamic), JSON-LD `softwareVersion`, docs page eyebrow.
-- `docs/quickstart-provider.md` framework list now links Cloudflare Workers.
+- **Spec doc renamed.** `docs/spec-v0.1.5.md` → `docs/spec-v0.1.7.md`. Body unchanged except for the version-string and changelog header. All cross-repo links updated.
+- **Schema `$id`.** `https://visitportal.dev/schema/manifest-v0.1.5.json` → `manifest-v0.1.7.json`. Schema body byte-identical.
+- **Conformance vectors.** `spec_version: "0.1.5"` → `"0.1.7"`. Vectors body unchanged.
+- **npm package versions.** `@visitportal/spec` `0.1.5` → `0.1.7`. `@visitportal/visit` `0.1.5` → `0.1.7`. `@visitportal/cli` `0.1.5` → `0.1.7`. `@visitportal/provider` `0.1.6` → `0.1.7`. `@visitportal/mcp-adapter` `0.1.6` → `0.1.7`. **No source-code change in any of them.**
+- **Web UI markers.** `v0.1.6` → `v0.1.7`: nav footer, one-pager hero/status bar, OG image (SVG + dynamic), JSON-LD `softwareVersion`, docs page eyebrow.
+- **Workspace dep pins** updated across `packages/*` and `web/` to `^0.1.7`.
+- **`docs/quickstart-provider.md`** framework list now links Cloudflare Workers.
 - README and ROADMAP wiring updated.
 
 ### Not changed (deliberately)
 
-- Spec stays at v0.1.5; no wire protocol change.
-- `@visitportal/spec`, `@visitportal/provider`, `@visitportal/mcp-adapter` npm packages unchanged.
-- Install scripts still pinned to `v0.1.6` until a v0.1.7 GitHub release tarball SHA is computed.
-- No new auth in base packages — PE-001 / `auth: "api_key"` declaration covers protected actions; auth protocol stays in extensions.
+- **Wire protocol.** Byte-identical to v0.1.5. No schema field changes, no enum changes, no envelope changes, no endpoint changes.
+- **Install scripts** still pinned to `v0.1.6` tag + SHA256 (a follow-up commit will pin `v0.1.7` once the GitHub release tarball SHA is computed).
+- **No new auth in base packages** — PE-001 / `auth: "api_key"` declaration covers protected actions; auth protocol stays in extensions.
 
 ## [0.1.6] — 2026-04-23
 

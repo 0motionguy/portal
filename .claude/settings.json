@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:visitportal.dev)",
+      "Bash(git -C \"c:/Users/mirko/OneDrive/Desktop/visitportal.dev\" show 03a986f --stat)",
+      "Bash(git -C \"c:/Users/mirko/OneDrive/Desktop/visitportal.dev\" log origin/main..HEAD --oneline)",
+      "Bash(VERCEL_ORG_ID=\"team_NrVhqhXUDEYB9YOWaqkBIQ4w\" VERCEL_PROJECT_ID=\"prj_mQOsWtXkwHoUf5p3rZpmMBwJG2h9\" vercel ls)",
+      "Read(//c/Users/mirko/.local/share/**)",
+      "Bash(unset VERCEL_PROJECT_ID VERCEL_ORG_ID VERCEL_TOKEN)",
+      "Read(//c/Users/mirko/AppData/Roaming/com.vercel.cli/Data/**)",
+      "Bash(git -C \"c:/Users/mirko/OneDrive/Desktop/visitportal.dev\" rev-parse HEAD)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Bash(git mv *)"
+    ]
+  }
+}

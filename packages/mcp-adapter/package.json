@@ -1,7 +1,7 @@
 {
   "name": "@visitportal/mcp-adapter",
   "license": "Apache-2.0",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": false,
   "description": "Wrap an MCP stdio server as a Portal. Minimal client, manifest translation, and local HTTP bridge.",
   "type": "module",
@@ -26,7 +26,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@visitportal/provider": "workspace:^0.1.6",
+    "@visitportal/provider": "workspace:^0.1.7",
     "tsx": "^4.20.6"
   },
   "devDependencies": {

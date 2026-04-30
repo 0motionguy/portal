@@ -13,8 +13,8 @@
     "agent-sim": "tsx scripts/agent-sim.ts"
   },
   "dependencies": {
-    "@visitportal/provider": "workspace:^0.1.6",
-    "@visitportal/visit": "workspace:^0.1.5"
+    "@visitportal/provider": "workspace:^0.1.7",
+    "@visitportal/visit": "workspace:^0.1.7"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

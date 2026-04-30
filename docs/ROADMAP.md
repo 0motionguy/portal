@@ -1,19 +1,20 @@
 # Portal Roadmap
 
-## Shipped post-v0.1.6 — adopter ergonomics
+## Shipped in v0.1.7 (current) — adopter ergonomics + release alignment
 
-Additive docs and one new reference example. No spec change; spec stays at v0.1.5.
+Spec doc renamed `v0.1.5 → v0.1.7` and all five npm packages bumped to `0.1.7` together. **Wire protocol byte-identical to v0.1.5** — every v0.1.5-conformant Portal remains v0.1.7-conformant. Plus additive docs + one new reference example + one new test target.
 
 - **Cloudflare Worker reference** — [`reference/portal-cf-worker`](../reference/portal-cf-worker), runs `provider.serve()`'s Web-standard `fetch` handler. ~30 lines of glue. Quickstart: [`docs/quickstart-cloudflare-worker.md`](./quickstart-cloudflare-worker.md).
-- **Static-fallback recipe** — for sites that ship as static assets. Static manifest + single Edge function dispatcher. Quickstart: [`docs/quickstart-static-fallback.md`](./quickstart-static-fallback.md). Live example: [`web/public/portal-static-example.json`](../web/public/portal-static-example.json) + [`web/app/api/portal-static-example/call/route.ts`](../web/app/api/portal-static-example/call/route.ts).
+- **Static-fallback recipe** — for sites that ship as static assets. Static manifest + single serverless function dispatcher. Quickstart: [`docs/quickstart-static-fallback.md`](./quickstart-static-fallback.md). Live example: [`web/public/portal-static-example.json`](../web/public/portal-static-example.json) + [`web/app/api/portal-static-example/call/route.ts`](../web/app/api/portal-static-example/call/route.ts).
 - **AISO Portal Readiness Score** — external integration contract. 5×20-point rubric. [`docs/integrations/aiso-readiness-score.md`](./integrations/aiso-readiness-score.md) + JSON Schema.
 - **TrendingRepo "Portal Ready" badge** — external integration contract. 4 badge states + 3-line preview. [`docs/integrations/trendingrepo-portal-badge.md`](./integrations/trendingrepo-portal-badge.md).
 - **End-to-end agent simulation** — real Claude → Portal tool-use loop. Mocked unit test in CI. [`packages/bench/scripts/agent-sim.ts`](../packages/bench/scripts/agent-sim.ts), [`packages/bench/test/agent-sim.test.ts`](../packages/bench/test/agent-sim.test.ts).
 - **Architecture overview** — single-page assembly of "how an agent visits a website" across 9 sections. [`docs/architecture-overview.md`](./architecture-overview.md).
+- **Release alignment** — every package, the spec doc, the schema `$id`, and the conformance vectors `spec_version` now read `0.1.7`. No wire change.
 
-## Shipped in v0.1.5 (current)
+## Shipped in v0.1.5 — relative call_endpoint + paramsSchema precedence
 
-Small adopter-ergonomics release. Spec bumped v0.1.4 → v0.1.5 with additive manifest relaxations; no endpoint or envelope changes.
+Adopter-ergonomics release. Spec bumped v0.1.4 → v0.1.5 with additive manifest relaxations; no endpoint or envelope changes. (Renamed to `v0.1.7` in the v0.1.7 release-alignment pass; wire-identical.)
 
 - **Relative `call_endpoint`** — manifests can declare `"call_endpoint": "/portal/call"` and visitor SDKs resolve against the manifest URL.
 - **`paramsSchema` precedence** — JSON Schema 2020-12 accepted alongside the sugar `params` form, with `paramsSchema` taking precedence when both are present.
