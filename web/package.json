@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 3035",
+    "prebuild": "pnpm --filter @visitportal/spec build && pnpm --filter @visitportal/provider build",
     "build": "next build",
     "start": "next start -p 3035",
     "preview": "cd public && npx --yes serve -l 5173",
