@@ -4,7 +4,6 @@
 // drifted (accepted any http:// host instead of https-with-loopback-only).
 import { leanValidate } from "@visitportal/spec/lean-validator";
 import { NextResponse } from "next/server";
-import { check as rateLimitCheck } from "./rate-limit";
 import { guardUrl } from "./ssrf-guard";
 
 // GET /api/visit?url=<portal-url>
@@ -62,19 +61,8 @@ export async function GET(req: Request): Promise<NextResponse<VisitResponse>> {
   const { searchParams } = new URL(req.url);
   const target = searchParams.get("url");
 
-  // Rate limit per client IP before any outbound work. When Upstash env vars
-  // are absent (dev), check() returns ok:true with an empty headers map.
-  const ip = getClientIp(req);
-  const rl = await rateLimitCheck(ip);
-  const respond = (body: VisitResponse, status: number): NextResponse<VisitResponse> => {
-    const res = NextResponse.json<VisitResponse>(body, { status });
-    for (const [k, v] of Object.entries(rl.headers)) res.headers.set(k, v);
-    return res;
-  };
-
-  if (!rl.ok) {
-    return respond({ ok: false, stage: "url", error: "rate limit exceeded" }, 429);
-  }
+  const respond = (body: VisitResponse, status: number): NextResponse<VisitResponse> =>
+    NextResponse.json<VisitResponse>(body, { status });
 
   if (!target) {
     return respond({ ok: false, stage: "url", error: "missing 'url' query parameter" }, 400);
@@ -131,17 +119,6 @@ export async function GET(req: Request): Promise<NextResponse<VisitResponse>> {
 }
 
 // ---------- helpers ----------
-
-function getClientIp(req: Request): string {
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) {
-    const first = xff.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  const xri = req.headers.get("x-real-ip")?.trim();
-  if (xri) return xri;
-  return "anon";
-}
 
 interface FetchOk {
   ok: true;
