@@ -1,302 +1,77 @@
-<div align="center">
-
-<img src="docs/assets/portal-banner.svg" alt="Portal — the drop-in visit layer for LLM clients" width="100%" />
-
 # Portal
 
-**If your service has a URL, an agent can visit it.**
-Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.
+If your service has a URL, an agent can visit it: an open HTTP contract for agent-accessible services.
 
-[![npm · @visitportal/spec](https://img.shields.io/npm/v/@visitportal/spec?color=DA7756&label=%40visitportal%2Fspec&labelColor=181818)](https://www.npmjs.com/package/@visitportal/spec)
-[![CI](https://img.shields.io/github/actions/workflow/status/0motionguy/portal/ci.yml?label=tests&color=181818&labelColor=181818)](https://github.com/0motionguy/portal/actions)
-[![spec v0.1.8](https://img.shields.io/badge/spec-v0.1.8-DA7756.svg?labelColor=181818)](docs/spec-v0.1.8.md)
-[![release v0.1.8](https://img.shields.io/badge/release-v0.1.8-181818.svg?labelColor=181818)](CHANGELOG.md)
-[![license · Apache 2.0 / CC0](https://img.shields.io/badge/license-Apache--2.0%20%2F%20CC0-181818.svg)](LICENSE)
-[![Built with Opus 4.7](https://img.shields.io/badge/Built%20with-Opus%204.7-DA7756.svg?labelColor=181818)](https://cerebralvalley.ai/e/built-with-4-7-hackathon)
+[![npm @visitportal/spec](https://img.shields.io/npm/v/@visitportal/spec?label=%40visitportal%2Fspec)](https://www.npmjs.com/package/@visitportal/spec)
+[![CI](https://img.shields.io/github/actions/workflow/status/0motionguy/portal/ci.yml?label=ci)](https://github.com/0motionguy/portal/actions)
 
-[See it work](#see-it-work) · [Quickstart](#quickstart) · [Spec v0.1.8](docs/spec-v0.1.8.md) · [Benchmark](packages/bench/results/tokens-matrix-v1.md) · [Adopter debrief](docs/ADOPTER-DEBRIEF.md) · [Roadmap](docs/ROADMAP.md)
+Portal is a minimal HTTP protocol that lets an LLM agent discover and use a service's tools without installing anything. A provider adds two routes: `GET /portal` returns a short manifest and `POST /portal/call` runs a tool. The agent reads the manifest once per visit, calls what it needs and leaves, so no tool schemas stay in its context and there is nothing to clean up afterwards. This repository holds the spec, a conformance suite, SDKs and adapters, reference providers, the project site and a benchmark. It is for API providers who want agents to use their service, and for agent builders who want drive-by access to many services without preloading every tool definition.
 
-</div>
-
----
+Portal is meant to sit beside MCP, not replace it: MCP for installed, stateful tool servers, Portal for visits.
 
 ## See it work
 
 ```sh
-# 1. Discover — read the manifest
+# 1. read the manifest
 curl https://www.visitportal.dev/portal-static-example.json
-```
 
-```sh
-# 2. Call — invoke a tool
+# 2. call a tool
 curl -X POST https://www.visitportal.dev/api/portal-static-example/call \
   -H 'content-type: application/json' \
   -d '{"tool":"posts","params":{"limit":3}}'
 ```
 
-No client library required. Works from bash, Python urllib, any fetch.
+No client library is needed; any HTTP client works.
 
----
+## What it does
 
-## Why Portal
+- **Spec v0.1.8** (`docs/spec-v0.1.8.md`, `packages/spec`): two endpoints and one manifest (required fields `portal_version`, `name`, `brief`, `tools`, `call_endpoint`; optional `auth` and `pricing`), five error codes (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`) and an optional `/.well-known/portal.json` discovery path. Shipped as a JSON Schema plus 36 conformance vectors.
+- **Validation and conformance** (`@visitportal/spec`, on npm): an ajv-based validator, a zero-dependency lean validator held in parity by a self-test, and `runSmokeConformance(url)` to check a live service.
+- **Visitor SDK** (`packages/visit/ts`): `visit(url)` returns a Portal with `call(tool, params)`. It requires HTTPS (loopback excepted), caps response size, retries once on transport errors and 5xx, and reports events to an `onEvent` hook.
+- **Provider helper** (`@visitportal/provider`, on npm): builds a validated manifest from typed tool definitions and serves it through a fetch-native handler that fits Workers, edge runtimes and route handlers.
+- **MCP adapter** (`@visitportal/mcp-adapter`, on npm): wraps an MCP stdio server as a Portal, as a library or a CLI with a local HTTP bridge.
+- **Paid tools, extension PE-002** (`@visitportal/x402-adapter`, on npm): `withPayment(handler, ...)` answers unpaid calls with HTTP 402 and an x402 payment challenge. You bring the payment facilitator.
+- **CLI** (`packages/cli`): `visit-portal info | call | conformance`, run from a clone.
+- **Benchmark** (`packages/bench`): counts input tokens with Anthropic's token-counting API for simulated MCP tool catalogues versus a Portal preamble. The committed result has 48 cells with one run each: at 100 tools, 13,929 median input tokens for MCP against 172 for Portal, and Portal stays at 172 from 10 to 400 tools. It measures tool-definition overhead, not task success or latency.
+- **Reference providers and site:** a Hono demo ("Star Screener", three tools over a frozen snapshot), a Cloudflare Worker with free and paid tools, and `web/`, the visitportal.dev Next.js app, whose live-visit proxy has an SSRF guard (DNS resolution, IP classification, redirect re-checks) and a rate limit.
 
-> **If your service has a URL, an agent can visit it.**
-> Portal is the minimal HTTP contract for agent-accessible services. Two endpoints. No install. No SDK required.
+## How it's built
 
-Use Portal when MCP is too heavy and REST is too dumb. A visiting agent opens the Portal, reads a single compact manifest **once per visit**, calls a tool, and leaves. No preloaded schemas, no ongoing residue, no install on the visitor side.
+```
+agent --GET /portal-----------------> manifest (read once per visit)
+agent --POST /portal/call {tool, params}--> { ok: true, result } | { ok: false, code }
+```
 
-<img src="docs/assets/portal-vs-mcp.svg" alt="MCP preloaded schemas vs Portal on-visit — measured input tokens" width="100%" />
+A pnpm monorepo of ten workspaces. TypeScript in strict mode with Biome for lint and format, Vitest for tests (14 test files), Node 22+ and pnpm 10+. Imports run strictly downhill: base packages never import the optional extensions. CI on GitHub Actions builds, tests, runs the free benchmark smoke and the conformance check on Node, and imports the Python package. Deploy targets are Vercel (site), Fly.io (Hono demo) and Cloudflare Workers (worker demo).
 
----
+Four packages are published to npm: spec, provider, mcp-adapter and x402-adapter. The visitor SDK and CLI are private and run from the clone. The Python visitor SDK (`packages/visit/py`) is a stub that only carries a version string.
 
-## Three layers of the open agent web
+## Repository layout
 
-| Tier | Protocol | Use case |
-|---|---|---|
-| 1 | **Portal** | Drive-by HTTP visits. Stateless. No install. |
-| 2 | MCP | Installed stateful tools. |
-| 3 | A2A | Multi-agent coordination. |
+- `packages/spec`: schema, conformance vectors, validators, smoke runner.
+- `packages/visit`: TypeScript visitor SDK (`ts/`) and the Python stub (`py/`).
+- `packages/provider`, `packages/mcp-adapter`, `packages/x402-adapter`: provider-side packages.
+- `packages/cli`, `packages/bench`: command line and benchmark.
+- `reference/trending-demo`, `reference/portal-cf-worker`: the two reference providers.
+- `web/`: visitportal.dev.
+- `docs/`: spec versions, architecture, quickstarts (Next.js, Hono, Express, FastAPI, Cloudflare Worker, static fallback, MCP adapter, paid tools), roadmap and integration contracts.
+- `scripts/`: demo, conformance, benchmark entry and install-script helpers.
 
-**Portal for drive-by visits. MCP for installed tools. A2A for agent coordination. They compose.** An MCP server can be wrapped as a Portal in a thin adapter (`@visitportal/mcp-adapter`). A Portal visit can upgrade to an A2A task when a job needs lifecycles. The base is neutral and unowned.
-
----
-
-## Quickstart
-
-### See it in 30 seconds
+## Run it locally
 
 ```sh
 pnpm install
-bash scripts/demo.sh          # ~6 s end-to-end: boots Portal, visits it, leaves
+pnpm -r build                 # strict tsc across the workspaces
+pnpm -r test
+bash scripts/demo.sh          # boots the reference Portal, visits it, runs conformance, shuts down
+pnpm conformance <url>        # validate any Portal URL
+pnpm lint
 ```
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
-```
+Windows: `powershell -ExecutionPolicy Bypass -File scripts/demo.ps1`. `pnpm bench` runs the free smoke. The full token matrix needs `ANTHROPIC_API_KEY` and runs with `pnpm --filter @visitportal/bench bench`. Quickstarts for adding a Portal to an existing service are in `docs/`, starting with `docs/quickstart-provider.md`.
 
-> Requires **Node 22+** and **pnpm 10+**. Use `demo.sh` from bash-compatible shells or `demo.ps1` from native PowerShell.
+## Status
 
-### Visit any Portal — plain HTTP, no SDK
+Beta. The spec is at v0.1.8, still pre-1.0, with four packages on npm, CI, a live site and a roadmap in `docs/ROADMAP.md`. Pending items include the Python SDK, publishing the visitor SDK and CLI, and a pagination envelope. The project started as a hackathon entry in April 2026.
 
-```sh
-curl https://www.visitportal.dev/portal-static-example.json
-curl -X POST https://www.visitportal.dev/api/portal-static-example/call \
-  -H 'content-type: application/json' \
-  -d '{"tool":"posts","params":{"limit":3}}'
-```
-
-### Visit from TypeScript (optional convenience)
-
-```ts
-import { visit } from "@visitportal/visit";
-
-// Production:
-const portal = await visit("https://www.visitportal.dev/portal-static-example.json");
-
-// Or against a local reference Portal:
-// const portal = await visit("http://localhost:3075/portal", { allowInsecure: true });
-
-const top = await portal.call("top_gainers", { limit: 3 });
-// { ok: true, result: { repos: [...] } }
-```
-
-Visitors are **fire-and-forget** — no `close()` or lifecycle. When you're done, drop the reference and the garbage collector handles the rest.
-
-### Expose your service as a Portal
-
-Add two routes to your existing HTTP server:
-
-```ts
-// GET /portal — your manifest
-app.get("/portal", (_req, res) => res.json(manifest));
-
-// POST /portal/call — dispatch to your existing functions
-app.post("/portal/call", async (req, res) => {
-  const { tool, params } = req.body;
-  const result = await dispatch(tool, params);
-  res.json({ ok: true, result });
-});
-```
-
-### Validate conformance in 30 seconds
-
-```ts
-import { runSmokeConformance } from "@visitportal/spec";
-
-const report = await runSmokeConformance("https://your-service.com/portal");
-// { target, manifestOk, manifestErrors, notFoundOk, notFoundDetail }
-```
-
-Full adopter guide: [`docs/quickstart-provider.md`](docs/quickstart-provider.md). MCP bridge guide: [`docs/quickstart-mcp-adapter.md`](docs/quickstart-mcp-adapter.md).
-
----
-
-## How it works
-
-<img src="docs/assets/portal-flow.svg" alt="Portal visit flow — arrive, read, call, use, leave" width="100%" />
-
-A Portal visit is five steps: **arrive, read, call, use, leave.** The manifest enters the LLM's context only for the duration of the visit; the session end is a clean drop. No per-connection state on the server, no residue on the client.
-
-Full technical flow in [`docs/architecture.md`](docs/architecture.md). System architecture (one-page answer to *"how does an agent visit a website?"*): [`docs/architecture-overview.md`](docs/architecture-overview.md). One-page spec in [`docs/spec-v0.1.8.md`](docs/spec-v0.1.8.md).
-
----
-
-## What's in this repo
-
-Package note: [`@visitportal/provider`](packages/provider/ts) and [`@visitportal/mcp-adapter`](packages/mcp-adapter) are npm-published helpers. Providers can expose a validated Portal surface directly, and MCP stdio servers can be wrapped into that same surface without rewriting tool manifests by hand.
-
-| Package | Version | Purpose |
-|---|---|---|
-| [`@visitportal/spec`](packages/spec) | `0.1.8` | JSON Schema, 36 conformance vectors, ajv + zero-dep lean validator, smoke runner |
-| [`@visitportal/visit`](packages/visit/ts) | `0.1.8` · run from clone | TypeScript visitor SDK — `visit(url)` → `Portal` |
-| [`@visitportal/cli`](packages/cli) | `0.1.8` · run from clone | `visit-portal info \| call \| conformance` |
-| [`@visitportal/bench`](packages/bench) | — | Reproducible MCP-vs-Portal benchmark, Anthropic `count_tokens` |
-| [`@visitportal/provider`](packages/provider/ts) | `0.1.8` | TypeScript provider helper — `manifest()` + `serve()` + `PaymentRequiredError` (PE-002) |
-| [`@visitportal/mcp-adapter`](packages/mcp-adapter) | `0.1.8` | Wrap MCP stdio servers as Portals, with a local HTTP bridge |
-| [`@visitportal/x402-adapter`](packages/x402-adapter) | `0.1.8` · **new in v0.1.8** | PE-002 paid tools — `withPayment(handler, { price, facilitator })`. Wire-compatible with x402 + MPP. |
-| [`reference/trending-demo`](reference/trending-demo) | — | Reference Portal ("Star Screener"), Hono, 3 tools, frozen 30-repo snapshot |
-| [`reference/portal-cf-worker`](reference/portal-cf-worker) | — | Reference Portal as a single Cloudflare Worker — free + paid (PE-002) tools |
-| [`packages/visit/py`](packages/visit/py) | stub | Python SDK (v0.2) |
-| [`web/`](web) | — | [visitportal.dev](https://visitportal.dev) landing + docs |
-
-Import direction is strictly downhill — upper layers import from lower, never the reverse. Base Portal packages never pull AGP / ClawPulse / AGNT / ERC-8004; those are optional Portal Extensions documented in [`docs/extensions/`](docs/extensions/).
-
----
-
-## First-adopter debrief
-
-Portal was independently adopted by a production service (Star Screener) in **~2h15m** of engineering time. The protocol itself survived first contact with reality — **8/8 conformance checks passed** on the first green run. Of that 2h15m, ~25 minutes was avoidable friction (packaging, naming) — all addressed in v0.1.1.
-
-> *"The core spec is solid. The adopter onramp is what needs work."* — first production adopter, April 2026
-
-Full debrief: [`docs/ADOPTER-DEBRIEF.md`](docs/ADOPTER-DEBRIEF.md).
-
----
-
-## Benchmark
-
-All numbers reproducible from a clean clone. Source of truth: [`packages/bench/results/tokens-matrix-v1.json`](packages/bench/results/tokens-matrix-v1.json).
-
-| Tool count | MCP (median input tokens) | Portal | MCP : Portal |
-|---:|---:|---:|---:|
-|  10 |  1,956 | 172 |  **11.4×** |
-|  50 |  7,343 | 172 |  **42.7×** |
-| 100 | 13,929 | 172 |  **81.0×** |
-| 400 | 54,677 | 172 | **317.9×** |
-
-MCP cost scales linearly at ~137 tokens per preloaded tool. Portal stays flat at 172 tokens regardless of catalog size. Sonnet 4.5 and Opus 4.5 return byte-identical token counts (same tokenizer).
-
-```sh
-export ANTHROPIC_API_KEY=sk-ant-...
-BENCH_MODE=count_tokens_only pnpm --filter @visitportal/bench bench
-# 48 cells via Anthropic's count_tokens API in ~20 s, ≈ $0.10 total
-```
-
-Methodology: [`packages/bench/METHODOLOGY.md`](packages/bench/METHODOLOGY.md).
-
----
-
-## Spec — v0.1.8
-
-Two endpoints (`GET /portal`, `POST /portal/call`). One manifest. A five-code error enum (`NOT_FOUND`, `INVALID_PARAMS`, `UNAUTHORIZED`, `RATE_LIMITED`, `INTERNAL`). Dual params form — simple sugar plus an escape hatch for full JSON Schema. One printed page of core + appendices A–E (examples, versioning, CORS, rate-limit defaults, alternate discovery draft).
-
-Explicit non-goals for v0.1: task lifecycles, stateful sessions, server-initiated messages, streaming, multi-agent choreography. Those live in MCP / A2A, or arrive as Portal Extensions (PE-001 verified identity, PE-002 x402 micropayments, …).
-
-Full spec: [`docs/spec-v0.1.8.md`](docs/spec-v0.1.8.md).
-
----
-
-## Reproduce everything
-
-```sh
-pnpm -r build                 # strict tsc across every package
-pnpm -r test                  # 172 checks: spec vectors + package tests
-pnpm --filter @visitportal/visit size     # enforce SDK bundle size (limit 15 kB gzipped)
-pnpm conformance <url>        # live-validate any v0.1 Portal
-```
-
-Verification standard: every claim on [visitportal.dev](https://visitportal.dev) is traceable to a JSON artifact in [`packages/bench/results/`](packages/bench/results/) or a single `curl`. If a measurement disagrees with the one-pager, the one-pager updates — not the measurement.
-
----
-
-## Roadmap
-
-### v0.1.8 — shipped (current)
-
-- [x] Relative `call_endpoint` resolution (kills a class of copy-paste bugs)
-- [x] `paramsSchema` (JSON Schema 2020-12) alongside sugar `params`
-- [x] Framework quickstarts: Next.js App Router, Hono, FastAPI, Express
-- [x] PowerShell `demo.ps1`
-
-### v0.1.4 — shipped
-
-HTTP-native reframe, `.well-known/portal.json` alternate discovery, PE-002 paid-tools draft.
-
-### v0.1.3 — shipped
-
-Second-wave hardening: `/api/visit` rate limit (Upstash), reference-Portal rate limit + CORS + status codes, full defensive security headers, Fly scaling, visitor-SDK hardening (size cap, HTTPS, retry, `onEvent`), installer tarball SHA verification, Biome lint, dev-dep CVE patches.
-
-### v0.1.2 — shipped (same day as 0.1.3)
-
-- [x] Every `package.json` declares `"license": "Apache-2.0"`
-
-### v0.1.1 — shipped
-
-- [x] `@visitportal/spec` published on npm (Apache 2.0 + CC0)
-- [x] Normative CORS appendix + SHOULD-level rate-limit defaults (spec Appendix C, D)
-- [x] `call_endpoint` tightened to HTTPS-only with loopback escape
-- [x] `runConformance` → `runSmokeConformance` + `validateAgainstVectors()` for offline full-suite checking
-- [x] SSRF hardening on `/api/visit` (`ipaddr.js` + DNS resolution)
-- [x] First-adopter debrief published
-- [x] Windows shell requirement documented for `scripts/demo.sh`
-
-### v0.2
-
-Package note: `@visitportal/provider` and `@visitportal/mcp-adapter` are published as `0.1.6` packages. v0.1.8 is an adopter-ergonomics release — no package contents changed; the additions are docs + one new reference (Cloudflare Worker) + one new test target (agent simulation). The remaining items below are still pending for the broader v0.2 release.
-
-- [ ] PE-002 paid tools — implementation (draft in `docs/pe-002-paid-tools-draft.md`)
-- [x] `@visitportal/provider` — one-line provider helper
-- [ ] `@visitportal/x402-adapter` — make any x402 provider Portal-discoverable in 50 LOC
-- [x] MCP → Portal adapter (`@visitportal/mcp-adapter`)
-- [ ] Python visitor SDK
-- [ ] `@visitportal/cli` published to npm as global binary
-- [ ] Pagination envelope (`{ ok, result, next_cursor }`)
-
-Full roadmap: [`docs/ROADMAP.md`](docs/ROADMAP.md).
-
----
-
-## Contributing
-
-Portal is an open standard. Contributions welcome — spec proposals, SDKs in new languages, reference adopters, docs improvements.
-
-1. `pnpm install && pnpm -r build && pnpm -r test` must go green on a clean clone.
-2. One concern per PR. Hard ceiling: 400 lines of net change.
-3. Spec changes bump the spec version and go through a proposal in `docs/proposals/`.
-4. No `AGP` / `ClawPulse` / `AGNT` / `8004` imports in base Portal packages — those are extensions.
-
-Full guide: [`CONTRIBUTING.md`](CONTRIBUTING.md) · Security policy: [`SECURITY.md`](SECURITY.md).
-
----
-
-## License
-
-Dual-licensed. **Code** under Apache 2.0. **Spec documents + `conformance/vectors.json`** under CC0 1.0 (public domain). See [`LICENSE`](LICENSE).
-
----
-
-## Credits
-
-Built with **Opus 4.7** for the Claude Code *"Built with Opus 4.7"* hackathon, April 2026, by Mirko Basil Dölger ([@0motionguy](https://github.com/0motionguy)).
-
-The Portal spec is open, unowned, and designed to complement MCP / A2A / Skills — not compete with them. MCP is the foundation.
-
-<div align="center">
-
----
-
-**Visit. Don't install.**
-
-[visitportal.dev](https://visitportal.dev) · [GitHub](https://github.com/0motionguy/portal) · [Issues](https://github.com/0motionguy/portal/issues)
-
-</div>
+Licence: dual. Code is Apache-2.0; the spec documents and `packages/spec/conformance/vectors.json` are CC0 1.0. See `LICENSE`. Contributions follow `CONTRIBUTING.md`; report security issues as described in `SECURITY.md`.
